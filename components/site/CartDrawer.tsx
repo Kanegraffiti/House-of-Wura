@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,6 +22,8 @@ import { useCart } from '@/providers/CartProvider';
 interface CartDrawerProps {
   trigger?: React.ReactNode;
 }
+
+const LAST_ORDER_KEY = 'wura_last_order';
 
 function CartLine({ item }: { item: CartItem }) {
   const { dispatch } = useCart();
@@ -100,9 +102,63 @@ function CartLine({ item }: { item: CartItem }) {
 export function CartDrawer({ trigger }: CartDrawerProps) {
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
+  const [lastOrderId, setLastOrderId] = useState<string | null>(null);
   const count = countCartItems(state.items);
   const subtotal = sumDisplaySubtotal(state.items);
   const isEmpty = state.items.length === 0;
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const readLatest = () => {
+      try {
+        const raw = localStorage.getItem(LAST_ORDER_KEY);
+        if (!raw) {
+          setLastOrderId(null);
+          return;
+        }
+        const parsed = JSON.parse(raw) as { orderId?: string } | null;
+        setLastOrderId(parsed?.orderId ?? null);
+      } catch {
+        setLastOrderId(null);
+      }
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key && event.key !== LAST_ORDER_KEY) return;
+      readLatest();
+    };
+
+    const handleCustom = (event: Event) => {
+      const detail = (event as CustomEvent<{ orderId?: string }>).detail;
+      setLastOrderId(detail?.orderId ?? null);
+    };
+
+    readLatest();
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener('wura:last-order', handleCustom);
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('wura:last-order', handleCustom);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(LAST_ORDER_KEY);
+      if (!raw) {
+        setLastOrderId(null);
+        return;
+      }
+      const parsed = JSON.parse(raw) as { orderId?: string } | null;
+      setLastOrderId(parsed?.orderId ?? null);
+    } catch {
+      setLastOrderId(null);
+    }
+  }, [open]);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -152,6 +208,17 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
               Review & Checkout
             </Link>
           </Button>
+          {lastOrderId && (
+            <Button
+              variant="outline"
+              className="w-full border-wura-gold text-xs font-semibold uppercase tracking-[0.3em] text-wura-black"
+              asChild
+            >
+              <Link href={`/order/${lastOrderId}`} onClick={() => setOpen(false)}>
+                View latest order
+              </Link>
+            </Button>
+          )}
           {!isEmpty && (
             <Button
               variant="ghost"
