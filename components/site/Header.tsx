@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +21,7 @@ import {
 } from '@/components/ui/sheet';
 import { Container } from '@/components/site/Container';
 import { waLink } from '@/lib/wa';
+import { CartIcon } from '@/components/site/CartIcon';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -34,6 +36,7 @@ const HERO_MESSAGE = "Hello House of Wura! I'd love to talk about your bespoke s
 
 export function Header() {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-wura-black/10 bg-white/90 backdrop-blur-xl">
@@ -65,19 +68,25 @@ export function Header() {
               ))}
             </NavigationMenuList>
           </NavigationMenu>
+          <CartIcon />
           <Button variant="outline" className="border-wura-gold" asChild>
             <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
               WhatsApp
             </Link>
           </Button>
         </div>
-        <div className="flex items-center lg:hidden">
-          <Sheet>
+        <div className="flex items-center gap-3 lg:hidden">
+          <CartIcon className="h-10 border-wura-black/10 px-3 text-xs" />
+          <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" className="h-12 w-12 rounded-full border border-wura-black/10">
-                <Menu className="h-5 w-5" aria-hidden />
-                <span className="sr-only">Open navigation</span>
-              </Button>
+              <button
+                type="button"
+                aria-label="Open menu"
+                className="flex items-center justify-center rounded-md border border-wura-gold/30 p-2 text-wura-black transition hover:border-wura-gold focus:outline-none focus:ring-2 focus:ring-wura-gold focus:ring-offset-2 focus:ring-offset-white"
+                onClick={() => setOpen(true)}
+              >
+                <Menu aria-hidden="true" className="h-5 w-5" />
+              </button>
             </SheetTrigger>
             <SheetContent side="right" className="sm:max-w-xs">
               <div className="mt-16 flex flex-col gap-6">
@@ -100,6 +109,9 @@ export function Header() {
                   <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
                     Chat on WhatsApp
                   </Link>
+                </Button>
+                <Button variant="outline" className="w-full border-wura-gold" asChild onClick={() => setOpen(false)}>
+                  <Link href="/cart">Review cart</Link>
                 </Button>
               </div>
             </SheetContent>
