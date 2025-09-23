@@ -1,0 +1,54 @@
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
+
+import { cn } from '@/lib/utils';
+
+const buttonVariants = cva(
+  'group relative inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-medium uppercase tracking-[0.2em] transition-all duration-300 ease-luxurious focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-wura-white disabled:pointer-events-none disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        default:
+          'border-wura-black bg-wura-black text-wura-white shadow-[0_8px_24px_rgba(11,11,11,0.3)] after:absolute after:bottom-2 after:left-6 after:h-px after:w-0 after:bg-wura-gold after:transition-all after:duration-300 after:ease-luxurious hover:text-wura-gold hover:after:w-[calc(100%-3rem)]',
+        secondary:
+          'border-transparent bg-wura-wine text-wura-white shadow-[0_8px_20px_rgba(123,0,44,0.25)] hover:bg-wura-black',
+        outline:
+          'border-wura-gold text-wura-black hover:bg-wura-gold/10 hover:text-wura-black',
+        ghost: 'border-transparent text-wura-black hover:bg-wura-black/5 hover:text-wura-black',
+        link: 'border-none p-0 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black underline-offset-8 hover:text-wura-wine hover:underline'
+      },
+      size: {
+        default: 'h-12',
+        sm: 'h-10 px-5 text-xs tracking-[0.25em]',
+        lg: 'h-14 px-8 text-base tracking-[0.18em]'
+      }
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default'
+    }
+  }
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size }), className)}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = 'Button';
+
+export { Button, buttonVariants };
