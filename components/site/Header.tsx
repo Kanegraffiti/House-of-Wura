@@ -57,7 +57,7 @@ export function Header() {
                   <Link href={item.href} legacyBehavior passHref>
                     <NavigationMenuLink
                       className={cn(
-                        navigationMenuTriggerStyle(),
+                        navigationMenuTriggerStyle,
                         'transition-all duration-200 ease-std hover:text-wura-wine'
                       )}
                       aria-current={pathname === item.href ? 'page' : undefined}

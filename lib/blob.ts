@@ -1,10 +1,10 @@
-import { del, get, head, list, put } from '@vercel/blob';
+import { del, head, list, put } from '@vercel/blob';
 
 const token = process.env.BLOB_READ_WRITE_TOKEN;
 
 function options(contentType?: string) {
-  const base: { access: 'private'; token?: string; contentType?: string } = {
-    access: 'private'
+  const base: { access: 'public'; token?: string; contentType?: string } = {
+    access: 'public'
   };
   if (token) base.token = token;
   if (contentType) base.contentType = contentType;
@@ -18,8 +18,12 @@ export async function putJson(path: string, data: unknown) {
 
 export async function getJson<T = unknown>(path: string): Promise<T | null> {
   try {
-    const file = await get(path, token ? { token } : undefined);
-    const text = await file.blob().then((b) => b.text());
+    const result = await head(path, token ? { token } : undefined);
+    const response = await fetch(result.downloadUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch blob: ${response.statusText}`);
+    }
+    const text = await response.text();
     return JSON.parse(text) as T;
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
