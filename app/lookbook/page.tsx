@@ -1,7 +1,8 @@
-import Image from 'next/image';
-import Link from 'next/link';
 import { Metadata } from 'next';
+import Link from 'next/link';
 
+import Reveal from '@/components/motion/Reveal';
+import { LookbookFigure } from '@/components/lookbook/LookbookFigure';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
@@ -44,41 +45,36 @@ export default function LookbookPage() {
   return (
     <Section>
       <Container className="space-y-12">
-        <SectionHeader
-          eyebrow="Lookbook"
-          title="Stories woven in silk, gold, and light"
-          description="A curation of couture pieces, wedding reveals, and immersive installations."
-          align="left"
-        />
+        <Reveal>
+          <SectionHeader
+            eyebrow="Lookbook"
+            title="Stories woven in silk, gold, and light"
+            description="A curation of couture pieces, wedding reveals, and immersive installations."
+            align="left"
+          />
+        </Reveal>
         <div className="columns-1 gap-4 md:columns-2 lg:columns-3">
-          {lookbookImages.map((image) => (
-            <figure key={image.src} className="group relative mb-4 overflow-hidden rounded-3xl">
-              <Image
-                src={`${image.src}?auto=format&fit=crop&w=1200&q=80`}
-                alt={image.alt}
-                width={800}
-                height={1000}
-                className="w-full object-cover transition duration-500 ease-luxurious group-hover:scale-105"
-              />
-              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-sm text-white opacity-0 transition-opacity duration-300 ease-luxurious group-hover:opacity-100">
-                {image.alt}
-              </figcaption>
-            </figure>
+          {lookbookImages.map((image, index) => (
+            <Reveal key={image.src} delay={index * 0.05}>
+              <LookbookFigure src={image.src} alt={image.alt} />
+            </Reveal>
           ))}
         </div>
-        <div className="flex flex-col gap-4 rounded-3xl bg-wura-black text-wura-white p-10 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-2">
-            <h2 className="font-display text-3xl">Ready for your own editorial moment?</h2>
-            <p className="text-sm text-wura-white/80">
-              Share your inspiration on WhatsApp and we will design the next chapter.
-            </p>
+        <Reveal delay={0.12}>
+          <div className="flex flex-col gap-4 rounded-3xl bg-wura-black text-wura-white p-10 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-2">
+              <h2 className="font-display text-3xl">Ready for your own editorial moment?</h2>
+              <p className="text-sm text-wura-white/80">
+                Share your inspiration on WhatsApp and we will design the next chapter.
+              </p>
+            </div>
+            <Button asChild className="w-full sm:w-auto">
+              <Link href={waLink('Hello House of Wura! I would love to create an editorial look with you.')} target="_blank" rel="noopener noreferrer">
+                <span className="link-glint">Enquire on WhatsApp</span>
+              </Link>
+            </Button>
           </div>
-          <Button asChild className="w-full sm:w-auto">
-            <Link href={waLink('Hello House of Wura! I would love to create an editorial look with you.')} target="_blank" rel="noopener noreferrer">
-              Enquire on WhatsApp
-            </Link>
-          </Button>
-        </div>
+        </Reveal>
       </Container>
     </Section>
   );

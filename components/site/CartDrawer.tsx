@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -25,12 +26,26 @@ interface CartDrawerProps {
 
 const LAST_ORDER_KEY = 'wura_last_order';
 
-function CartLine({ item }: { item: CartItem }) {
+const lineVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 }
+};
+
+function CartLine({ item, index }: { item: CartItem; index: number }) {
   const { dispatch } = useCart();
+  const reduceMotion = useReducedMotion();
   const target = { sku: item.sku, color: item.color, size: item.size };
 
   return (
-    <li className="flex gap-4 rounded-2xl border border-wura-black/10 p-4">
+    <motion.li
+      variants={lineVariants}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : { duration: 0.2, ease: [0.2, 0.6, 0, 1], delay: index * 0.05 }
+      }
+      className="flex gap-4 rounded-2xl border border-wura-black/10 p-4 transition-colors duration-200 ease-std hover:border-wura-gold/50"
+    >
       {item.image ? (
         <div className="relative h-20 w-16 overflow-hidden rounded-lg bg-wura-black/5">
           <Image
@@ -95,7 +110,7 @@ function CartLine({ item }: { item: CartItem }) {
           </div>
         </div>
       </div>
-    </li>
+    </motion.li>
   );
 }
 
@@ -103,6 +118,7 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
   const [lastOrderId, setLastOrderId] = useState<string | null>(null);
+  const reduceMotion = useReducedMotion();
   const count = countCartItems(state.items);
   const subtotal = sumDisplaySubtotal(state.items);
   const isEmpty = state.items.length === 0;
@@ -177,58 +193,76 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
         )}
       </SheetTrigger>
       <SheetContent side="right" className="sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle className="flex items-center justify-between text-2xl">
-            Your Cart
-            <span className="text-sm font-normal uppercase tracking-[0.3em] text-wura-black/60">{count} item{count === 1 ? '' : 's'}</span>
-          </SheetTitle>
-        </SheetHeader>
-        <div className="mt-6 flex h-full flex-col gap-6">
-          {isEmpty ? (
-            <p className="text-sm text-wura-black/70">
-              Your cart is empty. Explore the shop to curate your looks.
-            </p>
-          ) : (
-            <div className="flex-1 space-y-4 overflow-y-auto pr-2" aria-live="polite">
-              <ul className="space-y-4">
-                {state.items.map((item) => (
-                  <CartLine key={keyForItem(item)} item={item} />
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-        <SheetFooter>
-          <div className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.3em] text-wura-black">
-            <span>Subtotal</span>
-            <span>{formatCurrency(subtotal)}</span>
+        <motion.aside
+          initial={reduceMotion ? false : { x: 24, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
+          className="flex h-full flex-col"
+        >
+          <SheetHeader>
+            <SheetTitle className="flex items-center justify-between text-2xl">
+              Your Cart
+              <span className="text-sm font-normal uppercase tracking-[0.3em] text-wura-black/60">{count} item{count === 1 ? '' : 's'}</span>
+            </SheetTitle>
+          </SheetHeader>
+          <div className="mt-6 flex h-full flex-col gap-6">
+            {isEmpty ? (
+              <p className="text-sm text-wura-black/70">
+                Your cart is empty. Explore the shop to curate your looks.
+              </p>
+            ) : (
+              <motion.div
+                initial={reduceMotion ? false : 'hidden'}
+                animate="visible"
+                variants={{
+                  hidden: {},
+                  visible: {
+                    transition: { staggerChildren: reduceMotion ? 0 : 0.05 }
+                  }
+                }}
+                className="flex-1 space-y-4 overflow-y-auto pr-2"
+                aria-live="polite"
+              >
+                <motion.ul className="space-y-4">
+                  {state.items.map((item, index) => (
+                    <CartLine key={keyForItem(item)} item={item} index={index} />
+                  ))}
+                </motion.ul>
+              </motion.div>
+            )}
           </div>
-          <Button asChild disabled={isEmpty} className="w-full">
-            <Link href="/cart" onClick={() => setOpen(false)}>
-              Review & Checkout
-            </Link>
-          </Button>
-          {lastOrderId && (
-            <Button
-              variant="outline"
-              className="w-full border-wura-gold text-xs font-semibold uppercase tracking-[0.3em] text-wura-black"
-              asChild
-            >
-              <Link href={`/order/${lastOrderId}`} onClick={() => setOpen(false)}>
-                View latest order
+          <SheetFooter>
+            <div className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.3em] text-wura-black">
+              <span>Subtotal</span>
+              <span>{formatCurrency(subtotal)}</span>
+            </div>
+            <Button asChild disabled={isEmpty} className="w-full">
+              <Link href="/cart" onClick={() => setOpen(false)}>
+                Review & Checkout
               </Link>
             </Button>
-          )}
-          {!isEmpty && (
-            <Button
-              variant="ghost"
-              className="w-full text-xs font-semibold uppercase tracking-[0.3em] text-wura-black/60 hover:text-wura-black"
-              onClick={() => dispatch({ type: 'CLEAR' })}
-            >
-              Clear cart
-            </Button>
-          )}
-        </SheetFooter>
+            {lastOrderId && (
+              <Button
+                variant="outline"
+                className="w-full border-wura-gold text-xs font-semibold uppercase tracking-[0.3em] text-wura-black"
+                asChild
+              >
+                <Link href={`/order/${lastOrderId}`} onClick={() => setOpen(false)}>
+                  View latest order
+                </Link>
+              </Button>
+            )}
+            {!isEmpty && (
+              <Button
+                variant="ghost"
+                className="w-full text-xs font-semibold uppercase tracking-[0.3em] text-wura-black/60 hover:text-wura-black"
+                onClick={() => dispatch({ type: 'CLEAR' })}
+              >
+                Clear cart
+              </Button>
+            )}
+          </SheetFooter>
+        </motion.aside>
       </SheetContent>
     </Sheet>
   );

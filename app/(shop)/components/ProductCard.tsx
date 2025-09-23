@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Check, Minus, Plus } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 
+import Skeleton from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,6 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const sizeOptions = product.sizes || [];
 
   const [activeImage, setActiveImage] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     colorOptions.length === 1 ? colorOptions[0] : undefined
   );
@@ -45,6 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const [errors, setErrors] = useState<{ color?: string; size?: string }>({});
   const [status, setStatus] = useState<'idle' | 'added'>('idle');
 
+  const reduceMotion = useReducedMotion();
   const { dispatch, state } = useCart();
   const cartCount = countCartItems(state.items);
 
@@ -93,21 +97,38 @@ export function ProductCard({ product }: ProductCardProps) {
     setQuantity((prev) => Math.max(1, prev + delta));
   };
 
+  const handleImageLoad = (index: number) => {
+    setLoadedImages((prev) => ({ ...prev, [index]: true }));
+  };
+
   return (
     <Card className="group h-full overflow-hidden">
       <div className="relative aspect-[3/4] w-full overflow-hidden">
         {product.images.map((image, index) => (
-          <Image
-            key={image}
-            src={`${image}?auto=format&fit=crop&w=900&q=80`}
-            alt={`${product.title} look ${index + 1}`}
-            width={600}
-            height={800}
-            className={`absolute inset-0 h-full w-full object-cover transition duration-500 ease-luxurious ${activeImage === index ? 'opacity-100' : 'opacity-0'}`}
-            onMouseEnter={() => setActiveImage(index)}
-            onFocus={() => setActiveImage(index)}
-            priority={index === 0}
-          />
+          <div key={image} className="absolute inset-0">
+            <motion.div
+              initial={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.995 }}
+              animate={
+                activeImage === index && (loadedImages[index] || reduceMotion)
+                  ? { opacity: 1, scale: 1 }
+                  : { opacity: 0, scale: 0.995 }
+              }
+              transition={reduceMotion ? { duration: 0 } : { duration: 0.25, ease: [0.2, 0.6, 0, 1] }}
+              className="relative h-full w-full"
+            >
+              <Image
+                src={`${image}?auto=format&fit=crop&w=900&q=80`}
+                alt={`${product.title} look ${index + 1}`}
+                width={600}
+                height={800}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                onLoadingComplete={() => handleImageLoad(index)}
+                className="h-full w-full object-cover"
+                priority={index === 0}
+              />
+            </motion.div>
+            {!loadedImages[index] && <Skeleton className="absolute inset-0" />}
+          </div>
         ))}
         <div className="absolute left-5 top-5 flex gap-2">
           <Badge variant="subtle" className="bg-wura-black/80 text-[0.6rem] text-white">
@@ -140,10 +161,10 @@ export function ProductCard({ product }: ProductCardProps) {
                       setErrors((prev) => ({ ...prev, color: undefined }));
                     }}
                     className={cn(
-                      'rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold',
+                      'rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-all duration-200 ease-std focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold',
                       selectedColor === color
                         ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
-                        : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50'
+                        : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
                     )}
                   >
                     {color}
@@ -171,10 +192,10 @@ export function ProductCard({ product }: ProductCardProps) {
                       setErrors((prev) => ({ ...prev, size: undefined }));
                     }}
                     className={cn(
-                      'rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold',
+                      'rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-all duration-200 ease-std focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold',
                       selectedSize === size
                         ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
-                        : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50'
+                        : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
                     )}
                   >
                     {size}
@@ -195,7 +216,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 type="button"
                 aria-label="Decrease quantity"
                 onClick={() => adjustQuantity(-1)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-all duration-200 ease-std hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold"
               >
                 <Minus className="h-3 w-3" aria-hidden />
               </button>
@@ -204,7 +225,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 type="button"
                 aria-label="Increase quantity"
                 onClick={() => adjustQuantity(1)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-all duration-200 ease-std hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold"
               >
                 <Plus className="h-3 w-3" aria-hidden />
               </button>
@@ -213,7 +234,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <div className="mt-auto">
           <Button className="w-full" onClick={handleAddToCart} disabled={!canAdd}>
-            Add to Cart
+            <span className="link-glint">Add to Cart</span>
           </Button>
           <div className="mt-3 text-xs uppercase tracking-[0.25em] text-wura-black/60" aria-live="polite">
             {status === 'added' ? (

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ import {
 import { Container } from '@/components/site/Container';
 import { waLink } from '@/lib/wa';
 import { CartIcon } from '@/components/site/CartIcon';
+import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -37,12 +39,15 @@ const HERO_MESSAGE = "Hello House of Wura! I'd love to talk about your bespoke s
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   return (
     <header className="sticky top-0 z-50 border-b border-wura-black/10 bg-white/90 backdrop-blur-xl">
       <Container className="flex items-center justify-between py-4">
         <Link href="/" className="font-display text-2xl tracking-widest text-wura-black">
-          House of Wura
+          <span className="inline-block transition-shadow duration-200 [text-shadow:_0_0_0_rgba(201,162,39,0)] hover:[text-shadow:_0_0_24px_rgba(201,162,39,0.3)]">
+            House of Wura
+          </span>
         </Link>
         <div className="hidden items-center gap-6 lg:flex">
           <NavigationMenu>
@@ -51,14 +56,17 @@ export function Header() {
                 <NavigationMenuItem key={item.href}>
                   <Link href={item.href} legacyBehavior passHref>
                     <NavigationMenuLink
-                      className={navigationMenuTriggerStyle}
+                      className={cn(
+                        navigationMenuTriggerStyle(),
+                        'transition-all duration-200 ease-std hover:text-wura-wine'
+                      )}
                       aria-current={pathname === item.href ? 'page' : undefined}
                     >
                       <span
-                        className="relative"
-                        style={{
-                          color: pathname === item.href ? '#7B002C' : undefined
-                        }}
+                        className={cn(
+                          'link-glint inline-block px-1 transition-colors duration-200 ease-std',
+                          pathname === item.href && 'text-wura-wine'
+                        )}
                       >
                         {item.label}
                       </span>
@@ -71,7 +79,7 @@ export function Header() {
           <CartIcon />
           <Button variant="outline" className="border-wura-gold" asChild>
             <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
-              WhatsApp
+              <span className="link-glint">WhatsApp</span>
             </Link>
           </Button>
         </div>
@@ -81,15 +89,30 @@ export function Header() {
             <SheetTrigger asChild>
               <button
                 type="button"
-                aria-label="Open menu"
-                className="flex items-center justify-center rounded-md border border-wura-gold/30 p-2 text-wura-black transition hover:border-wura-gold focus:outline-none focus:ring-2 focus:ring-wura-gold focus:ring-offset-2 focus:ring-offset-white"
-                onClick={() => setOpen(true)}
+                aria-label="Toggle menu"
+                aria-expanded={open}
+                className="flex items-center justify-center rounded-md border border-wura-gold/40 p-2 text-wura-black transition-all duration-150 ease-std hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               >
-                <Menu aria-hidden="true" className="h-5 w-5" />
+                <Menu
+                  aria-hidden="true"
+                  className={cn(
+                    'h-5 w-5 transition-transform duration-150 ease-std',
+                    open && 'rotate-90'
+                  )}
+                />
               </button>
             </SheetTrigger>
-            <SheetContent side="right" className="sm:max-w-xs">
-              <div className="mt-16 flex flex-col gap-6">
+            <SheetContent
+              side="top"
+              className="h-auto max-h-[80vh] overflow-y-auto border-none bg-white/95 text-wura-black shadow-[0_24px_60px_rgba(11,11,11,0.18)] sm:max-w-full"
+            >
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, scaleY: 0.98 }}
+                animate={{ opacity: 1, scaleY: 1 }}
+                transition={reduceMotion ? { duration: 0 } : { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
+                style={{ originY: 0 }}
+                className="mt-16 flex flex-col gap-6"
+              >
                 <Link href="/" className="font-display text-2xl text-wura-black">
                   House of Wura
                 </Link>
@@ -98,22 +121,30 @@ export function Header() {
                     <SheetClose asChild key={item.href}>
                       <Link
                         href={item.href}
-                        className="text-sm font-semibold uppercase tracking-[0.3em] text-wura-black"
+                        className={cn(
+                          'text-sm font-semibold uppercase tracking-[0.3em] text-wura-black transition-colors duration-200 ease-std',
+                          pathname === item.href && 'text-wura-wine'
+                        )}
                       >
-                        {item.label}
+                        <span className="link-glint">{item.label}</span>
                       </Link>
                     </SheetClose>
                   ))}
                 </nav>
                 <Button className="w-full" asChild>
                   <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
-                    Chat on WhatsApp
+                    <span className="link-glint">Chat on WhatsApp</span>
                   </Link>
                 </Button>
-                <Button variant="outline" className="w-full border-wura-gold" asChild onClick={() => setOpen(false)}>
+                <Button
+                  variant="outline"
+                  className="w-full border-wura-gold"
+                  asChild
+                  onClick={() => setOpen(false)}
+                >
                   <Link href="/cart">Review cart</Link>
                 </Button>
-              </div>
+              </motion.div>
             </SheetContent>
           </Sheet>
         </div>

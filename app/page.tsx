@@ -4,6 +4,8 @@ import Script from 'next/script';
 
 import productsData from '@/data/products.json';
 
+import ParallaxHeader from '@/components/motion/ParallaxHeader';
+import Reveal from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
 import { InstaGrid } from '@/components/site/InstaGrid';
@@ -91,44 +93,60 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-wura-wine/60" />
         </div>
         <Container className="relative flex min-h-[80vh] flex-col justify-center py-32">
-          <div className="max-w-2xl space-y-6">
-            <p className="text-sm uppercase tracking-[0.45em] text-wura-gold">
-              Luxury Event Planning & Fashion House
-            </p>
-            <h1 className="font-display text-5xl leading-tight sm:text-6xl">
-              Crafted moments that feel like art.
-            </h1>
-            <p className="text-lg text-wura-white/80">
-              House of Wura curates couture fashion, weddings, and experiential events that shimmer with cultural heritage and modern luxury.
-            </p>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <Button className="w-full sm:w-auto" asChild>
-                <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
-                  Chat on WhatsApp
-                </Link>
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full border-wura-gold text-wura-white hover:text-wura-black sm:w-auto"
-                asChild
-              >
-                <Link href="/lookbook">View Lookbook</Link>
-              </Button>
+          <ParallaxHeader>
+            <div className="max-w-2xl space-y-6">
+              <Reveal>
+                <p className="text-sm uppercase tracking-[0.45em] text-wura-gold">
+                  Luxury Event Planning & Fashion House
+                </p>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <h1 className="font-display text-5xl leading-tight sm:text-6xl">
+                  Crafted moments that feel like art.
+                </h1>
+              </Reveal>
+              <Reveal delay={0.18}>
+                <p className="text-lg text-wura-white/80">
+                  House of Wura curates couture fashion, weddings, and experiential events that shimmer with cultural heritage and modern luxury.
+                </p>
+              </Reveal>
+              <Reveal delay={0.22}>
+                <div className="flex flex-col gap-4 sm:flex-row">
+                  <Button className="w-full sm:w-auto" asChild>
+                    <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
+                      <span className="link-glint">Chat on WhatsApp</span>
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full border-wura-gold text-wura-white hover:text-wura-black sm:w-auto"
+                    asChild
+                  >
+                    <Link href="/lookbook">
+                      <span className="link-glint">View Lookbook</span>
+                    </Link>
+                  </Button>
+                </div>
+              </Reveal>
             </div>
-          </div>
+          </ParallaxHeader>
         </Container>
       </section>
 
       <Section>
         <Container className="space-y-12">
-          <SectionHeader
-            eyebrow="Signature Services"
-            title="Planning, styling, and storytelling for unforgettable celebrations"
-            description="From multi-day weddings to red carpet wardrobes, each service is tailored to your personal mythology."
-          />
+          <Reveal>
+            <SectionHeader
+              eyebrow="Signature Services"
+              title="Planning, styling, and storytelling for unforgettable celebrations"
+              description="From multi-day weddings to red carpet wardrobes, each service is tailored to your personal mythology."
+            />
+          </Reveal>
           <div className="grid gap-8 md:grid-cols-3">
-            {services.map((service) => (
-              <ServiceCard key={service.title} {...service} />
+            {services.map((service, index) => (
+              <Reveal key={service.title} delay={index * 0.08}>
+                <ServiceCard {...service} />
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -136,34 +154,48 @@ export default function HomePage() {
 
       <Section className="bg-wura-black/5">
         <Container className="space-y-12">
-          <SectionHeader
-            eyebrow="House of Wura Shop"
-            title="Couture pieces ready for your next grand entrance"
-            description="Explore signature looks crafted in limited runs. Each piece begins with a WhatsApp conversation."
-          />
-          <div className="grid gap-8 md:grid-cols-3">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-          <div className="flex justify-center">
-            <Button variant="outline" className="border-wura-gold" asChild>
-              <Link href="/shop">View all creations</Link>
-            </Button>
-          </div>
+          <Reveal>
+            <SectionHeader
+              eyebrow="House of Wura Shop"
+              title="Couture pieces ready for your next grand entrance"
+              description="Explore signature looks crafted in limited runs. Each piece begins with a WhatsApp conversation."
+            />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <div className="grid gap-8 md:grid-cols-3">
+              {featuredProducts.map((product, index) => (
+                <Reveal key={product.id} delay={index * 0.05}>
+                  <ProductCard product={product} />
+                </Reveal>
+              ))}
+            </div>
+          </Reveal>
+          <Reveal delay={0.12}>
+            <div className="flex justify-center">
+              <Button variant="outline" className="border-wura-gold" asChild>
+                <Link href="/shop">
+                  <span className="link-glint">View all creations</span>
+                </Link>
+              </Button>
+            </div>
+          </Reveal>
         </Container>
       </Section>
 
       <Section>
         <Container className="space-y-12">
-          <SectionHeader
-            eyebrow="Client Stories"
-            title="Whispers from our muses"
-            description="A glimpse into the celebrations and wardrobes we have the honour to create."
-          />
+          <Reveal>
+            <SectionHeader
+              eyebrow="Client Stories"
+              title="Whispers from our muses"
+              description="A glimpse into the celebrations and wardrobes we have the honour to create."
+            />
+          </Reveal>
           <div className="grid gap-8 md:grid-cols-3">
-            {testimonials.map((testimonial) => (
-              <Testimonial key={testimonial.name} {...testimonial} />
+            {testimonials.map((testimonial, index) => (
+              <Reveal key={testimonial.name} delay={index * 0.08}>
+                <Testimonial {...testimonial} />
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -171,32 +203,40 @@ export default function HomePage() {
 
       <Section className="bg-wura-black text-wura-white">
         <Container className="space-y-12">
-          <SectionHeader
-            eyebrow="Moments in Motion"
-            title="Follow our atelier on Instagram"
-            description="See behind-the-scenes glimpses, fittings, and wedding reveals as they happen."
-          />
-          <InstaGrid />
+          <Reveal>
+            <SectionHeader
+              eyebrow="Moments in Motion"
+              title="Follow our atelier on Instagram"
+              description="See behind-the-scenes glimpses, fittings, and wedding reveals as they happen."
+            />
+          </Reveal>
+          <Reveal delay={0.08}>
+            <InstaGrid />
+          </Reveal>
         </Container>
       </Section>
 
       <Section>
-        <Container className="flex flex-col gap-10 rounded-3xl bg-gradient-to-br from-wura-gold/20 via-white to-wura-wine/15 p-10 text-center sm:text-left sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-4">
-            <h2 className="font-display text-3xl text-wura-black">Ready to create your next legend?</h2>
-            <p className="text-sm text-wura-black/70 sm:text-base">
-              Tell us your vision and our concierge team will respond on WhatsApp with curated ideas.
-            </p>
-          </div>
-          <Button className="w-full flex-shrink-0 sm:w-auto" asChild>
-            <Link
-              href={waLink('Hello House of Wura! I am ready to begin planning with you.')}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Start a WhatsApp chat
-            </Link>
-          </Button>
+        <Container className="flex flex-col gap-10 rounded-3xl bg-gradient-to-br from-wura-gold/20 via-white to-wura-wine/15 p-10 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+          <Reveal>
+            <div className="space-y-4">
+              <h2 className="font-display text-3xl text-wura-black">Ready to create your next legend?</h2>
+              <p className="text-sm text-wura-black/70 sm:text-base">
+                Tell us your vision and our concierge team will respond on WhatsApp with curated ideas.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <Button className="w-full flex-shrink-0 sm:w-auto" asChild>
+              <Link
+                href={waLink('Hello House of Wura! I am ready to begin planning with you.')}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span className="link-glint">Start a WhatsApp chat</span>
+              </Link>
+            </Button>
+          </Reveal>
         </Container>
       </Section>
     </>
