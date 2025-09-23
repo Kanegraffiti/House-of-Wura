@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ShoppingBag } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { countCartItems } from '@/lib/cart/utils';
 import { useCart } from '@/providers/CartProvider';
@@ -65,15 +66,24 @@ export function CartIcon({ className }: CartIconProps) {
             type="button"
             aria-label={`Open cart. ${count} item${count === 1 ? '' : 's'} in cart.`}
             className={cn(
-              'relative flex h-11 items-center gap-2 rounded-full border border-wura-black/15 px-4 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black transition-all duration-200 ease-std hover:border-wura-gold hover:shadow-sm active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+              'relative flex h-11 items-center gap-2 rounded-full border border-wura-black/15 px-4 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black focus-ring transition-transform duration-200 ease-std will-change-transform hover:-translate-y-0.5 hover:border-wura-gold hover:shadow-sm active:translate-y-0',
               className
             )}
           >
             <ShoppingBag className="h-4 w-4" aria-hidden />
             <span className="hidden sm:inline">Cart</span>
-            <span className="ml-1 flex h-5 min-w-[1.5rem] items-center justify-center rounded-full bg-wura-black text-xs font-semibold text-white">
-              {count}
-            </span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={count}
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1, transition: { duration: 0.2, ease: [0.3, 0, 0.2, 1] } }}
+                exit={{ scale: 0.85, opacity: 0, transition: { duration: 0.15, ease: [0.4, 0, 0.6, 1] } }}
+                className="ml-1 flex h-5 min-w-[1.5rem] items-center justify-center rounded-full bg-wura-black text-xs font-semibold text-white"
+                aria-live="polite"
+              >
+                {count}
+              </motion.span>
+            </AnimatePresence>
           </button>
         }
       />

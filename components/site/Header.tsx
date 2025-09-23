@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -14,16 +15,11 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger
-} from '@/components/ui/sheet';
 import { Container } from '@/components/site/Container';
-import { waLink } from '@/lib/wa';
 import { CartIcon } from '@/components/site/CartIcon';
+import { waLink } from '@/lib/wa';
 import { cn } from '@/lib/utils';
+import { motionDur, slideDown, trans } from '@/lib/motion';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -39,12 +35,16 @@ const HERO_MESSAGE = "Hello House of Wura! I'd love to talk about your bespoke s
 export function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const reduceMotion = useReducedMotion();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-wura-black/10 bg-white/90 backdrop-blur-xl">
+    <motion.header
+      variants={slideDown}
+      initial="hidden"
+      animate="show"
+      className="sticky top-0 z-50 border-b border-wura-black/10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/65"
+    >
       <Container className="flex items-center justify-between py-4">
-        <Link href="/" className="font-display text-2xl tracking-widest text-wura-black">
+        <Link href="/" className="focus-ring font-display text-2xl tracking-widest text-wura-black">
           <span className="inline-block transition-shadow duration-200 [text-shadow:_0_0_0_rgba(201,162,39,0)] hover:[text-shadow:_0_0_24px_rgba(201,162,39,0.3)]">
             House of Wura
           </span>
@@ -58,13 +58,13 @@ export function Header() {
                     <NavigationMenuLink
                       className={cn(
                         navigationMenuTriggerStyle,
-                        'transition-all duration-200 ease-std hover:text-wura-wine'
+                        'focus-ring will-change-transform transition-transform duration-200 ease-std hover:-translate-y-0.5 hover:text-wura-wine'
                       )}
                       aria-current={pathname === item.href ? 'page' : undefined}
                     >
                       <span
                         className={cn(
-                          'link-glint inline-block px-1 transition-colors duration-200 ease-std',
+                          'link-glint inline-block px-1',
                           pathname === item.href && 'text-wura-wine'
                         )}
                       >
@@ -84,71 +84,91 @@ export function Header() {
           </Button>
         </div>
         <div className="flex items-center gap-3 lg:hidden">
-          <CartIcon className="h-10 border-wura-black/10 px-3 text-xs" />
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <button
+          <CartIcon className="h-11 border-wura-black/10 px-4 text-xs" />
+          <Dialog.Root open={open} onOpenChange={setOpen}>
+            <Dialog.Trigger asChild>
+              <motion.button
                 type="button"
-                aria-label="Toggle menu"
-                aria-expanded={open}
-                className="flex items-center justify-center rounded-md border border-wura-gold/40 p-2 text-wura-black transition-all duration-150 ease-std hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                aria-label="Open menu"
+                className="focus-ring rounded-md border border-wura-gold/40 p-2 text-wura-black transition-transform duration-200 ease-std will-change-transform hover:-translate-y-0.5 hover:border-wura-gold"
+                whileTap={{ scale: 0.96 }}
               >
-                <Menu
-                  aria-hidden="true"
-                  className={cn(
-                    'h-5 w-5 transition-transform duration-150 ease-std',
-                    open && 'rotate-90'
-                  )}
-                />
-              </button>
-            </SheetTrigger>
-            <SheetContent
-              side="top"
-              className="h-auto max-h-[80vh] overflow-y-auto border-none bg-white/95 text-wura-black shadow-[0_24px_60px_rgba(11,11,11,0.18)] sm:max-w-full"
-            >
-              <motion.div
-                initial={reduceMotion ? false : { opacity: 0, scaleY: 0.98 }}
-                animate={{ opacity: 1, scaleY: 1 }}
-                transition={reduceMotion ? { duration: 0 } : { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
-                style={{ originY: 0 }}
-                className="mt-16 flex flex-col gap-6"
-              >
-                <Link href="/" className="font-display text-2xl text-wura-black">
-                  House of Wura
-                </Link>
-                <nav className="flex flex-col gap-4">
-                  {navItems.map((item) => (
-                    <SheetClose asChild key={item.href}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          'text-sm font-semibold uppercase tracking-[0.3em] text-wura-black transition-colors duration-200 ease-std',
-                          pathname === item.href && 'text-wura-wine'
-                        )}
-                      >
-                        <span className="link-glint">{item.label}</span>
-                      </Link>
-                    </SheetClose>
-                  ))}
-                </nav>
-                <Button className="w-full" asChild>
-                  <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
-                    <span className="link-glint">Chat on WhatsApp</span>
-                  </Link>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full border-wura-gold"
-                  asChild
-                  onClick={() => setOpen(false)}
-                >
-                  <Link href="/cart">Review cart</Link>
-                </Button>
-              </motion.div>
-            </SheetContent>
-          </Sheet>
+                <Menu aria-hidden="true" className="h-5 w-5" />
+              </motion.button>
+            </Dialog.Trigger>
+            <AnimatePresence>
+              {open && (
+                <Dialog.Portal forceMount>
+                  <Dialog.Overlay asChild>
+                    <motion.div
+                      className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1, transition: trans(motionDur.sm) }}
+                      exit={{ opacity: 0, transition: { duration: motionDur.xs } }}
+                    />
+                  </Dialog.Overlay>
+                  <Dialog.Content asChild>
+                    <motion.div
+                      initial={{ opacity: 0, y: -16 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        transition: { type: 'spring', stiffness: 320, damping: 30 }
+                      }}
+                      exit={{ opacity: 0, y: -12, transition: { duration: motionDur.sm } }}
+                      className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white/95 p-6 shadow-[0_28px_60px_rgba(11,11,11,0.28)]"
+                    >
+                      <div className="flex items-center justify-between">
+                        <p className="font-display text-xl text-wura-black">House of Wura</p>
+                        <Dialog.Close asChild>
+                          <button
+                            type="button"
+                            aria-label="Close menu"
+                            className="focus-ring rounded-full border border-transparent p-2 text-wura-black transition hover:border-wura-gold"
+                          >
+                            <X className="h-4 w-4" aria-hidden />
+                          </button>
+                        </Dialog.Close>
+                      </div>
+                      <nav className="mt-8 flex flex-col gap-4">
+                        {navItems.map((item) => (
+                          <Dialog.Close asChild key={item.href}>
+                            <Link
+                              href={item.href}
+                              className={cn(
+                                'text-sm font-semibold uppercase tracking-[0.3em] text-wura-black transition-colors duration-200 ease-std',
+                                pathname === item.href ? 'text-wura-wine' : 'hover:text-wura-wine'
+                              )}
+                            >
+                              <span className="link-glint">{item.label}</span>
+                            </Link>
+                          </Dialog.Close>
+                        ))}
+                      </nav>
+                      <div className="mt-8 flex flex-col gap-3">
+                        <Button className="w-full" asChild>
+                          <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
+                            <span className="link-glint">Chat on WhatsApp</span>
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full border-wura-gold"
+                          asChild
+                        >
+                          <Link href="/cart" onClick={() => setOpen(false)}>
+                            Review cart
+                          </Link>
+                        </Button>
+                      </div>
+                    </motion.div>
+                  </Dialog.Content>
+                </Dialog.Portal>
+              )}
+            </AnimatePresence>
+          </Dialog.Root>
         </div>
       </Container>
-    </header>
+    </motion.header>
   );
 }

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 
-import Reveal from '@/components/motion/Reveal';
+import Reveal from '@/components/site/Reveal';
 import { LookbookFigure } from '@/components/lookbook/LookbookFigure';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';

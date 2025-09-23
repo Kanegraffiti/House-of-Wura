@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
-import Reveal from '@/components/motion/Reveal';
+import Reveal from '@/components/site/Reveal';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
@@ -62,8 +62,9 @@ export default function AboutPage() {
                 src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80"
                 alt="Creative director fitting a couture gown"
                 fill
-                className="object-cover transition duration-300 ease-std"
+                className="img-fade object-cover transition duration-300 ease-std"
                 loading="lazy"
+                onLoadingComplete={(image) => image.classList.add('loaded')}
               />
             </div>
           </Reveal>
@@ -119,8 +120,9 @@ export default function AboutPage() {
                   src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"
                   alt="Wedding aisle designed by House of Wura"
                   fill
-                  className="object-cover transition duration-300 ease-std"
+                  className="img-fade object-cover transition duration-300 ease-std"
                   loading="lazy"
+                  onLoadingComplete={(image) => image.classList.add('loaded')}
                 />
               </div>
             </div>

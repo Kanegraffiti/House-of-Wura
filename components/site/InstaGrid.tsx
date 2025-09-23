@@ -43,7 +43,8 @@ export function InstaGrid({ images = DEFAULT_IMAGES }: InstaGridProps) {
             width={400}
             height={400}
             loading="lazy"
-            className="h-full w-full object-cover transition duration-200 ease-std group-hover:scale-[1.03]"
+            onLoadingComplete={(img) => img.classList.add('loaded')}
+            className="img-fade h-full w-full object-cover transition duration-200 ease-std group-hover:scale-[1.03]"
           />
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition-opacity duration-200 ease-std group-hover:opacity-100" />
         </Link>

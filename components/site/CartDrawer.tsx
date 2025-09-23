@@ -2,22 +2,16 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Minus, Plus, Trash2 } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { Minus, Plus, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger
-} from '@/components/ui/sheet';
 import { formatCurrency } from '@/lib/format';
 import { countCartItems, sumDisplaySubtotal } from '@/lib/cart/utils';
 import type { CartItem } from '@/lib/cart/types';
+import { fadeInUp, motionDur, trans } from '@/lib/motion';
 import { useCart } from '@/providers/CartProvider';
 
 interface CartDrawerProps {
@@ -26,25 +20,21 @@ interface CartDrawerProps {
 
 const LAST_ORDER_KEY = 'wura_last_order';
 
-const lineVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0 }
+const listVariants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.08 }
+  }
 };
 
-function CartLine({ item, index }: { item: CartItem; index: number }) {
+function CartLine({ item }: { item: CartItem }) {
   const { dispatch } = useCart();
-  const reduceMotion = useReducedMotion();
   const target = { sku: item.sku, color: item.color, size: item.size };
 
   return (
     <motion.li
-      variants={lineVariants}
-      transition={
-        reduceMotion
-          ? { duration: 0 }
-          : { duration: 0.2, ease: [0.2, 0.6, 0, 1], delay: index * 0.05 }
-      }
-      className="flex gap-4 rounded-2xl border border-wura-black/10 p-4 transition-colors duration-200 ease-std hover:border-wura-gold/50"
+      variants={fadeInUp}
+      className="flex gap-4 rounded-2xl border border-wura-black/10 p-4 transition-shadow duration-200 ease-std hover:shadow-md hover:shadow-black/5"
     >
       {item.image ? (
         <div className="relative h-20 w-16 overflow-hidden rounded-lg bg-wura-black/5">
@@ -52,8 +42,9 @@ function CartLine({ item, index }: { item: CartItem; index: number }) {
             src={`${item.image}?auto=format&fit=crop&w=300&q=70`}
             alt={`${item.title} preview`}
             fill
-            className="object-cover"
+            className="img-fade object-cover"
             sizes="64px"
+            onLoadingComplete={(image) => image.classList.add('loaded')}
           />
         </div>
       ) : (
@@ -61,7 +52,7 @@ function CartLine({ item, index }: { item: CartItem; index: number }) {
           HW
         </div>
       )}
-      <div className="flex flex-1 flex-col gap-2 text-sm">
+      <div className="flex flex-1 flex-col gap-3 text-sm">
         <div className="flex items-start justify-between gap-2">
           <div>
             <p className="font-semibold text-wura-black">{item.title}</p>
@@ -86,27 +77,25 @@ function CartLine({ item, index }: { item: CartItem; index: number }) {
             From {item.priceFrom ? formatCurrency(item.priceFrom) : '—'}
           </span>
           <div className="flex items-center gap-2" aria-label={`Quantity for ${item.title}`}>
-            <Button
+            <motion.button
               type="button"
-              variant="outline"
-              size="icon"
+              whileTap={{ scale: 0.92 }}
               aria-label={`Decrease quantity of ${item.title}`}
               onClick={() => dispatch({ type: 'DECREMENT', payload: target })}
-              className="h-8 w-8 rounded-full border-wura-black/15"
+              className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
             >
               <Minus className="h-3 w-3" aria-hidden />
-            </Button>
+            </motion.button>
             <span className="min-w-[1.5rem] text-center text-sm font-semibold">{item.qty}</span>
-            <Button
+            <motion.button
               type="button"
-              variant="outline"
-              size="icon"
+              whileTap={{ scale: 0.92 }}
               aria-label={`Increase quantity of ${item.title}`}
               onClick={() => dispatch({ type: 'INCREMENT', payload: target })}
-              className="h-8 w-8 rounded-full border-wura-black/15"
+              className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
             >
               <Plus className="h-3 w-3" aria-hidden />
-            </Button>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -118,7 +107,6 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
   const { state, dispatch } = useCart();
   const [open, setOpen] = useState(false);
   const [lastOrderId, setLastOrderId] = useState<string | null>(null);
-  const reduceMotion = useReducedMotion();
   const count = countCartItems(state.items);
   const subtotal = sumDisplaySubtotal(state.items);
   const isEmpty = state.items.length === 0;
@@ -163,6 +151,7 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
   useEffect(() => {
     if (!open) return;
     if (typeof window === 'undefined') return;
+
     try {
       const raw = localStorage.getItem(LAST_ORDER_KEY);
       if (!raw) {
@@ -176,95 +165,108 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
     }
   }, [open]);
 
+  const defaultTrigger = (
+    <Button
+      type="button"
+      variant="ghost"
+      className="relative flex h-12 items-center gap-2 border border-wura-black/10 px-4 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black"
+    >
+      Cart
+      <span className="flex h-5 min-w-[1.5rem] items-center justify-center rounded-full bg-wura-black text-xs font-semibold text-white">
+        {count}
+      </span>
+    </Button>
+  );
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        {trigger ?? (
-          <Button
-            type="button"
-            variant="ghost"
-            className="relative flex h-12 items-center gap-2 rounded-full border border-wura-black/10 px-4 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black hover:border-wura-gold"
-          >
-            Cart
-            <span className="flex h-5 min-w-[1.5rem] items-center justify-center rounded-full bg-wura-black text-xs font-semibold text-white">
-              {count}
-            </span>
-          </Button>
-        )}
-      </SheetTrigger>
-      <SheetContent side="right" className="sm:max-w-md">
-        <motion.aside
-          initial={reduceMotion ? false : { x: 24, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={reduceMotion ? { duration: 0 } : { duration: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
-          className="flex h-full flex-col"
-        >
-          <SheetHeader>
-            <SheetTitle className="flex items-center justify-between text-2xl">
-              Your Cart
-              <span className="text-sm font-normal uppercase tracking-[0.3em] text-wura-black/60">{count} item{count === 1 ? '' : 's'}</span>
-            </SheetTitle>
-          </SheetHeader>
-          <div className="mt-6 flex h-full flex-col gap-6">
-            {isEmpty ? (
-              <p className="text-sm text-wura-black/70">
-                Your cart is empty. Explore the shop to curate your looks.
-              </p>
-            ) : (
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger asChild>{trigger ?? defaultTrigger}</Dialog.Trigger>
+      <AnimatePresence>
+        {open && (
+          <Dialog.Portal forceMount>
+            <Dialog.Overlay asChild>
               <motion.div
-                initial={reduceMotion ? false : 'hidden'}
-                animate="visible"
-                variants={{
-                  hidden: {},
-                  visible: {
-                    transition: { staggerChildren: reduceMotion ? 0 : 0.05 }
-                  }
-                }}
-                className="flex-1 space-y-4 overflow-y-auto pr-2"
-                aria-live="polite"
+                className="fixed inset-0 z-40 bg-black/55 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: trans(motionDur.sm) }}
+                exit={{ opacity: 0, transition: { duration: motionDur.xs } }}
+              />
+            </Dialog.Overlay>
+            <Dialog.Content asChild>
+              <motion.aside
+                key="cart"
+                initial={{ x: 320, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { type: 'spring', stiffness: 340, damping: 34 } }}
+                exit={{ x: 320, opacity: 0, transition: { duration: motionDur.sm } }}
+                className="fixed right-0 top-0 z-50 flex h-full w-[92%] flex-col bg-white shadow-2xl sm:w-[420px]"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Cart"
               >
-                <motion.ul className="space-y-4">
-                  {state.items.map((item, index) => (
-                    <CartLine key={keyForItem(item)} item={item} index={index} />
-                  ))}
-                </motion.ul>
-              </motion.div>
-            )}
-          </div>
-          <SheetFooter>
-            <div className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.3em] text-wura-black">
-              <span>Subtotal</span>
-              <span>{formatCurrency(subtotal)}</span>
-            </div>
-            <Button asChild disabled={isEmpty} className="w-full">
-              <Link href="/cart" onClick={() => setOpen(false)}>
-                Review & Checkout
-              </Link>
-            </Button>
-            {lastOrderId && (
-              <Button
-                variant="outline"
-                className="w-full border-wura-gold text-xs font-semibold uppercase tracking-[0.3em] text-wura-black"
-                asChild
-              >
-                <Link href={`/order/${lastOrderId}`} onClick={() => setOpen(false)}>
-                  View latest order
-                </Link>
-              </Button>
-            )}
-            {!isEmpty && (
-              <Button
-                variant="ghost"
-                className="w-full text-xs font-semibold uppercase tracking-[0.3em] text-wura-black/60 hover:text-wura-black"
-                onClick={() => dispatch({ type: 'CLEAR' })}
-              >
-                Clear cart
-              </Button>
-            )}
-          </SheetFooter>
-        </motion.aside>
-      </SheetContent>
-    </Sheet>
+                <div className="flex items-center justify-between border-b border-wura-black/10 p-6">
+                  <div>
+                    <h2 className="font-display text-2xl text-wura-black">Your Cart</h2>
+                    <p className="text-xs uppercase tracking-[0.3em] text-wura-black/60">{count} item{count === 1 ? '' : 's'}</p>
+                  </div>
+                  <Dialog.Close asChild>
+                    <button
+                      type="button"
+                      aria-label="Close cart"
+                      className="focus-ring rounded-full border border-transparent p-2 text-wura-black transition hover:border-wura-gold"
+                    >
+                      <X className="h-4 w-4" aria-hidden />
+                    </button>
+                  </Dialog.Close>
+                </div>
+                <div className="flex-1 overflow-y-auto p-6">
+                  {isEmpty ? (
+                    <div className="flex h-full items-center justify-center text-sm text-wura-black/70">
+                      Your cart is empty. Explore the shop to curate your looks.
+                    </div>
+                  ) : (
+                    <motion.div initial="hidden" animate="show" variants={listVariants} className="space-y-4">
+                      <motion.ul className="space-y-4">
+                        {state.items.map((item) => (
+                          <CartLine key={keyForItem(item)} item={item} />
+                        ))}
+                      </motion.ul>
+                    </motion.div>
+                  )}
+                </div>
+                <div className="space-y-3 border-t border-wura-black/10 p-6">
+                  <div className="flex items-center justify-between text-sm font-medium uppercase tracking-[0.3em] text-wura-black">
+                    <span>Subtotal</span>
+                    <span>{formatCurrency(subtotal)}</span>
+                  </div>
+                  <Button asChild disabled={isEmpty} className="w-full" onClick={() => setOpen(false)}>
+                    <Link href="/cart">Review & Checkout</Link>
+                  </Button>
+                  {lastOrderId && (
+                    <Button
+                      variant="outline"
+                      className="w-full border-wura-gold text-xs font-semibold uppercase tracking-[0.3em] text-wura-black"
+                      asChild
+                      onClick={() => setOpen(false)}
+                    >
+                      <Link href={`/order/${lastOrderId}`}>View latest order</Link>
+                    </Button>
+                  )}
+                  {!isEmpty && (
+                    <Button
+                      variant="ghost"
+                      className="w-full text-xs font-semibold uppercase tracking-[0.3em] text-wura-black/60 hover:text-wura-black"
+                      onClick={() => dispatch({ type: 'CLEAR' })}
+                    >
+                      Clear cart
+                    </Button>
+                  )}
+                </div>
+              </motion.aside>
+            </Dialog.Content>
+          </Dialog.Portal>
+        )}
+      </AnimatePresence>
+    </Dialog.Root>
   );
 }
 
