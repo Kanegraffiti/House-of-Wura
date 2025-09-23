@@ -2,15 +2,17 @@
 
 Luxury event planning and fashion house website built with Next.js 14, TypeScript, Tailwind CSS, and shadcn/ui.
 
-## Features
+## Feature Highlights
 
 - Editorial homepage with hero, services, testimonials, and Instagram grid
 - Dedicated pages for services, shop catalogue, lookbook, about, contact, privacy, and terms
-- WhatsApp-first lead flows including floating chat button, prefilled CTAs, and contact form automation
-- Client-side cart that assembles look enquiries and routes checkout to WhatsApp in one tap
-- Responsive layout with tailored typography (Playfair Display & Inter) and luxury style palette
+- WhatsApp-first engagement including floating chat button and prefilled CTAs
+- Client-side cart that assembles looks and now checks out via WhatsApp with signed order IDs
+- Order storage, proof uploads, and admin dashboard powered by Vercel Blob (no traditional DB)
+- Protected admin area to review orders, update statuses, and reply to customers from WhatsApp templates
+- Responsive layout with refined typography (Playfair Display & Inter) and a luxury palette
 - JSON-LD organisation schema, Open Graph metadata, sitemap, and robots configuration for SEO
-- Local storage log of enquiries (client-side only) to review recent submissions privately
+- Accessibility-conscious interactions with focus rings, reduced-motion guards, and descriptive alt text
 
 ## Getting Started
 
@@ -41,44 +43,88 @@ pnpm lint
 
 ## Environment Variables
 
-Create an `.env.local` file with the following values:
+Create an `.env.local` file and add the following values:
 
 ```
-NEXT_PUBLIC_WA_NUMBER=234XXXXXXXXXX 
+NEXT_PUBLIC_WA_NUMBER=2349060294599
+NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/houseofwurafashions
 NEXT_PUBLIC_SITE_URL=https://houseofwura.vercel.app
-NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/yourhandle
+ADMIN_PASSWORD=your-admin-password
+JWT_SECRET=generate-a-long-random-string
+BLOB_READ_WRITE_TOKEN=vercel-blob-rw-token
 ```
 
 - `NEXT_PUBLIC_WA_NUMBER` should be digits only (no plus sign). All WhatsApp links are generated from this value.
-- `NEXT_PUBLIC_SITE_URL` is used for metadata, sitemap, and robots output.
-- `NEXT_PUBLIC_INSTAGRAM_URL` powers the footer and floating Instagram links.
-- The cart and contact preferences persist to `localStorage` only for convenience and can be cleared anytime from the cart page.
+- `NEXT_PUBLIC_INSTAGRAM_URL` powers footer links and the floating Instagram button.
+- `NEXT_PUBLIC_SITE_URL` is used for sitemap/robots metadata and sharing links.
+- `ADMIN_PASSWORD` secures the `/admin/login` route. Set this in Vercel → Project Settings → Environment Variables (do not commit secrets).
+- `JWT_SECRET` signs the admin session cookie. Use a 32+ character random value.
+- `BLOB_READ_WRITE_TOKEN` is required for Vercel Blob access (Project → Storage → Blob → “Create Token”).
 
-## WhatsApp Deep Links
+> ℹ️ Never expose server-only values to the browser. Only `NEXT_PUBLIC_*` variables are available client-side.
 
-All primary calls-to-action route to WhatsApp using `lib/wa.ts`:
+## WhatsApp Checkout & Order Lifecycle
 
-```ts
-export function normalizePhone(input: string) {
-  return (input || '').replace(/[^\d]/g, '');
-}
+1. Guests curate looks in the cart. Quantities, colour, and size selections are stored in `localStorage` until checkout.
+2. On checkout the client generates an order payload, requests `/api/orders`, and receives a ULID-backed order ID (`ow_01…`).
+3. The order JSON (items, customer contact, notes, displayed subtotal) is stored at `orders/{orderId}.json` in Vercel Blob with `status=PENDING`.
+4. The shopper is redirected to `/order/{orderId}`, a public page that shows their status, instructions, and a proof uploader. A WhatsApp deep link opens automatically with a concise summary that includes the order ID.
+5. Proof uploads (images or PDF ≤5MB) hit `/api/orders/{orderId}/proof`. Each file streams directly to `proofs/{orderId}/…` in Blob and the order JSON is patched with URLs, reference notes, timestamps, and `status=PROOF_SUBMITTED`.
+6. Once an admin confirms payment the status is updated to `CONFIRMED`. Rejections capture a reason and log `rejectedAt` timestamps.
 
-export function waLink(message: string) {
-  const num = normalizePhone(process.env.NEXT_PUBLIC_WA_NUMBER || '');
-  const text = encodeURIComponent((message || '').trim());
-  return `https://wa.me/${num}?text=${text}`;
-}
-```
+Cart data, contact preferences, and the latest order ID remain client-only for convenience.
 
-Pass a plain-text message and the helper handles encoding.
+### Order States
 
-## Cart & WhatsApp Checkout
+- `PENDING` – awaiting proof upload
+- `PROOF_SUBMITTED` – proof received and awaiting review
+- `CONFIRMED` – payment verified
+- `REJECTED` – admin rejected or needs action (stores `rejectReason`)
 
-- Every product card supports selecting colour, size, and quantity before adding to cart.
-- The cart drawer in the header and the `/cart` page present all line items, allow edits, and show the displayed subtotal.
-- Checking out opens WhatsApp with a prefilled summary that includes customer contact details, line items, optional notes, and a displayed subtotal reminder.
-- If the guest prefers email and provides an address, a fallback `mailto:` button uses the same message body.
-- Cart contents and the most recent contact preference persist in the browser only; no data is sent to a server until the guest chooses to message House of Wura.
+## Admin Dashboard
+
+- `/admin/login` prompts for the `ADMIN_PASSWORD` and issues an HTTP-only JWT cookie signed with `JWT_SECRET`.
+- `/admin` lists recent orders with filters for status and query search (order ID, SKU, contact details, notes). Refresh or apply filters without leaving the page.
+- `/admin/orders/{orderId}` surfaces full order details, proof previews, contact info, and actions:
+  - Confirm payment (sets `status=CONFIRMED`, logs `confirmedAt`)
+  - Mark proof received / request new proof (toggling between `PROOF_SUBMITTED` and `PENDING`)
+  - Reject with a custom reason (sets `status=REJECTED`, logs `rejectedAt`)
+  - One-click WhatsApp replies for confirmation, reminders, or rejection messaging using the customer’s saved number
+
+All admin routes and mutating API endpoints are protected by `middleware.ts`, which checks the signed cookie and redirects unauthenticated visitors to `/admin/login`.
+
+## Blob Storage Setup
+
+Vercel Blob is the only persistence layer. To configure:
+
+1. In Vercel, open **Storage → Blob** and create a Read/Write token. Paste it into `BLOB_READ_WRITE_TOKEN`.
+2. Deploy or run locally with the same token so `@vercel/blob` can list, read, and write private files.
+3. Orders live under `orders/`. Proof uploads live under `proofs/{orderId}/`. All assets are private by default.
+4. JSON helpers in `lib/blob.ts` handle parsing and minimal logging. Avoid storing sensitive financial data; only the submitted proof URLs and customer contact preference are recorded.
+
+## Cart & WhatsApp Experience
+
+- Cart drawer and `/cart` page offer full editing controls, subtotal preview, and a prominent “Checkout via WhatsApp” button.
+- Checkout validates contact preference (WhatsApp or email) before creating the order. When successful it:
+  - Clears the cart
+  - Stores `{orderId, createdAt}` in `localStorage` (`wura_last_order`) for quick access
+  - Dispatches a custom `wura:last-order` event so the header updates the “Latest order” link instantly
+  - Opens WhatsApp with a compact summary listing order ID, line items, and customer contact details
+- `/order/{orderId}` reminds guests to mention the order ID if they message manually, shows previously uploaded proofs, and offers another WhatsApp shortcut.
+
+## Deployment Checklist
+
+1. Connect the repository to Vercel and select the Next.js preset (Node.js 20 runtime).
+2. Add all environment variables listed above to the project (Production + Preview as needed).
+3. Enable Vercel Blob and create a Read/Write token.
+4. Deploy – the app uses Next.js App Router with dynamic rendering for order pages and admin API endpoints.
+
+## Security Notes
+
+- Only the shopper-facing `/order/{orderId}` route is public. It supports proof uploads without exposing Blob tokens.
+- Admin cookies are HTTP-only, SameSite=Lax, and (in production) `Secure`. Rotate `JWT_SECRET` if compromised.
+- Proof uploads are validated server-side for MIME type and size (≤5MB). Add extra rate limiting via middleware or edge functions if needed.
+- No payment processing or fintech integrations are included; all settlement happens off-platform.
 
 ## Updating the Shop Catalogue
 
@@ -90,20 +136,7 @@ Edit `data/products.json` to adjust the shop grid. Each product supports:
 - `images` (array of remote URLs)
 - `description`, `tags`, `sku`
 
-Product cards automatically pick up changes and include colour/size selectors that prefill WhatsApp enquiries with the chosen options.
-
-## Deployment
-
-1. Push this repository to GitHub and connect it to Vercel.
-2. In Vercel project settings, set the environment variables listed above.
-3. Deploy using the Next.js framework preset (Node.js 20 runtime).
-
-## Accessibility & Performance
-
-- High-contrast colour palette with focus states on interactive elements
-- Prefers-reduced-motion support for scroll animations
-- Semantic structure with landmarks (`header`, `main`, `footer`) and descriptive alt text
-- Vercel Analytics integration for lightweight insights
+Product cards automatically pick up changes and include colour/size selectors that prefill WhatsApp enquiries.
 
 ## License
 
