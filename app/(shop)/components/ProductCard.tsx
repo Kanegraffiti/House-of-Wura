@@ -1,14 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Check, Minus, Plus } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/format';
-import { waLink } from '@/lib/wa';
+import { countCartItems } from '@/lib/cart/utils';
+import { useCart } from '@/providers/CartProvider';
+import { cn } from '@/lib/utils';
 
 export interface Product {
   id: string;
@@ -29,13 +31,67 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const [activeImage, setActiveImage] = useState(0);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
+  const colorOptions = product.colors || [];
+  const sizeOptions = product.sizes || [];
 
-  const enquiryMessage = useMemo(() => {
-    return `Hello House of Wura! I'm interested in: ${product.title} (SKU: ${product.sku}) — Color: ${selectedColor}; Size: ${selectedSize}. Please share price & availability.`;
-  }, [product, selectedColor, selectedSize]);
+  const [activeImage, setActiveImage] = useState(0);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(
+    colorOptions.length === 1 ? colorOptions[0] : undefined
+  );
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(
+    sizeOptions.length === 1 ? sizeOptions[0] : undefined
+  );
+  const [quantity, setQuantity] = useState(1);
+  const [errors, setErrors] = useState<{ color?: string; size?: string }>({});
+  const [status, setStatus] = useState<'idle' | 'added'>('idle');
+
+  const { dispatch, state } = useCart();
+  const cartCount = countCartItems(state.items);
+
+  useEffect(() => {
+    if (status === 'added') {
+      const timeout = window.setTimeout(() => setStatus('idle'), 2400);
+      return () => window.clearTimeout(timeout);
+    }
+    return undefined;
+  }, [status]);
+
+  const requiresColor = colorOptions.length > 0;
+  const requiresSize = sizeOptions.length > 0;
+  const canAdd = (!requiresColor || Boolean(selectedColor)) && (!requiresSize || Boolean(selectedSize));
+
+  const handleAddToCart = () => {
+    const nextErrors: { color?: string; size?: string } = {};
+
+    if (requiresColor && !selectedColor) {
+      nextErrors.color = 'Please choose a colour to continue.';
+    }
+    if (requiresSize && !selectedSize) {
+      nextErrors.size = 'Please select a size to continue.';
+    }
+
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    dispatch({
+      type: 'ADD_ITEM',
+      payload: {
+        id: product.id,
+        sku: product.sku,
+        title: product.title,
+        priceFrom: product.priceFrom,
+        image: product.images?.[0],
+        color: selectedColor,
+        size: selectedSize,
+        qty: quantity
+      }
+    });
+    setStatus('added');
+  };
+
+  const adjustQuantity = (delta: number) => {
+    setQuantity((prev) => Math.max(1, prev + delta));
+  };
 
   return (
     <Card className="group h-full overflow-hidden">
@@ -70,43 +126,104 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.description}
         </p>
         <div className="flex flex-col gap-4 text-sm text-wura-black/80">
-          <div>
-            <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Color</p>
-            <div className="flex flex-wrap gap-2">
-              {product.colors.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => setSelectedColor(color)}
-                  className={`rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition ${selectedColor === color ? 'border-wura-gold bg-wura-gold/20 text-wura-black' : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50'}`}
-                >
-                  {color}
-                </button>
-              ))}
+          {requiresColor && (
+            <div>
+              <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Color</p>
+              <div className="flex flex-wrap gap-2">
+                {colorOptions.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    aria-pressed={selectedColor === color}
+                    onClick={() => {
+                      setSelectedColor(color);
+                      setErrors((prev) => ({ ...prev, color: undefined }));
+                    }}
+                    className={cn(
+                      'rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold',
+                      selectedColor === color
+                        ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
+                        : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50'
+                    )}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
+              {errors.color && (
+                <p className="mt-2 text-xs text-wura-wine" role="alert">
+                  {errors.color}
+                </p>
+              )}
             </div>
-          </div>
+          )}
+          {requiresSize && (
+            <div>
+              <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Size</p>
+              <div className="flex flex-wrap gap-2">
+                {sizeOptions.map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    aria-pressed={selectedSize === size}
+                    onClick={() => {
+                      setSelectedSize(size);
+                      setErrors((prev) => ({ ...prev, size: undefined }));
+                    }}
+                    className={cn(
+                      'rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold',
+                      selectedSize === size
+                        ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
+                        : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50'
+                    )}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+              {errors.size && (
+                <p className="mt-2 text-xs text-wura-wine" role="alert">
+                  {errors.size}
+                </p>
+              )}
+            </div>
+          )}
           <div>
-            <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Size</p>
-            <div className="flex flex-wrap gap-2">
-              {product.sizes.map((size) => (
-                <button
-                  key={size}
-                  type="button"
-                  onClick={() => setSelectedSize(size)}
-                  className={`rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition ${selectedSize === size ? 'border-wura-gold bg-wura-gold/20 text-wura-black' : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50'}`}
-                >
-                  {size}
-                </button>
-              ))}
+            <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Quantity</p>
+            <div className="inline-flex items-center gap-2 rounded-full border border-wura-black/15 px-3 py-1">
+              <button
+                type="button"
+                aria-label="Decrease quantity"
+                onClick={() => adjustQuantity(-1)}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold"
+              >
+                <Minus className="h-3 w-3" aria-hidden />
+              </button>
+              <span className="min-w-[2rem] text-center text-sm font-semibold">{quantity}</span>
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                onClick={() => adjustQuantity(1)}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold"
+              >
+                <Plus className="h-3 w-3" aria-hidden />
+              </button>
             </div>
           </div>
         </div>
         <div className="mt-auto">
-          <Button className="w-full" asChild>
-            <Link href={waLink(enquiryMessage)} target="_blank" rel="noopener noreferrer">
-              Enquire on WhatsApp
-            </Link>
+          <Button className="w-full" onClick={handleAddToCart} disabled={!canAdd}>
+            Add to Cart
           </Button>
+          <div className="mt-3 text-xs uppercase tracking-[0.25em] text-wura-black/60" aria-live="polite">
+            {status === 'added' ? (
+              <span className="inline-flex items-center gap-1 text-wura-gold">
+                <Check className="h-3 w-3" aria-hidden /> Added. View cart ({cartCount})
+              </span>
+            ) : (
+              <span>We finalise pricing and fittings with you on WhatsApp.</span>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

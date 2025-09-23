@@ -1,8 +1,9 @@
-export function encodeMessage(message: string) {
-  return encodeURIComponent(message.trim());
+export function normalizePhone(input: string) {
+  return (input || '').replace(/[^\d]/g, '');
 }
 
 export function waLink(message: string) {
-  const num = process.env.NEXT_PUBLIC_WA_NUMBER?.replace(/[^\d]/g, '') || '';
-  return `https://wa.me/${num}?text=${encodeMessage(message)}`;
+  const num = normalizePhone(process.env.NEXT_PUBLIC_WA_NUMBER || '');
+  const text = encodeURIComponent((message || '').trim());
+  return `https://wa.me/${num}?text=${text}`;
 }

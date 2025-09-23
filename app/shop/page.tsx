@@ -6,6 +6,7 @@ import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
 import { ProductCard } from '@/app/(shop)/components/ProductCard';
+import { CartSummaryBar } from '@/app/(shop)/components/CartSummaryBar';
 
 export const metadata: Metadata = {
   title: 'Shop',
@@ -22,6 +23,7 @@ export default function ShopPage() {
           description="Select a piece to enquire instantly on WhatsApp. We customise sizing, fabrics, and embellishments for you."
           align="left"
         />
+        <CartSummaryBar />
         <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
