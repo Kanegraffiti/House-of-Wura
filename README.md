@@ -8,7 +8,7 @@ Luxury event planning and fashion house website built with Next.js 14, TypeScrip
 - Dedicated pages for services, shop catalogue, lookbook, about, contact, privacy, and terms
 - WhatsApp-first lead flows including floating chat button, prefilled CTAs, and contact form automation
 - Client-side cart that assembles look enquiries and routes checkout to WhatsApp in one tap
-- Responsive layout with tailored typography (Playfair Display & Inter) and luxury-inspired palette
+- Responsive layout with tailored typography (Playfair Display & Inter) and luxury style palette
 - JSON-LD organisation schema, Open Graph metadata, sitemap, and robots configuration for SEO
 - Local storage log of enquiries (client-side only) to review recent submissions privately
 
