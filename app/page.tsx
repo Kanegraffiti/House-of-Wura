@@ -4,8 +4,8 @@ import Script from 'next/script';
 
 import productsData from '@/data/products.json';
 
-import ParallaxHeader from '@/components/motion/ParallaxHeader';
-import Reveal from '@/components/motion/Reveal';
+import Parallax from '@/components/site/Parallax';
+import Reveal from '@/components/site/Reveal';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
 import { InstaGrid } from '@/components/site/InstaGrid';
@@ -87,13 +87,14 @@ export default function HomePage() {
             src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1600&q=80"
             alt="Editorial muse in couture gown"
             fill
-            className="object-cover"
+            className="img-fade object-cover"
             priority
+            onLoadingComplete={(image) => image.classList.add('loaded')}
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-wura-wine/60" />
         </div>
         <Container className="relative flex min-h-[80vh] flex-col justify-center py-32">
-          <ParallaxHeader>
+          <Parallax>
             <div className="max-w-2xl space-y-6">
               <Reveal>
                 <p className="text-sm uppercase tracking-[0.45em] text-wura-gold">
@@ -129,7 +130,7 @@ export default function HomePage() {
                 </div>
               </Reveal>
             </div>
-          </ParallaxHeader>
+          </Parallax>
         </Container>
       </section>
 

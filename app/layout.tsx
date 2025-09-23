@@ -4,11 +4,11 @@ import { Inter, Playfair_Display } from 'next/font/google';
 
 import './globals.css';
 
-import RouteFade from '@/components/motion/RouteFade';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
 import { WhatsAppFloat } from '@/components/site/WhatsAppFloat';
 import { CartProvider } from '@/providers/CartProvider';
+import { ToastProvider } from '@/providers/ToastProvider';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -61,12 +61,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
       <body className="bg-wura-white text-wura-black antialiased selection:bg-wura-wine/20 focus:outline-none">
-        <CartProvider>
-          <Header />
-          <RouteFade className="min-h-screen">{children}</RouteFade>
-          <Footer />
-          <WhatsAppFloat />
-        </CartProvider>
+        <ToastProvider>
+          <CartProvider>
+            <Header />
+            {children}
+            <Footer />
+            <WhatsAppFloat />
+          </CartProvider>
+        </ToastProvider>
         <Analytics />
       </body>
     </html>

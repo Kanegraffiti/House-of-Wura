@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'group relative inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-medium uppercase tracking-[0.2em] transition-all duration-200 ease-std active:scale-[0.98] hover:shadow-sm hover:[text-underline-position:from-font] hover:underline underline-offset-[6px] decoration-wura-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-wura-white disabled:pointer-events-none disabled:opacity-50',
+  'group relative inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-medium uppercase tracking-[0.2em] focus-ring transition-transform duration-200 ease-std will-change-transform hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {

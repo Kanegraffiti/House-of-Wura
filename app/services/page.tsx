@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 
-import Reveal from '@/components/motion/Reveal';
+import Reveal from '@/components/site/Reveal';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
