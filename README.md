@@ -44,9 +44,9 @@ pnpm lint
 Create an `.env.local` file with the following values:
 
 ```
-NEXT_PUBLIC_WA_NUMBER=2349060294599
+NEXT_PUBLIC_WA_NUMBER=234XXXXXXXXXX 
 NEXT_PUBLIC_SITE_URL=https://houseofwura.vercel.app
-NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/houseofwurafashions
+NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/yourhandle
 ```
 
 - `NEXT_PUBLIC_WA_NUMBER` should be digits only (no plus sign). All WhatsApp links are generated from this value.
