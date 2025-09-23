@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import Reveal from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
@@ -57,35 +58,49 @@ export default function ServicesPage() {
     <div className="bg-gradient-to-b from-white via-wura-gold/8 to-white">
       <section className="border-b border-wura-black/10 bg-white">
         <Container className="flex flex-col gap-6 py-24 text-center sm:text-left">
-          <p className="text-xs uppercase tracking-[0.4em] text-wura-wine">Our Craft</p>
-          <h1 className="font-display text-4xl text-wura-black sm:text-5xl">Services</h1>
-          <p className="text-base text-wura-black/70 sm:text-lg">
-            We design celebrations and wardrobes that move with grace. Share your vision and our concierge will reply instantly on WhatsApp.
-          </p>
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
-            <Button asChild>
-              <a href={waLink('Hello House of Wura! I want to start a bespoke planning experience.')} target="_blank" rel="noopener noreferrer">
-                Start consultation
-              </a>
-            </Button>
-            <Button variant="outline" className="border-wura-gold" asChild>
-              <a href="#packages">View packages</a>
-            </Button>
-          </div>
+          <Reveal>
+            <p className="text-xs uppercase tracking-[0.4em] text-wura-wine">Our Craft</p>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h1 className="font-display text-4xl text-wura-black sm:text-5xl">Services</h1>
+          </Reveal>
+          <Reveal delay={0.12}>
+            <p className="text-base text-wura-black/70 sm:text-lg">
+              We design celebrations and wardrobes that move with grace. Share your vision and our concierge will reply instantly on WhatsApp.
+            </p>
+          </Reveal>
+          <Reveal delay={0.18}>
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
+              <Button asChild>
+                <a href={waLink('Hello House of Wura! I want to start a bespoke planning experience.')} target="_blank" rel="noopener noreferrer">
+                  <span className="link-glint">Start consultation</span>
+                </a>
+              </Button>
+              <Button variant="outline" className="border-wura-gold" asChild>
+                <a href="#packages">
+                  <span className="link-glint">View packages</span>
+                </a>
+              </Button>
+            </div>
+          </Reveal>
         </Container>
       </section>
 
       <Section id="packages">
         <Container className="space-y-12">
-          <SectionHeader
-            eyebrow="Service Menu"
-            title="Choose the pathway that suits your celebration"
-            description="Every engagement begins with a conversation—we customise deliverables and timelines for you."
-            align="left"
-          />
+          <Reveal>
+            <SectionHeader
+              eyebrow="Service Menu"
+              title="Choose the pathway that suits your celebration"
+              description="Every engagement begins with a conversation—we customise deliverables and timelines for you."
+              align="left"
+            />
+          </Reveal>
           <div className="grid gap-8 md:grid-cols-3">
-            {services.map((service) => (
-              <ServiceCard key={service.title} {...service} />
+            {services.map((service, index) => (
+              <Reveal key={service.title} delay={index * 0.08}>
+                <ServiceCard {...service} />
+              </Reveal>
             ))}
           </div>
         </Container>
@@ -93,25 +108,29 @@ export default function ServicesPage() {
 
       <Section className="bg-wura-black text-wura-white">
         <Container className="grid gap-8 md:grid-cols-2">
-          <div className="space-y-4">
-            <h2 className="font-display text-3xl">Included with every project</h2>
-            <ul className="space-y-3 text-sm leading-relaxed text-wura-white/80">
-              <li>Dedicated WhatsApp concierge for rapid updates</li>
-              <li>Access to vetted vendors and ateliers across Africa and Europe</li>
-              <li>Detailed production timelines and transparent budgeting</li>
-            </ul>
-          </div>
-          <div className="space-y-4 rounded-3xl bg-white/10 p-8">
-            <h3 className="font-display text-2xl text-wura-gold">Need something custom?</h3>
-            <p className="text-sm text-wura-white/80">
-              Share your dream briefly and we will respond within 24 hours.
-            </p>
-            <Button variant="outline" className="border-wura-gold text-wura-white hover:text-wura-black" asChild>
-              <a href={waLink('Hello House of Wura! I have a unique celebration in mind. Here are the details:')} target="_blank" rel="noopener noreferrer">
-                Message the atelier
-              </a>
-            </Button>
-          </div>
+          <Reveal>
+            <div className="space-y-4">
+              <h2 className="font-display text-3xl">Included with every project</h2>
+              <ul className="space-y-3 text-sm leading-relaxed text-wura-white/80">
+                <li>Dedicated WhatsApp concierge for rapid updates</li>
+                <li>Access to vetted vendors and ateliers across Africa and Europe</li>
+                <li>Detailed production timelines and transparent budgeting</li>
+              </ul>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="space-y-4 rounded-3xl bg-white/10 p-8">
+              <h3 className="font-display text-2xl text-wura-gold">Need something custom?</h3>
+              <p className="text-sm text-wura-white/80">
+                Share your dream briefly and we will respond within 24 hours.
+              </p>
+              <Button variant="outline" className="border-wura-gold text-wura-white hover:text-wura-black" asChild>
+                <a href={waLink('Hello House of Wura! I have a unique celebration in mind. Here are the details:')} target="_blank" rel="noopener noreferrer">
+                  <span className="link-glint">Message the atelier</span>
+                </a>
+              </Button>
+            </div>
+          </Reveal>
         </Container>
       </Section>
     </div>

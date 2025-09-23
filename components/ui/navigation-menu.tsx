@@ -38,7 +38,7 @@ const NavigationMenuTrigger = React.forwardRef<
   <NavigationMenuPrimitive.Trigger
     ref={ref}
     className={cn(
-      'group inline-flex items-center rounded-full border border-transparent px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-wura-black transition-colors duration-200 ease-luxurious hover:border-wura-gold hover:text-wura-wine focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2',
+      'group inline-flex items-center rounded-full border border-transparent px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-wura-black transition-colors duration-200 ease-std hover:border-wura-gold hover:text-wura-wine focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2',
       className
     )}
     {...props}
@@ -73,7 +73,7 @@ const NavigationMenuViewport = React.forwardRef<
     <NavigationMenuPrimitive.Viewport
       ref={ref}
       className={cn(
-        'relative mt-4 h-[var(--radix-navigation-menu-viewport-height)] w-full origin-top overflow-hidden rounded-3xl border border-wura-black/10 bg-white shadow-[0_20px_60px_rgba(11,11,11,0.18)] transition-all duration-300 ease-luxurious sm:w-[var(--radix-navigation-menu-viewport-width)]',
+        'relative mt-4 h-[var(--radix-navigation-menu-viewport-height)] w-full origin-top overflow-hidden rounded-3xl border border-wura-black/10 bg-white shadow-[0_20px_60px_rgba(11,11,11,0.18)] transition-all duration-200 ease-std sm:w-[var(--radix-navigation-menu-viewport-width)]',
         className
       )}
       {...props}
@@ -82,7 +82,9 @@ const NavigationMenuViewport = React.forwardRef<
 ));
 NavigationMenuViewport.displayName = NavigationMenuPrimitive.Viewport.displayName;
 
-const navigationMenuTriggerStyle = cn('inline-flex items-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-wura-black transition-colors hover:text-wura-wine');
+const navigationMenuTriggerStyle = cn(
+  'inline-flex items-center rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-wura-black transition-colors duration-200 ease-std hover:text-wura-wine'
+);
 
 export {
   NavigationMenu,

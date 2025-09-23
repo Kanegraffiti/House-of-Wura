@@ -14,6 +14,15 @@ Luxury event planning and fashion house website built with Next.js 14, TypeScrip
 - JSON-LD organisation schema, Open Graph metadata, sitemap, and robots configuration for SEO
 - Accessibility-conscious interactions with focus rings, reduced-motion guards, and descriptive alt text
 
+## Motion & Interaction Guidelines
+
+- **Design tokens:** durations live in CSS variables (`--dur-1`…`--dur-4`) with easing curves exposed to Tailwind as `ease-std`, `ease-emph`, `ease-in`, and `ease-out`. Prefer 150–300ms transitions.
+- **Global transitions:** body copy and link highlights rely on transform/opacity animations only. Keep hover effects lightweight (scale ≤ 1.03).
+- **Route & section reveals:** wrap new sections in `<Reveal delay={...}>` to opt into the IntersectionObserver-powered fade/slide. Vary delays (0–0.25s) for staggered lists.
+- **Reduced motion:** motion utilities automatically respect `prefers-reduced-motion`. If you add custom animations, call `useReducedMotion()` and fall back to static rendering.
+- **Skeletons & loading:** use `components/ui/Skeleton` for perceived performance. Dedicated `loading.tsx` files exist for the homepage, shop, and lookbook—mirror their patterns for new routes.
+- **Performance guardrails:** animate opacity and transforms only, limit simultaneous elements ≤ 12, and avoid chaining long-running animations.
+
 ## Getting Started
 
 ### Requirements

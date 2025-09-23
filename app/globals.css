@@ -8,6 +8,16 @@
   --background: #FFFFFF;
   --gold: #C9A227;
   --wine: #7B002C;
+
+  --dur-1: 150ms;
+  --dur-2: 200ms;
+  --dur-3: 250ms;
+  --dur-4: 300ms;
+
+  --ease-emph: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-std: cubic-bezier(0.2, 0.6, 0, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
 
 *,
@@ -21,7 +31,7 @@ body {
 }
 
 a {
-  @apply transition-colors duration-200 ease-luxurious;
+  transition: color var(--dur-2) var(--ease-std), text-decoration-color var(--dur-2) var(--ease-std);
 }
 
 a:focus-visible,
@@ -36,13 +46,25 @@ select:focus-visible {
   background: rgba(201, 162, 39, 0.2);
 }
 
+.link-glint {
+  background-image: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.35), transparent);
+  background-size: 200% 2px;
+  background-repeat: no-repeat;
+  background-position: 200% 100%;
+  transition: background-position var(--dur-2) var(--ease-emph);
+}
+
+.link-glint:hover,
+.link-glint:focus-visible {
+  background-position: 0% 100%;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition: none !important;
     scroll-behavior: auto !important;
   }
 }

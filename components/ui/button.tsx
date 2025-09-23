@@ -5,18 +5,20 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'group relative inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-medium uppercase tracking-[0.2em] transition-all duration-300 ease-luxurious focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-wura-white disabled:pointer-events-none disabled:opacity-50',
+  'group relative inline-flex items-center justify-center gap-2 rounded-full border px-6 py-3 text-sm font-medium uppercase tracking-[0.2em] transition-all duration-200 ease-std active:scale-[0.98] hover:shadow-sm hover:[text-underline-position:from-font] hover:underline underline-offset-[6px] decoration-wura-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-wura-white disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default:
-          'border-wura-black bg-wura-black text-wura-white shadow-[0_8px_24px_rgba(11,11,11,0.3)] after:absolute after:bottom-2 after:left-6 after:h-px after:w-0 after:bg-wura-gold after:transition-all after:duration-300 after:ease-luxurious hover:text-wura-gold hover:after:w-[calc(100%-3rem)]',
+          'border-wura-black bg-wura-black text-wura-white shadow-[0_14px_36px_rgba(11,11,11,0.25)] hover:border-wura-gold hover:text-wura-gold',
         secondary:
-          'border-transparent bg-wura-wine text-wura-white shadow-[0_8px_20px_rgba(123,0,44,0.25)] hover:bg-wura-black',
+          'border-transparent bg-wura-wine text-wura-white shadow-[0_10px_26px_rgba(123,0,44,0.24)] hover:bg-wura-black',
         outline:
           'border-wura-gold text-wura-black hover:bg-wura-gold/10 hover:text-wura-black',
-        ghost: 'border-transparent text-wura-black hover:bg-wura-black/5 hover:text-wura-black',
-        link: 'border-none p-0 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black underline-offset-8 hover:text-wura-wine hover:underline'
+        ghost:
+          'border-transparent text-wura-black hover:bg-wura-black/5 hover:text-wura-black',
+        link:
+          'border-none bg-transparent px-0 py-0 text-sm font-semibold uppercase tracking-[0.3em] hover:no-underline'
       },
       size: {
         default: 'h-12',

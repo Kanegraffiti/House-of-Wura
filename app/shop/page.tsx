@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 
-import products from '@/data/products.json';
-
+import Reveal from '@/components/motion/Reveal';
 import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
 import { ProductCard } from '@/app/(shop)/components/ProductCard';
 import { CartSummaryBar } from '@/app/(shop)/components/CartSummaryBar';
+import products from '@/data/products.json';
 
 export const metadata: Metadata = {
   title: 'Shop',
@@ -17,16 +17,22 @@ export default function ShopPage() {
   return (
     <Section className="bg-wura-black/5">
       <Container className="space-y-12">
-        <SectionHeader
-          eyebrow="House of Wura Shop"
-          title="Begin every look with a conversation"
-          description="Select a piece to enquire instantly on WhatsApp. We customise sizing, fabrics, and embellishments for you."
-          align="left"
-        />
-        <CartSummaryBar />
+        <Reveal>
+          <SectionHeader
+            eyebrow="House of Wura Shop"
+            title="Begin every look with a conversation"
+            description="Select a piece to enquire instantly on WhatsApp. We customise sizing, fabrics, and embellishments for you."
+            align="left"
+          />
+        </Reveal>
+        <Reveal delay={0.05}>
+          <CartSummaryBar />
+        </Reveal>
         <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, index) => (
+            <Reveal key={product.id} delay={index * 0.05}>
+              <ProductCard product={product} />
+            </Reveal>
           ))}
         </div>
       </Container>

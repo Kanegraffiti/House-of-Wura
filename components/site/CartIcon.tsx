@@ -65,7 +65,7 @@ export function CartIcon({ className }: CartIconProps) {
             type="button"
             aria-label={`Open cart. ${count} item${count === 1 ? '' : 's'} in cart.`}
             className={cn(
-              'relative flex h-11 items-center gap-2 rounded-full border border-wura-black/15 px-4 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black transition hover:border-wura-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+              'relative flex h-11 items-center gap-2 rounded-full border border-wura-black/15 px-4 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black transition-all duration-200 ease-std hover:border-wura-gold hover:shadow-sm active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-wura-gold focus-visible:ring-offset-2 focus-visible:ring-offset-white',
               className
             )}
           >
@@ -80,9 +80,9 @@ export function CartIcon({ className }: CartIconProps) {
       {lastOrderId && (
         <Link
           href={`/order/${lastOrderId}`}
-          className="text-xs font-semibold uppercase tracking-[0.3em] text-wura-black/70 underline-offset-4 hover:text-wura-black hover:underline"
+          className="text-xs font-semibold uppercase tracking-[0.3em] text-wura-black/70 transition-colors duration-200 ease-std hover:text-wura-black"
         >
-          Latest order
+          <span className="link-glint">Latest order</span>
         </Link>
       )}
     </div>

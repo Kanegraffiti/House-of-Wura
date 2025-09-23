@@ -17,7 +17,9 @@ export function Footer() {
       <Container className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-4">
           <Link href="/" className="font-display text-2xl tracking-widest text-wura-gold">
-            House of Wura
+            <span className="inline-block transition-shadow duration-200 [text-shadow:_0_0_0_rgba(201,162,39,0)] hover:[text-shadow:_0_0_18px_rgba(201,162,39,0.35)]">
+              House of Wura
+            </span>
           </Link>
           <p className="text-sm text-wura-white/70">
             Curating immersive celebrations and couture fashion with a signature African perspective.
@@ -43,13 +45,13 @@ export function Footer() {
           <h3 className="font-display text-lg text-wura-gold">Connect</h3>
           <ul className="space-y-2 text-sm text-wura-white/70">
             <li>
-              <Link href={waLink(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="hover:text-wura-gold">
-                WhatsApp Concierge
+              <Link href={waLink(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 ease-std hover:text-wura-gold">
+                <span className="link-glint">WhatsApp Concierge</span>
               </Link>
             </li>
             <li>
-              <Link href="mailto:hello@houseofwura.com" className="hover:text-wura-gold">
-                hello@houseofwura.com
+              <Link href="mailto:hello@houseofwura.com" className="transition-colors duration-200 ease-std hover:text-wura-gold">
+                <span className="link-glint">hello@houseofwura.com</span>
               </Link>
             </li>
           </ul>
@@ -58,10 +60,10 @@ export function Footer() {
               href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-wura-gold px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-wura-white transition hover:bg-wura-gold/10"
+              className="inline-flex items-center gap-2 rounded-full border border-wura-gold px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-wura-white transition-all duration-200 ease-std hover:bg-wura-gold/10"
             >
               <Instagram className="h-4 w-4" aria-hidden />
-              Instagram
+              <span className="link-glint">Instagram</span>
             </Link>
           </div>
         </div>

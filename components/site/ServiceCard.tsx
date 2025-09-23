@@ -30,7 +30,7 @@ export function ServiceCard({ title, description, items, message }: ServiceCardP
         <div className="mt-auto">
           <Button className="w-full" asChild>
             <Link href={waLink(message)} target="_blank" rel="noopener noreferrer">
-              Get Quote on WhatsApp
+              <span className="link-glint">Get Quote on WhatsApp</span>
             </Link>
           </Button>
         </div>

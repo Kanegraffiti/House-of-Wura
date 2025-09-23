@@ -20,7 +20,7 @@ export function WhatsAppFloat() {
       <Button className="shadow-glow" aria-label="Chat on WhatsApp" asChild>
         <Link href={waLink(DEFAULT_MESSAGE)} target="_blank" rel="noopener noreferrer">
           <MessageCircle className="h-4 w-4" aria-hidden />
-          Chat on WhatsApp
+          <span className="link-glint">Chat on WhatsApp</span>
         </Link>
       </Button>
     </div>
