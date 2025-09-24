@@ -85,7 +85,7 @@ const jsonLd = {
   name: 'House of Wura',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://houseofwura.vercel.app',
   logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://houseofwura.vercel.app'}/favicon.svg`,
-  sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com'],
+  sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/_houseofwurafashions'],
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: whatsappTelephone,

@@ -56,7 +56,7 @@ Create an `.env.local` file and add the following values:
 
 ```
 NEXT_PUBLIC_WA_NUMBER=2349060294599
-NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/houseofwurafashions
+NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/_houseofwurafashions
 NEXT_PUBLIC_SITE_URL=https://houseofwura.vercel.app
 ADMIN_PASSWORD=your-admin-password
 JWT_SECRET=generate-a-long-random-string

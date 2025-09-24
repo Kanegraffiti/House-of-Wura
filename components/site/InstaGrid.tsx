@@ -26,7 +26,7 @@ interface InstaGridProps {
 }
 
 export function InstaGrid({ images = DEFAULT_IMAGES }: InstaGridProps) {
-  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com';
+  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/_houseofwurafashions';
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {images.map((image, index) => (

@@ -10,7 +10,7 @@ const shopCategories = ['Couture', 'Bridal', 'Menswear', 'Accessories'];
 const whatsappMessage = 'Hello House of Wura! I would love to discuss a collaboration.';
 
 export function Footer() {
-  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/houseofwurafashions';
+  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/_houseofwurafashions';
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-wura-black/10 bg-wura-black text-wura-white">
