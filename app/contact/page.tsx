@@ -33,7 +33,7 @@ const quickContacts = [
     title: 'Instagram',
     description: 'Follow our atelier diaries and launch announcements.',
     action: 'View Instagram',
-    href: process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com',
+    href: process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/_houseofwurafashions',
     accent: 'Social'
   }
 ];
