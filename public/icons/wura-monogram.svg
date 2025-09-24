@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">House of Wura Monogram</title>
+  <desc id="desc">An ornate gold oval wreath surrounding a wine coloured letter W.</desc>
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F7E3A1" />
+      <stop offset="45%" stop-color="#C9A227" />
+      <stop offset="100%" stop-color="#8C6B13" />
+    </linearGradient>
+    <filter id="softGlow" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="url(#goldGradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      d="M120 26c-55 0-98 44-98 104s43 104 98 104 98-44 98-104-43-104-98-104z"
+      filter="url(#softGlow)"
+    />
+    <path d="M120 18c-10 12-18 26-20 42 14-10 27-10 40 0-2-16-10-30-20-42z" fill="url(#goldGradient)" />
+    <path d="M120 222c10-12 18-26 20-42-14 10-27 10-40 0 2 16 10 30 20 42z" fill="url(#goldGradient)" />
+    <path d="M35 120c12 10 26 18 42 20-10-14-10-27 0-40-16 2-30 10-42 20z" fill="url(#goldGradient)" />
+    <path d="M205 120c-12-10-26-18-42-20 10 14 10 27 0 40 16-2 30-10 42-20z" fill="url(#goldGradient)" />
+    <path d="M66 72c6 6 11 14 13 22 4-10 11-17 20-22-11-1-22-1-33 0z" fill="url(#goldGradient)" />
+    <path d="M174 72c-6 6-11 14-13 22-4-10-11-17-20-22 11-1 22-1 33 0z" fill="url(#goldGradient)" />
+    <path d="M66 168c6-6 11-14 13-22 4 10 11 17 20 22-11 1-22 1-33 0z" fill="url(#goldGradient)" />
+    <path d="M174 168c-6-6-11-14-13-22-4 10-11 17-20 22 11 1 22 1 33 0z" fill="url(#goldGradient)" />
+  </g>
+  <g fill="#7B002C" stroke="#7B002C" stroke-width="4" stroke-linejoin="round">
+    <path d="M76 70l28 100 16-46 16 46 28-100h-16l-14 58-14-42h-14l-14 42-14-58H76z" />
+  </g>
+</svg>
