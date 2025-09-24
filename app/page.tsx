@@ -14,7 +14,8 @@ import { ServiceCard } from '@/components/site/ServiceCard';
 import { Testimonial } from '@/components/site/Testimonial';
 import { ProductCard } from '@/app/(shop)/components/ProductCard';
 import { FadeImage } from '@/components/site/FadeImage';
-import { waLink } from '@/lib/wa';
+import { formatWhatsappDisplay } from '@/lib/format';
+import { getConfiguredWhatsAppNumber, waLink } from '@/lib/wa';
 
 const heroMessage = "Hello House of Wura! I'm ready to craft a luxury celebration.";
 
@@ -57,6 +58,9 @@ const testimonials = [
   }
 ];
 
+const whatsappDigits = getConfiguredWhatsAppNumber();
+const whatsappTelephone = formatWhatsappDisplay(whatsappDigits) || '+2349060294599';
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
@@ -66,7 +70,7 @@ const jsonLd = {
   sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com'],
   contactPoint: {
     '@type': 'ContactPoint',
-    telephone: process.env.NEXT_PUBLIC_WA_NUMBER || '2340000000000',
+    telephone: whatsappTelephone,
     contactType: 'customer service',
     areaServed: 'NG'
   }
