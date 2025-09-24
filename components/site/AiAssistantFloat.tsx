@@ -408,7 +408,7 @@ export function AiAssistantFloat() {
         animate={idleAnimation}
         transition={idleTransition}
         whileHover={hoverAnimation}
-        className="focus-ring flex h-14 w-14 items-center justify-center rounded-full bg-wura-black text-white shadow-[0_18px_36px_rgba(11,11,11,0.28)]"
+        className="focus-ring flex h-14 w-14 items-center justify-center rounded-full bg-wura-wine text-white shadow-[0_18px_36px_rgba(123,0,44,0.28)]"
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls="flora-ai-concierge"
