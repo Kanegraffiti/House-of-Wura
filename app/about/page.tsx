@@ -78,6 +78,7 @@ export default function AboutPage() {
               title="Excellence in every layer"
               description="Every project is an anthology of craftsmanship, technology, and heart."
               align="left"
+              tone="dark"
             />
           </Reveal>
           <div className="grid gap-8 md:grid-cols-3">
@@ -97,12 +98,12 @@ export default function AboutPage() {
         <Container className="grid gap-12 lg:grid-cols-2">
           <div className="space-y-6">
             <Reveal>
-              <SectionHeader
-                eyebrow="Wedding Mastery"
-                title="We orchestrate weddings like theatre"
-                description="Our production team crafts moodboards, timeline films, and virtual walkthroughs so you can feel every moment before it happens."
-                align="left"
-              />
+            <SectionHeader
+              eyebrow="Wedding Mastery"
+              title="We orchestrate weddings like theatre"
+              description="Our production team crafts moodboards, timeline films, and virtual walkthroughs so you can feel every moment before it happens."
+              align="left"
+            />
             </Reveal>
             <Reveal delay={0.1}>
               <ul className="space-y-3 text-sm text-wura-black/70">

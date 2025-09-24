@@ -6,6 +6,7 @@ interface SectionHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   description?: string;
   align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
 }
 
 export function SectionHeader({
@@ -13,9 +14,11 @@ export function SectionHeader({
   title,
   description,
   align = 'center',
+  tone = 'light',
   className,
   ...props
 }: SectionHeaderProps) {
+  const isDark = tone === 'dark';
   return (
     <div
       className={cn(
@@ -26,13 +29,35 @@ export function SectionHeader({
       {...props}
     >
       {eyebrow ? (
-        <Badge variant="subtle" className="bg-wura-gold/20 text-[0.65rem] text-wura-black">
+        <Badge
+          variant="subtle"
+          className={cn(
+            'text-[0.65rem] uppercase tracking-[0.35em]',
+            isDark
+              ? 'bg-[#f6e7c6] text-wura-black shadow-[0_10px_30px_rgba(246,231,198,0.25)]'
+              : 'bg-wura-gold/20 text-wura-black'
+          )}
+        >
           {eyebrow}
         </Badge>
       ) : null}
-      <h2 className="font-display text-3xl sm:text-4xl text-wura-black">{title}</h2>
+      <h2
+        className={cn(
+          'font-display text-3xl sm:text-4xl',
+          isDark ? 'text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)]' : 'text-wura-black'
+        )}
+      >
+        {title}
+      </h2>
       {description ? (
-        <p className="text-base text-wura-black/70 sm:text-lg">{description}</p>
+        <p
+          className={cn(
+            'text-base sm:text-lg',
+            isDark ? 'text-wura-white/75' : 'text-wura-black/70'
+          )}
+        >
+          {description}
+        </p>
       ) : null}
     </div>
   );

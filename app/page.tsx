@@ -7,17 +7,35 @@ import Parallax from '@/components/site/Parallax';
 import Reveal from '@/components/site/Reveal';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
+import { HeroBackgroundSlideshow } from '@/components/site/HeroBackgroundSlideshow';
 import { InstaGrid } from '@/components/site/InstaGrid';
 import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
 import { ServiceCard } from '@/components/site/ServiceCard';
 import { Testimonial } from '@/components/site/Testimonial';
 import { ProductCard } from '@/app/(shop)/components/ProductCard';
-import { FadeImage } from '@/components/site/FadeImage';
 import { formatWhatsappDisplay } from '@/lib/format';
 import { getConfiguredWhatsAppNumber, waLink } from '@/lib/wa';
 
 const heroMessage = "Hello House of Wura! I'm ready to craft a luxury celebration.";
+const heroSlides = [
+  {
+    src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
+    alt: 'Newlyweds sharing a first dance at a candlelit celebration.'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
+    alt: 'Couture stylist adjusting an embellished gown on a model.'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1525182008055-f88b95ff7980',
+    alt: 'Evening fashion editorial captured in motion.'
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1462396881884-de2c07cb95ed',
+    alt: 'Luxury event dinner table setting with golden lighting.'
+  }
+];
 
 const services = [
   {
@@ -86,16 +104,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <section className="relative overflow-hidden bg-wura-black text-wura-white">
-        <div className="absolute inset-0 opacity-40">
-          <FadeImage
-            src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1600&q=80"
-            alt="Editorial muse in couture gown"
-            fill
-            className="img-fade object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-wura-wine/60" />
-        </div>
+        <HeroBackgroundSlideshow slides={heroSlides} className="opacity-60" />
         <Container className="relative flex min-h-[80vh] flex-col justify-center py-32">
           <Parallax>
             <div className="max-w-2xl space-y-6">
@@ -212,6 +221,7 @@ export default function HomePage() {
               eyebrow="Moments in Motion"
               title="Follow our atelier on Instagram"
               description="See behind-the-scenes glimpses, fittings, and wedding reveals as they happen."
+              tone="dark"
             />
           </Reveal>
           <Reveal delay={0.08}>

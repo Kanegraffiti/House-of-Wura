@@ -140,6 +140,22 @@ export function AiAssistantFloat() {
   }, [open, engineState, loadEngine]);
 
   useEffect(() => {
+    if (engineState !== 'idle') {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      if (!open && engineState === 'idle') {
+        void loadEngine();
+      }
+    }, 2400);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [engineState, loadEngine, open]);
+
+  useEffect(() => {
     if (engineState === 'ready') {
       setError(null);
     }
@@ -404,6 +420,16 @@ export function AiAssistantFloat() {
       <motion.button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
+        onMouseEnter={() => {
+          if (engineState === 'idle') {
+            void loadEngine();
+          }
+        }}
+        onFocus={() => {
+          if (engineState === 'idle') {
+            void loadEngine();
+          }
+        }}
         initial={{ y: 0, opacity: 1 }}
         animate={idleAnimation}
         transition={idleTransition}

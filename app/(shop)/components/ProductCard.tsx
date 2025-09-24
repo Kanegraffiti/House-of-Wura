@@ -246,7 +246,7 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
           </div>
           <div className="mt-auto">
-            <Button className="w-full" onClick={handleAddToCart} disabled={!canAdd}>
+            <Button type="button" className="w-full" onClick={handleAddToCart} disabled={!canAdd}>
               <span className="link-glint">Add to Cart</span>
             </Button>
             <div className="mt-3 text-xs uppercase tracking-[0.25em] text-wura-black/60" aria-live="polite">
