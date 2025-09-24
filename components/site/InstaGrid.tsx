@@ -1,5 +1,6 @@
-import Image from 'next/image';
 import Link from 'next/link';
+
+import { FadeImage } from '@/components/site/FadeImage';
 
 const DEFAULT_IMAGES = [
   {
@@ -37,13 +38,12 @@ export function InstaGrid({ images = DEFAULT_IMAGES }: InstaGridProps) {
           aria-label="View on Instagram"
           className="group relative block overflow-hidden rounded-3xl"
         >
-          <Image
+          <FadeImage
             src={`${image.src}?auto=format&fit=crop&w=800&q=80`}
             alt={image.alt}
             width={400}
             height={400}
             loading="lazy"
-            onLoadingComplete={(img) => img.classList.add('loaded')}
             className="img-fade h-full w-full object-cover transition duration-200 ease-std group-hover:scale-[1.03]"
           />
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition-opacity duration-200 ease-std group-hover:opacity-100" />

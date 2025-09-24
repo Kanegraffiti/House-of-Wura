@@ -1,4 +1,4 @@
-import { Variants, Transition, TargetAndTransition } from 'framer-motion';
+import { Variants, Transition, TargetAndTransition, type Tween } from 'framer-motion';
 
 export const motionDur = {
   xs: 0.15,
@@ -11,20 +11,22 @@ export const motionEase = {
   standard: [0.2, 0.0, 0.0, 1.0],
   emphasized: [0.3, 0.0, 0.2, 1.0],
   exit: [0.4, 0.0, 0.6, 1.0]
-} as const;
+} as const satisfies Record<'standard' | 'emphasized' | 'exit', Tween['ease']>;
 
-export const trans = (d = motionDur.md): Transition => ({
+export const trans = (
+  d: Tween['duration'] = motionDur.md,
+  ease: Tween['ease'] = motionEase.emphasized
+): Tween => ({
   duration: d,
-  ease: motionEase.emphasized as unknown as Transition['ease']
+  ease
 });
 
 const withDelay = (variant: TargetAndTransition, delay = 0): TargetAndTransition => ({
   ...variant,
   transition: {
+    ...trans(),
     ...variant.transition,
-    delay,
-    duration: variant.transition?.duration ?? trans().duration,
-    ease: variant.transition?.ease ?? trans().ease
+    delay
   }
 });
 
@@ -55,5 +57,7 @@ export const slideUp: Variants = {
 
 export const delayVariant = (variant: Variants, delay = 0): Variants => ({
   hidden: variant.hidden,
-  show: variant.show ? withDelay(variant.show as TargetAndTransition, delay) : undefined
+  ...(variant.show
+    ? { show: withDelay(variant.show as TargetAndTransition, delay) }
+    : {})
 });
