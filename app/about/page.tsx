@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { Metadata } from 'next';
 
@@ -8,6 +7,7 @@ import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
 import { waLink } from '@/lib/wa';
+import { FadeImage } from '@/components/site/FadeImage';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -58,13 +58,12 @@ export default function AboutPage() {
           </div>
           <Reveal delay={0.2}>
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-[0_30px_80px_rgba(11,11,11,0.15)]">
-              <Image
+              <FadeImage
                 src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80"
                 alt="Creative director fitting a couture gown"
                 fill
                 className="img-fade object-cover transition duration-300 ease-std"
                 loading="lazy"
-                onLoadingComplete={(image) => image.classList.add('loaded')}
               />
             </div>
           </Reveal>
@@ -116,13 +115,12 @@ export default function AboutPage() {
           <Reveal delay={0.15}>
             <div className="relative aspect-square overflow-hidden rounded-3xl bg-gradient-to-br from-wura-gold/40 to-wura-wine/40 p-1">
               <div className="relative h-full w-full overflow-hidden rounded-[32px]">
-                <Image
+                <FadeImage
                   src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"
                   alt="Wedding aisle designed by House of Wura"
                   fill
                   className="img-fade object-cover transition duration-300 ease-std"
                   loading="lazy"
-                  onLoadingComplete={(image) => image.classList.add('loaded')}
                 />
               </div>
             </div>

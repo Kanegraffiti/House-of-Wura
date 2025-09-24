@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, type UseInViewOptions } from 'framer-motion';
 
 import { delayVariant, fadeInUp } from '@/lib/motion';
 import { cn } from '@/lib/utils';
@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 interface RevealProps {
   children: React.ReactNode;
   once?: boolean;
-  margin?: string;
+  margin?: UseInViewOptions['margin'];
   className?: string;
   delay?: number;
 }

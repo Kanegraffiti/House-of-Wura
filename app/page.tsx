@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -14,6 +13,7 @@ import { SectionHeader } from '@/components/site/SectionHeader';
 import { ServiceCard } from '@/components/site/ServiceCard';
 import { Testimonial } from '@/components/site/Testimonial';
 import { ProductCard } from '@/app/(shop)/components/ProductCard';
+import { FadeImage } from '@/components/site/FadeImage';
 import { waLink } from '@/lib/wa';
 
 const heroMessage = "Hello House of Wura! I'm ready to craft a luxury celebration.";
@@ -83,13 +83,12 @@ export default function HomePage() {
       />
       <section className="relative overflow-hidden bg-wura-black text-wura-white">
         <div className="absolute inset-0 opacity-40">
-          <Image
+          <FadeImage
             src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1600&q=80"
             alt="Editorial muse in couture gown"
             fill
             className="img-fade object-cover"
             priority
-            onLoadingComplete={(image) => image.classList.add('loaded')}
           />
           <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-wura-wine/60" />
         </div>

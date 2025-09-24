@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion, type Transition } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
 import { fadeIn, motionDur, motionEase, trans } from '@/lib/motion';
@@ -17,10 +17,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         animate="show"
         exit={{
           opacity: 0,
-          transition: {
-            ...trans(motionDur.xs),
-            ease: motionEase.exit as unknown as Transition['ease']
-          }
+          transition: trans(motionDur.xs, motionEase.exit)
         }}
         className="min-h-screen"
       >
