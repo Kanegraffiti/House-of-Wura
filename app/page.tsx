@@ -8,6 +8,7 @@ import Reveal from '@/components/site/Reveal';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/site/Container';
 import { HeroBackgroundSlideshow } from '@/components/site/HeroBackgroundSlideshow';
+import { Magnetic } from '@/components/site/Magnetic';
 import { InstaGrid } from '@/components/site/InstaGrid';
 import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
@@ -125,20 +126,24 @@ export default function HomePage() {
               </Reveal>
               <Reveal delay={0.22}>
                 <div className="flex flex-col gap-4 sm:flex-row">
-                  <Button className="w-full sm:w-auto" asChild>
-                    <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
-                      <span className="link-glint">Chat on WhatsApp</span>
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full border-wura-gold text-wura-white hover:text-wura-black sm:w-auto"
-                    asChild
-                  >
-                    <Link href="/lookbook">
-                      <span className="link-glint">View Lookbook</span>
-                    </Link>
-                  </Button>
+                  <Magnetic>
+                    <Button className="w-full sm:w-auto" asChild>
+                      <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
+                        <span className="link-glint">Chat on WhatsApp</span>
+                      </Link>
+                    </Button>
+                  </Magnetic>
+                  <Magnetic>
+                    <Button
+                      variant="outline"
+                      className="w-full border-wura-gold text-wura-white hover:text-wura-black sm:w-auto"
+                      asChild
+                    >
+                      <Link href="/lookbook">
+                        <span className="link-glint">View Lookbook</span>
+                      </Link>
+                    </Button>
+                  </Magnetic>
                 </div>
               </Reveal>
             </div>
@@ -185,11 +190,13 @@ export default function HomePage() {
           </Reveal>
           <Reveal delay={0.12}>
             <div className="flex justify-center">
-              <Button variant="outline" className="border-wura-gold" asChild>
-                <Link href="/shop">
-                  <span className="link-glint">View all creations</span>
-                </Link>
-              </Button>
+              <Magnetic>
+                <Button variant="outline" className="border-wura-gold" asChild>
+                  <Link href="/shop">
+                    <span className="link-glint">View all creations</span>
+                  </Link>
+                </Button>
+              </Magnetic>
             </div>
           </Reveal>
         </Container>

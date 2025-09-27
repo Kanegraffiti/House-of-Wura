@@ -6,7 +6,7 @@ import './globals.css';
 
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
-import { AiAssistantFloat } from '@/components/site/AiAssistantFloat';
+import ChatWidget from '@/components/site/ChatWidget';
 import { CartProvider } from '@/providers/CartProvider';
 import { ToastProvider } from '@/providers/ToastProvider';
 
@@ -66,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Header />
             {children}
             <Footer />
-            <AiAssistantFloat />
+            <ChatWidget />
           </CartProvider>
         </ToastProvider>
         <Analytics />
