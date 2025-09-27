@@ -7,6 +7,8 @@ Luxury event planning and fashion house website built with Next.js 14, TypeScrip
 - Editorial homepage with hero, services, testimonials, and Instagram grid
 - Dedicated pages for services, shop catalogue, lookbook, about, contact, privacy, and terms
 - WhatsApp-first engagement including floating chat button and prefilled CTAs
+- Fast, RAG-powered AI stylist assistant that streams replies from the Edge on demand
+- Huly-inspired motion system with magnetic buttons, tilt cards, and smooth page transitions
 - Client-side cart that assembles looks and now checks out via WhatsApp with signed order IDs
 - Order storage, proof uploads, and admin dashboard powered by Vercel Blob (no traditional DB)
 - Protected admin area to review orders, update statuses, and reply to customers from WhatsApp templates
@@ -55,6 +57,7 @@ pnpm lint
 Create an `.env.local` file and add the following values:
 
 ```
+OPENAI_API_KEY=your-openai-key
 NEXT_PUBLIC_WA_NUMBER=2349060294599
 NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/_houseofwurafashions
 NEXT_PUBLIC_SITE_URL=https://houseofwura.vercel.app
@@ -63,6 +66,7 @@ JWT_SECRET=generate-a-long-random-string
 BLOB_READ_WRITE_TOKEN=vercel-blob-rw-token
 ```
 
+- `OPENAI_API_KEY` powers both the embedding build script and the streaming Edge chat route.
 - `NEXT_PUBLIC_WA_NUMBER` should be digits only (no plus sign). All WhatsApp links are generated from this value.
 - `NEXT_PUBLIC_INSTAGRAM_URL` powers footer links and the floating Instagram button.
 - `NEXT_PUBLIC_SITE_URL` is used for sitemap/robots metadata and sharing links.
@@ -146,6 +150,19 @@ Edit `data/products.json` to adjust the shop grid. Each product supports:
 - `description`, `tags`, `sku`
 
 Product cards automatically pick up changes and include colour/size selectors that prefill WhatsApp enquiries.
+
+## AI Helper (RAG) Setup
+
+1. Edit or add Markdown files in `data/knowledge/` to capture brand storytelling, services, policies, sizing, care, shipping, and FAQ details.
+2. Run `pnpm embed` to generate `data/embeddings.json` with OpenAI's `text-embedding-3-small` model. Commit the output for deterministic retrieval or regenerate whenever content changes.
+3. Deploy with `OPENAI_API_KEY` set. The Edge route at `/api/chat` streams responses using Vercel AI SDK and retrieved knowledge snippets.
+4. Optional: upload the generated embeddings to Vercel Blob if you prefer runtime storage outside the repo.
+
+### Performance & Motion Notes
+
+- The chat widget is dynamically imported, prefetched after idle (respecting `navigator.connection.saveData`), and only mounts after user intent or viewport visibility.
+- Responses stream from the Edge for first-token latency under a second on broadband connections.
+- Motion utilities in `lib/motion.ts` centralise easing and respect `prefers-reduced-motion`. 3D tilt cards and magnetic buttons only engage on pointer devices for accessibility.
 
 ## License
 

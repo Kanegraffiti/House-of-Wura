@@ -12,6 +12,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/format';
 import { countCartItems } from '@/lib/cart/utils';
 import { cn } from '@/lib/utils';
+import { Magnetic } from '@/components/site/Magnetic';
+import { TiltCard } from '@/components/site/TiltCard';
 import { scaleIn } from '@/lib/motion';
 import { useToast } from '@/providers/ToastProvider';
 import { useCart } from '@/providers/CartProvider';
@@ -104,163 +106,167 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <motion.article
+    <motion.div
       variants={scaleIn}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
       className="rounded-2xl border border-transparent"
     >
-      <Card className="group h-full overflow-hidden">
-        <div className="relative aspect-[3/4] w-full overflow-hidden">
-          {primaryImage && (
-            <div className="relative h-full w-full">
-              <Image
-                src={`${primaryImage}?auto=format&fit=crop&w=900&q=80`}
-                alt={`${product.title} primary look`}
-                fill
-                sizes="(min-width: 768px) 33vw, 100vw"
-                className={cn(
-                  'img-fade h-full w-full object-cover transition-transform duration-300 ease-std group-hover:scale-[1.03]',
-                  loadedPrimary && 'loaded'
-                )}
-                onLoadingComplete={() => setLoadedPrimary(true)}
-              />
-              {!loadedPrimary && <Skeleton className="absolute inset-0" />}
-            </div>
-          )}
-          {secondaryImage && (
-            <Image
-              src={`${secondaryImage}?auto=format&fit=crop&w=900&q=80`}
-              alt=""
-              aria-hidden
-              fill
-              sizes="(min-width: 768px) 33vw, 100vw"
-              className={cn(
-                'img-fade absolute inset-0 h-full w-full object-cover opacity-0 transition duration-300 ease-std group-hover:opacity-100 group-hover:scale-[1.03]',
-                loadedSecondary && 'loaded'
-              )}
-              onLoadingComplete={() => setLoadedSecondary(true)}
-            />
-          )}
-          <div className="absolute left-5 top-5 flex gap-2">
-            <Badge variant="subtle" className="bg-wura-black/80 text-[0.6rem] text-white">
-              {product.category}
-            </Badge>
-          </div>
-        </div>
-        <CardContent className="flex h-full flex-col gap-5 p-6">
-          <div className="space-y-1">
-            <h3 className="font-display text-2xl text-wura-black">{product.title}</h3>
-            <p className="text-sm uppercase tracking-[0.3em] text-wura-black/60">
-              From {formatCurrency(product.priceFrom)}
-            </p>
-          </div>
-          <p className="text-sm leading-relaxed text-wura-black/70 line-clamp-3">{product.description}</p>
-          <div className="flex flex-col gap-4 text-sm text-wura-black/80">
-            {requiresColor && (
-              <div>
-                <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Color</p>
-                <div className="flex flex-wrap gap-2">
-                  {colorOptions.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      aria-pressed={selectedColor === color}
-                      onClick={() => {
-                        setSelectedColor(color);
-                        setErrors((prev) => ({ ...prev, color: undefined }));
-                      }}
-                      className={cn(
-                        'focus-ring rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std',
-                        selectedColor === color
-                          ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
-                          : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
-                      )}
-                    >
-                      {color}
-                    </button>
-                  ))}
+        <TiltCard className="h-full overflow-hidden">
+          <Card className="h-full overflow-hidden">
+            <div className="relative aspect-[3/4] w-full overflow-hidden">
+              {primaryImage && (
+                <div className="relative h-full w-full">
+                  <Image
+                    src={`${primaryImage}?auto=format&fit=crop&w=900&q=80`}
+                    alt={`${product.title} primary look`}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className={cn(
+                      'img-fade h-full w-full object-cover transition-transform duration-300 ease-std group-hover:scale-[1.03]',
+                      loadedPrimary && 'loaded'
+                    )}
+                    onLoadingComplete={() => setLoadedPrimary(true)}
+                  />
+                  {!loadedPrimary && <Skeleton className="absolute inset-0" />}
                 </div>
-                {errors.color && (
-                  <p className="mt-2 text-xs text-wura-wine" role="alert">
-                    {errors.color}
-                  </p>
-                )}
-              </div>
-            )}
-            {requiresSize && (
-              <div>
-                <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Size</p>
-                <div className="flex flex-wrap gap-2">
-                  {sizeOptions.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      aria-pressed={selectedSize === size}
-                      onClick={() => {
-                        setSelectedSize(size);
-                        setErrors((prev) => ({ ...prev, size: undefined }));
-                      }}
-                      className={cn(
-                        'focus-ring rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std',
-                        selectedSize === size
-                          ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
-                          : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
-                      )}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-                {errors.size && (
-                  <p className="mt-2 text-xs text-wura-wine" role="alert">
-                    {errors.size}
-                  </p>
-                )}
-              </div>
-            )}
-            <div>
-              <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Quantity</p>
-              <div className="inline-flex items-center gap-2 rounded-full border border-wura-black/15 px-3 py-1">
-                <motion.button
-                  type="button"
-                  aria-label="Decrease quantity"
-                  whileTap={{ scale: 0.92 }}
-                  onClick={() => adjustQuantity(-1)}
-                  className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
-                >
-                  <Minus className="h-3 w-3" aria-hidden />
-                </motion.button>
-                <span className="min-w-[2rem] text-center text-sm font-semibold">{quantity}</span>
-                <motion.button
-                  type="button"
-                  aria-label="Increase quantity"
-                  whileTap={{ scale: 0.92 }}
-                  onClick={() => adjustQuantity(1)}
-                  className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
-                >
-                  <Plus className="h-3 w-3" aria-hidden />
-                </motion.button>
-              </div>
-            </div>
-          </div>
-          <div className="mt-auto">
-            <Button type="button" className="w-full" onClick={handleAddToCart} disabled={!canAdd}>
-              <span className="link-glint">Add to Cart</span>
-            </Button>
-            <div className="mt-3 text-xs uppercase tracking-[0.25em] text-wura-black/60" aria-live="polite">
-              {status === 'added' ? (
-                <span className="inline-flex items-center gap-1 text-wura-gold">
-                  <Check className="h-3 w-3" aria-hidden /> Added. View cart ({cartCount})
-                </span>
-              ) : (
-                <span>We finalise pricing and fittings with you on WhatsApp.</span>
               )}
+              {secondaryImage && (
+                <Image
+                  src={`${secondaryImage}?auto=format&fit=crop&w=900&q=80`}
+                  alt=""
+                  aria-hidden
+                  fill
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                  className={cn(
+                    'img-fade absolute inset-0 h-full w-full object-cover opacity-0 transition duration-300 ease-std group-hover:opacity-100 group-hover:scale-[1.03]',
+                    loadedSecondary && 'loaded'
+                  )}
+                  onLoadingComplete={() => setLoadedSecondary(true)}
+                />
+              )}
+              <div className="absolute left-5 top-5 flex gap-2">
+                <Badge variant="subtle" className="bg-wura-black/80 text-[0.6rem] text-white">
+                  {product.category}
+                </Badge>
+              </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.article>
+            <CardContent className="flex h-full flex-col gap-5 p-6">
+              <div className="space-y-1">
+                <h3 className="font-display text-2xl text-wura-black">{product.title}</h3>
+                <p className="text-sm uppercase tracking-[0.3em] text-wura-black/60">
+                  From {formatCurrency(product.priceFrom)}
+                </p>
+              </div>
+              <p className="text-sm leading-relaxed text-wura-black/70 line-clamp-3">{product.description}</p>
+              <div className="flex flex-col gap-4 text-sm text-wura-black/80">
+                {requiresColor && (
+                  <div>
+                    <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Color</p>
+                    <div className="flex flex-wrap gap-2">
+                      {colorOptions.map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          aria-pressed={selectedColor === color}
+                          onClick={() => {
+                            setSelectedColor(color);
+                            setErrors((prev) => ({ ...prev, color: undefined }));
+                          }}
+                          className={cn(
+                            'focus-ring rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std',
+                            selectedColor === color
+                              ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
+                              : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
+                          )}
+                        >
+                          {color}
+                        </button>
+                      ))}
+                    </div>
+                    {errors.color && (
+                      <p className="mt-2 text-xs text-wura-wine" role="alert">
+                        {errors.color}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {requiresSize && (
+                  <div>
+                    <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Size</p>
+                    <div className="flex flex-wrap gap-2">
+                      {sizeOptions.map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          aria-pressed={selectedSize === size}
+                          onClick={() => {
+                            setSelectedSize(size);
+                            setErrors((prev) => ({ ...prev, size: undefined }));
+                          }}
+                          className={cn(
+                            'focus-ring rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std',
+                            selectedSize === size
+                              ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
+                              : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
+                          )}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                    {errors.size && (
+                      <p className="mt-2 text-xs text-wura-wine" role="alert">
+                        {errors.size}
+                      </p>
+                    )}
+                  </div>
+                )}
+                <div>
+                  <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Quantity</p>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-wura-black/15 px-3 py-1">
+                    <motion.button
+                      type="button"
+                      aria-label="Decrease quantity"
+                      whileTap={{ scale: 0.92 }}
+                      onClick={() => adjustQuantity(-1)}
+                      className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
+                    >
+                      <Minus className="h-3 w-3" aria-hidden />
+                    </motion.button>
+                    <span className="min-w-[2rem] text-center text-sm font-semibold">{quantity}</span>
+                    <motion.button
+                      type="button"
+                      aria-label="Increase quantity"
+                      whileTap={{ scale: 0.92 }}
+                      onClick={() => adjustQuantity(1)}
+                      className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
+                    >
+                      <Plus className="h-3 w-3" aria-hidden />
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-auto">
+                <Magnetic className="w-full">
+                  <Button type="button" className="w-full" onClick={handleAddToCart} disabled={!canAdd}>
+                    <span className="link-glint">Add to Cart</span>
+                  </Button>
+                </Magnetic>
+                <div className="mt-3 text-xs uppercase tracking-[0.25em] text-wura-black/60" aria-live="polite">
+                  {status === 'added' ? (
+                    <span className="inline-flex items-center gap-1 text-wura-gold">
+                      <Check className="h-3 w-3" aria-hidden /> Added. View cart ({cartCount})
+                    </span>
+                  ) : (
+                    <span>We finalise pricing and fittings with you on WhatsApp.</span>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TiltCard>
+      </motion.div>
   );
 }

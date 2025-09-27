@@ -1,23 +1,23 @@
-import { Variants, Transition, TargetAndTransition, type Tween } from 'framer-motion';
+import { Variants, Transition, TargetAndTransition } from 'framer-motion';
 
 export const motionDur = {
   xs: 0.15,
   sm: 0.2,
-  md: 0.28,
-  lg: 0.35
+  md: 0.26,
+  lg: 0.32
 } as const;
 
 export const motionEase = {
-  standard: [0.2, 0.0, 0.0, 1.0],
-  emphasized: [0.3, 0.0, 0.2, 1.0],
-  exit: [0.4, 0.0, 0.6, 1.0]
-} as const satisfies Record<'standard' | 'emphasized' | 'exit', Tween['ease']>;
+  emphasized: [0.3, 0, 0.2, 1],
+  exit: [0.4, 0, 0.6, 1],
+  standard: [0.2, 0, 0, 1]
+} as const;
 
 export const trans = (
-  d: Tween['duration'] = motionDur.md,
-  ease: Tween['ease'] = motionEase.emphasized
-): Tween => ({
-  duration: d,
+  duration: Transition['duration'] = motionDur.md,
+  ease: Transition['ease'] = motionEase.emphasized
+): Transition => ({
+  duration,
   ease
 });
 
