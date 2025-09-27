@@ -14,12 +14,12 @@ export const motionEase = {
 } as const;
 
 export const trans = (
-  duration: Transition['duration'] = motionDur.md,
-  ease: Transition['ease'] = motionEase.emphasized
+  duration: number = motionDur.md,
+  ease: number | ReadonlyArray<number> = motionEase.emphasized
 ): Transition => ({
   duration,
-  ease
-});
+  ease: Array.isArray(ease) ? [...ease] : ease
+}) as Transition;
 
 const withDelay = (variant: TargetAndTransition, delay = 0): TargetAndTransition => ({
   ...variant,
