@@ -1,6 +1,6 @@
 export const runtime = 'edge';
 
-import { streamText } from 'ai';
+import { embed, streamText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { NextResponse } from 'next/server';
 
@@ -55,13 +55,12 @@ export async function POST(req: Request) {
     }
 
     const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-    const query = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: userLast
+    const { embedding: queryEmbedding } = await embed({
+      model: openai.embedding('text-embedding-3-small'),
+      value: userLast
     });
-    const queryEmbedding = query.data[0]?.embedding as number[] | undefined;
 
-    if (!queryEmbedding) {
+    if (!queryEmbedding?.length) {
       return NextResponse.json({ error: 'Failed to embed prompt' }, { status: 500 });
     }
 
@@ -94,7 +93,7 @@ Ask concise follow-up questions when information is missing. Maintain a warm, lu
       ]
     });
 
-    return response.toAIStreamResponse();
+    return response.toDataStreamResponse();
   } catch (error) {
     return NextResponse.json({ error: 'Unable to process message' }, { status: 500 });
   }

@@ -82,10 +82,16 @@ export default function ChatWidget() {
       };
     }
 
-    const timeout = window.setTimeout(preload, 1200);
+    if (typeof window === 'undefined') {
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    const timeout = globalThis.setTimeout(preload, 1200);
     return () => {
       cancelled = true;
-      window.clearTimeout(timeout);
+      globalThis.clearTimeout(timeout);
     };
   }, [shouldLoad]);
 
