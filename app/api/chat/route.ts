@@ -1,22 +1,31 @@
 export const runtime = 'edge';
 
-import { embed, streamText } from 'ai';
+import { streamText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { NextResponse } from 'next/server';
 
-import embeddings from '@/data/embeddings.json';
+import rawEntries from '@/data/embeddings.json';
+
+type RawEntry = {
+  id: string;
+  section: string;
+  text: string;
+  embedding?: number[];
+};
 
 interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
 }
 
-type EmbeddingEntry = {
+interface KnowledgeEntry {
   id: string;
   section: string;
-  embedding: number[];
   text: string;
-};
+  counts: Record<string, number>;
+  norm: number;
+  boost: number;
+}
 
 const boostMap: Record<string, number> = {
   faq: 1.35,
@@ -28,20 +37,47 @@ const boostMap: Record<string, number> = {
   brand: 0.95
 };
 
-function cosine(a: number[], b: number[]): number {
-  const length = Math.min(a.length, b.length);
-  if (length === 0) return 0;
-  let dot = 0;
-  let normA = 0;
-  let normB = 0;
-  for (let i = 0; i < length; i += 1) {
-    dot += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
+const knowledgeBase: KnowledgeEntry[] = (rawEntries as RawEntry[]).map((entry) => {
+  const tokens = tokenize(entry.text);
+  const counts: Record<string, number> = {};
+  for (const token of tokens) {
+    counts[token] = (counts[token] ?? 0) + 1;
   }
-  const denom = Math.sqrt(normA) * Math.sqrt(normB);
-  if (!Number.isFinite(denom) || denom === 0) return 0;
-  return dot / denom;
+  const norm = Math.sqrt(Object.values(counts).reduce((sum, count) => sum + count * count, 0));
+  return {
+    id: entry.id,
+    section: entry.section,
+    text: entry.text,
+    counts,
+    norm: Number.isFinite(norm) && norm > 0 ? norm : 1,
+    boost: boostMap[entry.section as keyof typeof boostMap] ?? 1
+  };
+});
+
+const DEFAULT_MODEL = process.env.GROQ_MODEL ?? 'llama-3.1-8b-instant';
+
+function tokenize(text: string): string[] {
+  return text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function lexicalCosine(
+  queryCounts: Record<string, number>,
+  queryNorm: number,
+  entry: KnowledgeEntry
+): number {
+  if (!queryNorm || !entry.norm) return 0;
+  let dot = 0;
+  for (const token of Object.keys(queryCounts)) {
+    const entryCount = entry.counts[token];
+    if (entryCount) {
+      dot += queryCounts[token] * entryCount;
+    }
+  }
+  return dot / (queryNorm * entry.norm);
 }
 
 export async function POST(req: Request) {
@@ -54,43 +90,53 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing prompt' }, { status: 400 });
     }
 
-    const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY! });
-    const { embedding: queryEmbedding } = await embed({
-      model: openai.embedding('text-embedding-3-small'),
-      value: userLast
-    });
-
-    if (!queryEmbedding?.length) {
-      return NextResponse.json({ error: 'Failed to embed prompt' }, { status: 500 });
+    const groqKey = process.env.GROQ_API_KEY;
+    if (!groqKey) {
+      return NextResponse.json({ error: 'Missing GROQ_API_KEY' }, { status: 500 });
     }
 
-    const results = (embeddings as EmbeddingEntry[])
-      .map((entry) => {
-        const boost = boostMap[entry.section as keyof typeof boostMap] ?? 1;
-        return {
-          ...entry,
-          score: cosine(queryEmbedding, entry.embedding) * boost
-        };
-      })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
+    const tokens = tokenize(userLast);
+    const queryCounts: Record<string, number> = {};
+    for (const token of tokens) {
+      queryCounts[token] = (queryCounts[token] ?? 0) + 1;
+    }
+    const queryNorm = Math.sqrt(Object.values(queryCounts).reduce((sum, count) => sum + count * count, 0)) || 1;
 
-    const context = results
-      .map((result) => `# ${result.section}\n${result.text}`)
+    const contextResults = knowledgeBase
+      .map((entry) => ({
+        entry,
+        score: lexicalCosine(queryCounts, queryNorm, entry) * entry.boost
+      }))
+      .filter((result) => result.score > 0.04)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4);
+
+    const context = contextResults
+      .map((result) => `# ${result.entry.section}\n${result.entry.text}`)
       .join('\n\n---\n\n');
 
-    const system = `You are House of Wura's helpful stylist and event concierge. Use only the supplied context for factual claims.
-Ask concise follow-up questions when information is missing. Maintain a warm, luxurious tone with practical detail. Offer the WhatsApp concierge link (https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '2349060294599'}) when purchases or consultations are requested.`.trim();
+    const system = `You are Wura, the digital stylist for House of Wura. Reference the supplied context for factual claims.
+If information is missing, ask concise follow-up questions before answering. Keep responses warm, welcoming, and grounded in Yoruba luxury fashion expertise.
+When the guest requests a purchase or consultation, kindly offer the WhatsApp concierge link (https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '2349060294599'}).`.trim();
+
+    const groq = createOpenAI({
+      apiKey: groqKey,
+      baseURL: 'https://api.groq.com/openai/v1'
+    });
 
     const response = await streamText({
-      model: openai('gpt-4o-mini'),
+      model: groq(DEFAULT_MODEL),
       system,
       messages: [
         {
           role: 'user',
-          content: `Context:\n${context}\n\nUser question:\n${userLast}`
+          content: context
+            ? `Context:\n${context}\n\nGuest question:\n${userLast}`
+            : `Guest question:\n${userLast}`
         }
-      ]
+      ],
+      maxOutputTokens: 320,
+      temperature: 0.5
     });
 
     return response.toDataStreamResponse();
