@@ -54,7 +54,8 @@ const knowledgeBase: KnowledgeEntry[] = (rawEntries as RawEntry[]).map((entry) =
   };
 });
 
-const DEFAULT_MODEL = process.env.GROQ_MODEL ?? 'llama-3.1-8b-instant';
+const DEFAULT_GROQ_MODEL = process.env.GROQ_MODEL ?? 'llama-3.1-8b-instant';
+const DEFAULT_OPENAI_MODEL = process.env.OPENAI_MODEL ?? 'gpt-4o-mini';
 
 function tokenize(text: string): string[] {
   return text
@@ -91,8 +92,10 @@ export async function POST(req: Request) {
     }
 
     const groqKey = process.env.GROQ_API_KEY;
-    if (!groqKey) {
-      return NextResponse.json({ error: 'Missing GROQ_API_KEY' }, { status: 500 });
+    const openaiKey = process.env.OPENAI_API_KEY;
+
+    if (!groqKey && !openaiKey) {
+      return NextResponse.json({ error: 'Missing GROQ_API_KEY or OPENAI_API_KEY' }, { status: 500 });
     }
 
     const tokens = tokenize(userLast);
@@ -119,13 +122,14 @@ export async function POST(req: Request) {
 If information is missing, ask concise follow-up questions before answering. Keep responses warm, welcoming, and grounded in Yoruba luxury fashion expertise.
 When the guest requests a purchase or consultation, kindly offer the WhatsApp concierge link (https://wa.me/${process.env.NEXT_PUBLIC_WA_NUMBER ?? '2349060294599'}).`.trim();
 
-    const groq = createOpenAI({
-      apiKey: groqKey,
-      baseURL: 'https://api.groq.com/openai/v1'
+    const usingGroq = Boolean(groqKey);
+    const provider = createOpenAI({
+      apiKey: usingGroq ? groqKey! : openaiKey!,
+      baseURL: usingGroq ? 'https://api.groq.com/openai/v1' : undefined
     });
 
     const response = await streamText({
-      model: groq(DEFAULT_MODEL),
+      model: provider(usingGroq ? DEFAULT_GROQ_MODEL : DEFAULT_OPENAI_MODEL),
       system,
       messages: [
         {
