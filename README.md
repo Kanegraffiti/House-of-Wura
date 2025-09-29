@@ -58,6 +58,7 @@ Create an `.env.local` file and add the following values:
 
 ```
 OPENAI_API_KEY=your-openai-key
+GROQ_API_KEY=optional-groq-key
 NEXT_PUBLIC_WA_NUMBER=2349060294599
 NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/_houseofwurafashions
 NEXT_PUBLIC_SITE_URL=https://houseofwura.vercel.app
@@ -66,7 +67,8 @@ JWT_SECRET=generate-a-long-random-string
 BLOB_READ_WRITE_TOKEN=vercel-blob-rw-token
 ```
 
-- `OPENAI_API_KEY` powers both the embedding build script and the streaming Edge chat route.
+- `OPENAI_API_KEY` powers the embedding build script and is used by the chat route when a Groq key isn't supplied.
+- `GROQ_API_KEY` (optional) enables the chat route to use Groq's Llama 3.1 models. If omitted the app falls back to OpenAI.
 - `NEXT_PUBLIC_WA_NUMBER` should be digits only (no plus sign). All WhatsApp links are generated from this value.
 - `NEXT_PUBLIC_INSTAGRAM_URL` powers footer links and the floating Instagram button.
 - `NEXT_PUBLIC_SITE_URL` is used for sitemap/robots metadata and sharing links.
