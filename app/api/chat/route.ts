@@ -135,7 +135,7 @@ When the guest requests a purchase or consultation, kindly offer the WhatsApp co
             : `Guest question:\n${userLast}`
         }
       ],
-      maxOutputTokens: 320,
+      maxTokens: 320,
       temperature: 0.5
     });
 
