@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { SVGProps, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 import { trans } from '@/lib/motion';
@@ -115,6 +115,7 @@ export default function ChatWidget() {
         whileHover={reduceMotion ? undefined : { y: -4, transition: trans(0.18) }}
         whileTap={reduceMotion ? undefined : { scale: 0.96 }}
       >
+        <WuraAvatarIcon className="h-6 w-6" aria-hidden />
         Ask Wura
       </motion.button>
 
@@ -132,5 +133,54 @@ export default function ChatWidget() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function WuraAvatarIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" role="img" {...props}>
+      <circle cx="32" cy="32" r="30" fill="#FCEFE8" stroke="#2F1C19" strokeWidth="2" />
+      <path
+        d="M12 30c1-8 6.5-18 20-18s19 10 20 18c.5 4-1.2 8.6-4.5 11.5C44 45 39 40 32 40s-12 5-15.5 1.5C13 38.6 11.5 34 12 30Z"
+        fill="#2F1C19"
+      />
+      <path
+        d="M22 40c.8 2.8 4.7 6 10 6s9.2-3.2 10-6"
+        stroke="#E86F5C"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M23 36c.7 0 1.3-.6 1.3-1.3S23.7 33.5 23 33.5s-1.3.6-1.3 1.2c0 .8.6 1.3 1.3 1.3Zm18 0c.7 0 1.3-.6 1.3-1.3s-.6-1.2-1.3-1.2-1.3.6-1.3 1.2c0 .8.6 1.3 1.3 1.3Z"
+        fill="#2F1C19"
+      />
+      <path
+        d="M19 30c1-1.5 4-3 6.5-1.5m13 0C40 28 43 29 44 30"
+        stroke="#2F1C19"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18 40h28"
+        stroke="#2F1C19"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <rect
+        x="20"
+        y="38.5"
+        width="24"
+        height="8"
+        rx="4"
+        stroke="#2F1C19"
+        strokeWidth="2"
+      />
+      <path
+        d="M27 46.5c1.5 1 3.2 1.5 5 1.5s3.5-.5 5-1.5"
+        stroke="#2F1C19"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }
