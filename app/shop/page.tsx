@@ -4,9 +4,17 @@ import Reveal from '@/components/site/Reveal';
 import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
-import { ProductCard } from '@/app/(shop)/components/ProductCard';
+import { ProductCard, type Product } from '@/app/(shop)/components/ProductCard';
 import { CartSummaryBar } from '@/app/(shop)/components/CartSummaryBar';
-import products from '@/data/products.json';
+import productsData from '@/data/products.json';
+import { type MediaKey } from '@/lib/media';
+
+const products: Product[] = productsData.map((product) => ({
+  ...product,
+  images: Array.isArray(product.images)
+    ? product.images.map((key) => key as MediaKey)
+    : []
+}));
 
 export const metadata: Metadata = {
   title: 'Shop',
