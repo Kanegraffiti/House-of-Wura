@@ -14,12 +14,19 @@ import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
 import { ServiceCard } from '@/components/site/ServiceCard';
 import { Testimonial } from '@/components/site/Testimonial';
-import { ProductCard } from '@/app/(shop)/components/ProductCard';
+import { ProductCard, type Product } from '@/app/(shop)/components/ProductCard';
 import { formatWhatsappDisplay } from '@/lib/format';
 import { getConfiguredWhatsAppNumber, waLink } from '@/lib/wa';
 import { getMedia, type MediaKey } from '@/lib/media';
 
 const heroMessage = "Hello House of Wura! I'm ready to craft a luxury celebration.";
+
+const products: Product[] = productsData.map((product) => ({
+  ...product,
+  images: Array.isArray(product.images)
+    ? product.images.map((key) => key as MediaKey)
+    : []
+}));
 const heroSlideKeys: MediaKey[] = ['hero', 'heroEditorial', 'heroCelebration', 'heroRunway'];
 const heroSlides = heroSlideKeys.map((key) => {
   const media = getMedia(key);
@@ -84,7 +91,7 @@ const jsonLd = {
 };
 
 export default function HomePage() {
-  const featuredProducts = productsData.slice(0, 3);
+  const featuredProducts = products.slice(0, 3);
   return (
     <>
       <Script
