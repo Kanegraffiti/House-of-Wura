@@ -77,7 +77,7 @@ export function Header() {
             </NavigationMenuList>
           </NavigationMenu>
           <CartIcon />
-          <Button variant="outline" className="border-wura-gold" asChild>
+          <Button variant="outline" className="min-h-[44px] border-wura-gold px-5 py-2.5" asChild>
             <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
               <span className="link-glint">WhatsApp</span>
             </Link>
@@ -90,7 +90,7 @@ export function Header() {
               <motion.button
                 type="button"
                 aria-label="Open menu"
-                className="focus-ring rounded-md border border-wura-gold/40 p-2 text-wura-black transition-transform duration-200 ease-std will-change-transform hover:-translate-y-0.5 hover:border-wura-gold"
+                className="focus-ring rounded-md border border-wura-gold/40 p-3 text-wura-black transition-transform duration-200 ease-std will-change-transform hover:-translate-y-0.5 hover:border-wura-gold"
                 whileTap={{ scale: 0.96 }}
               >
                 <Menu aria-hidden="true" className="h-5 w-5" />
@@ -124,7 +124,7 @@ export function Header() {
                           <button
                             type="button"
                             aria-label="Close menu"
-                            className="focus-ring rounded-full border border-transparent p-2 text-wura-black transition hover:border-wura-gold"
+                            className="focus-ring rounded-full border border-transparent p-3 text-wura-black transition hover:border-wura-gold"
                           >
                             <X className="h-4 w-4" aria-hidden />
                           </button>
@@ -146,14 +146,14 @@ export function Header() {
                         ))}
                       </nav>
                       <div className="mt-8 flex flex-col gap-3">
-                        <Button className="w-full" asChild>
+                        <Button className="min-h-[44px] w-full px-5 py-2.5" asChild>
                           <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
                             <span className="link-glint">Chat on WhatsApp</span>
                           </Link>
                         </Button>
                         <Button
                           variant="outline"
-                          className="w-full border-wura-gold"
+                          className="min-h-[44px] w-full border-wura-gold px-5 py-2.5"
                           asChild
                         >
                           <Link href="/cart" onClick={() => setOpen(false)}>

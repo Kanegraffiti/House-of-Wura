@@ -43,7 +43,7 @@ export function SectionHeader({
       ) : null}
       <h2
         className={cn(
-          'font-display text-3xl sm:text-4xl',
+          'font-display',
           isDark ? 'text-white drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)]' : 'text-wura-black'
         )}
       >
@@ -52,7 +52,7 @@ export function SectionHeader({
       {description ? (
         <p
           className={cn(
-            'text-base sm:text-lg',
+            'lead',
             isDark ? 'text-wura-white/75' : 'text-wura-black/70'
           )}
         >

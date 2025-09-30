@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
-import { FadeImage } from './FadeImage';
+import ImageSmart from '@/components/site/ImageSmart';
 
 export type HeroSlide = {
   src: string;
@@ -53,17 +53,18 @@ export function HeroBackgroundSlideshow({
           : `${slide.src}?auto=format&fit=crop&w=1600&q=80`;
 
         return (
-          <FadeImage
+          <ImageSmart
             key={`${slide.src}-${index}`}
             src={withParams}
             alt={slide.alt}
             fill
             priority={index === 0}
             className={cn(
-              'img-fade absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-std',
+              'absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-std',
               index === activeIndex ? 'opacity-100' : 'opacity-0'
             )}
             sizes="100vw"
+            fade={false}
           />
         );
       })}

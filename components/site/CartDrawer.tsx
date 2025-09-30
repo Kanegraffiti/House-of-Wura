@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, motion } from 'framer-motion';
 
+import ImageSmart from '@/components/site/ImageSmart';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/format';
 import { countCartItems, sumDisplaySubtotal } from '@/lib/cart/utils';
@@ -37,14 +37,13 @@ function CartLine({ item }: { item: CartItem }) {
       className="flex gap-4 rounded-2xl border border-wura-black/10 p-4 transition-shadow duration-200 ease-std hover:shadow-md hover:shadow-black/5"
     >
       {item.image ? (
-        <div className="relative h-20 w-16 overflow-hidden rounded-lg bg-wura-black/5">
-          <Image
-            src={`${item.image}?auto=format&fit=crop&w=300&q=70`}
+        <div className="relative aspect-[3/4] w-16 overflow-hidden rounded-lg bg-wura-black/5">
+          <ImageSmart
+            src={`${item.image}?auto=format&fit=crop&w=320&q=70`}
             alt={`${item.title} preview`}
             fill
-            className="img-fade object-cover"
             sizes="64px"
-            onLoadingComplete={(image) => image.classList.add('loaded')}
+            className="object-cover"
           />
         </div>
       ) : (
@@ -63,7 +62,7 @@ function CartLine({ item }: { item: CartItem }) {
             size="icon"
             aria-label={`Remove ${item.title} from cart`}
             onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: target })}
-            className="h-8 w-8 rounded-full border border-transparent text-wura-black/60 hover:border-wura-gold hover:text-wura-gold"
+            className="h-11 w-11 rounded-full border border-transparent text-wura-black/60 hover:border-wura-gold hover:text-wura-gold"
           >
             <Trash2 className="h-4 w-4" aria-hidden />
           </Button>
@@ -82,7 +81,7 @@ function CartLine({ item }: { item: CartItem }) {
               whileTap={{ scale: 0.92 }}
               aria-label={`Decrease quantity of ${item.title}`}
               onClick={() => dispatch({ type: 'DECREMENT', payload: target })}
-              className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
+              className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
             >
               <Minus className="h-3 w-3" aria-hidden />
             </motion.button>
@@ -92,7 +91,7 @@ function CartLine({ item }: { item: CartItem }) {
               whileTap={{ scale: 0.92 }}
               aria-label={`Increase quantity of ${item.title}`}
               onClick={() => dispatch({ type: 'INCREMENT', payload: target })}
-              className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
+              className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
             >
               <Plus className="h-3 w-3" aria-hidden />
             </motion.button>

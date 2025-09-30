@@ -9,8 +9,10 @@ import { Header } from '@/components/site/Header';
 import ChatWidget from '@/components/site/ChatWidget';
 import { CartProvider } from '@/providers/CartProvider';
 import { ToastProvider } from '@/providers/ToastProvider';
+import { getMedia } from '@/lib/media';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+const heroMedia = getMedia('hero');
 
 const display = Playfair_Display({
   subsets: ['latin'],
@@ -39,10 +41,10 @@ export const metadata: Metadata = {
     description: 'Luxury event planning and couture fashion.',
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80',
+        url: `${heroMedia.url}?auto=format&fit=crop&w=1200&q=80`,
         width: 1200,
         height: 630,
-        alt: 'House of Wura editorial portrait'
+        alt: heroMedia.alt
       }
     ]
   },
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'House of Wura',
     description: 'Luxury event planning and couture fashion.',
-    images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80']
+    images: [`${heroMedia.url}?auto=format&fit=crop&w=1200&q=80`]
   },
   alternates: {
     canonical: '/'

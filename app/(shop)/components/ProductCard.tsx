@@ -1,11 +1,9 @@
 'use client';
 
-import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Check, Minus, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-import Skeleton from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,6 +15,8 @@ import { TiltCard } from '@/components/site/TiltCard';
 import { scaleIn } from '@/lib/motion';
 import { useToast } from '@/providers/ToastProvider';
 import { useCart } from '@/providers/CartProvider';
+import ImageSmart from '@/components/site/ImageSmart';
+import { getMedia, type MediaKey } from '@/lib/media';
 
 export interface Product {
   id: string;
@@ -26,7 +26,7 @@ export interface Product {
   category: string;
   colors: string[];
   sizes: string[];
-  images: string[];
+  images: MediaKey[];
   description: string;
   tags: string[];
   sku: string;
@@ -49,15 +49,15 @@ export function ProductCard({ product }: ProductCardProps) {
   const [quantity, setQuantity] = useState(1);
   const [errors, setErrors] = useState<{ color?: string; size?: string }>({});
   const [status, setStatus] = useState<'idle' | 'added'>('idle');
-  const [loadedPrimary, setLoadedPrimary] = useState(false);
-  const [loadedSecondary, setLoadedSecondary] = useState(false);
 
   const { dispatch, state } = useCart();
   const toast = useToast();
   const cartCount = countCartItems(state.items);
 
-  const primaryImage = useMemo(() => product.images?.[0], [product.images]);
-  const secondaryImage = useMemo(() => product.images?.[1], [product.images]);
+  const primaryImageKey = product.images?.[0];
+  const secondaryImageKey = product.images?.[1];
+  const primaryMedia = primaryImageKey ? getMedia(primaryImageKey) : null;
+  const secondaryMedia = secondaryImageKey ? getMedia(secondaryImageKey) : null;
 
   const requiresColor = colorOptions.length > 0;
   const requiresSize = sizeOptions.length > 0;
@@ -83,7 +83,7 @@ export function ProductCard({ product }: ProductCardProps) {
         sku: product.sku,
         title: product.title,
         priceFrom: product.priceFrom,
-        image: product.images?.[0],
+        image: primaryMedia?.url,
         color: selectedColor,
         size: selectedSize,
         qty: quantity
@@ -115,35 +115,25 @@ export function ProductCard({ product }: ProductCardProps) {
     >
         <TiltCard className="h-full overflow-hidden">
           <Card className="h-full overflow-hidden">
-            <div className="relative aspect-[3/4] w-full overflow-hidden">
-              {primaryImage && (
-                <div className="relative h-full w-full">
-                  <Image
-                    src={`${primaryImage}?auto=format&fit=crop&w=900&q=80`}
-                    alt={`${product.title} primary look`}
-                    fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className={cn(
-                      'img-fade h-full w-full object-cover transition-transform duration-300 ease-std group-hover:scale-[1.03]',
-                      loadedPrimary && 'loaded'
-                    )}
-                    onLoadingComplete={() => setLoadedPrimary(true)}
-                  />
-                  {!loadedPrimary && <Skeleton className="absolute inset-0" />}
-                </div>
+            <div className="relative aspect-[4/5] w-full overflow-hidden">
+              {primaryMedia && (
+                <ImageSmart
+                  src={`${primaryMedia.url}?auto=format&fit=crop&w=900&q=80`}
+                  alt={`${product.title} on a Nigerian muse in couture styling`}
+                  fill
+                  sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 360px"
+                  className="object-cover transition-transform duration-300 ease-std group-hover:scale-[1.03]"
+                />
               )}
-              {secondaryImage && (
-                <Image
-                  src={`${secondaryImage}?auto=format&fit=crop&w=900&q=80`}
+              {secondaryMedia && (
+                <ImageSmart
+                  src={`${secondaryMedia.url}?auto=format&fit=crop&w=900&q=80`}
                   alt=""
                   aria-hidden
                   fill
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className={cn(
-                    'img-fade absolute inset-0 h-full w-full object-cover opacity-0 transition duration-300 ease-std group-hover:opacity-100 group-hover:scale-[1.03]',
-                    loadedSecondary && 'loaded'
-                  )}
-                  onLoadingComplete={() => setLoadedSecondary(true)}
+                  sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 360px"
+                  className="object-cover opacity-0 transition duration-300 ease-std group-hover:scale-[1.03] group-hover:opacity-100"
+                  fade={false}
                 />
               )}
               <div className="absolute left-5 top-5 flex gap-2">
@@ -175,7 +165,7 @@ export function ProductCard({ product }: ProductCardProps) {
                             setErrors((prev) => ({ ...prev, color: undefined }));
                           }}
                           className={cn(
-                            'focus-ring rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std',
+                            'focus-ring rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std min-h-[44px] min-w-[44px]',
                             selectedColor === color
                               ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
                               : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
@@ -206,7 +196,7 @@ export function ProductCard({ product }: ProductCardProps) {
                             setErrors((prev) => ({ ...prev, size: undefined }));
                           }}
                           className={cn(
-                            'focus-ring rounded-full border px-3 py-1 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std',
+                            'focus-ring rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition-colors duration-200 ease-std min-h-[44px] min-w-[44px]',
                             selectedSize === size
                               ? 'border-wura-gold bg-wura-gold/20 text-wura-black'
                               : 'border-wura-black/15 text-wura-black/70 hover:border-wura-gold/50 hover:text-wura-black'
@@ -225,13 +215,13 @@ export function ProductCard({ product }: ProductCardProps) {
                 )}
                 <div>
                   <p className="mb-2 font-semibold uppercase tracking-[0.3em]">Quantity</p>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-wura-black/15 px-3 py-1">
+                  <div className="inline-flex items-center gap-3 rounded-full border border-wura-black/15 px-3 py-2">
                     <motion.button
                       type="button"
                       aria-label="Decrease quantity"
                       whileTap={{ scale: 0.92 }}
                       onClick={() => adjustQuantity(-1)}
-                      className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
+                      className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
                     >
                       <Minus className="h-3 w-3" aria-hidden />
                     </motion.button>
@@ -241,7 +231,7 @@ export function ProductCard({ product }: ProductCardProps) {
                       aria-label="Increase quantity"
                       whileTap={{ scale: 0.92 }}
                       onClick={() => adjustQuantity(1)}
-                      className="focus-ring flex h-8 w-8 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
+                      className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
                     >
                       <Plus className="h-3 w-3" aria-hidden />
                     </motion.button>
@@ -250,7 +240,7 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
               <div className="mt-auto">
                 <Magnetic className="w-full">
-                  <Button type="button" className="w-full" onClick={handleAddToCart} disabled={!canAdd}>
+                  <Button type="button" className="min-h-[44px] w-full px-5 py-2.5" onClick={handleAddToCart} disabled={!canAdd}>
                     <span className="link-glint">Add to Cart</span>
                   </Button>
                 </Magnetic>
