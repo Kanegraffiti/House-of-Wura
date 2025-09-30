@@ -32,7 +32,7 @@ export function ServiceCard({ title, description, items, message }: ServiceCardP
         </ul>
         <div className="mt-auto">
           <Magnetic className="w-full">
-            <Button className="w-full" asChild>
+            <Button className="min-h-[44px] w-full px-5 py-2.5" asChild>
               <Link href={waLink(message)} target="_blank" rel="noopener noreferrer">
                 <span className="link-glint">Get Quote on WhatsApp</span>
               </Link>

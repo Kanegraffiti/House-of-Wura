@@ -7,10 +7,7 @@
     "category": "Couture",
     "colors": ["Gold", "Champagne"],
     "sizes": ["6", "8", "10", "12"],
-    "images": [
-      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518",
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1"
-    ],
+    "images": ["eveningGlow", "lookbookStudio"],
     "description": "Hand-beaded evening gown with sculpted bodice and flowing silk skirt.",
     "tags": ["evening", "luxury", "gold"],
     "sku": "HW-GOWN-001"
@@ -23,10 +20,7 @@
     "category": "Traditional",
     "colors": ["Wine", "Gold", "Ivory"],
     "sizes": ["Custom"],
-    "images": [
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-      "https://images.unsplash.com/photo-1462396881884-de2c07cb95ed"
-    ],
+    "images": ["bridalRadiance", "bridalDetail"],
     "description": "Custom woven aso-oke ensemble with intricate metallic threading.",
     "tags": ["aso-oke", "bridal"],
     "sku": "HW-ASO-002"
@@ -39,10 +33,7 @@
     "category": "Menswear",
     "colors": ["Near Black", "Midnight"],
     "sizes": ["38", "40", "42", "44"],
-    "images": [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
-      "https://images.unsplash.com/photo-1507679799987-c73779587ccf"
-    ],
+    "images": ["menswearClassic", "menswearDetail"],
     "description": "Tailored tuxedo with satin lapels and silk-lined interior.",
     "tags": ["tuxedo", "menswear"],
     "sku": "HW-SUIT-003"
@@ -55,10 +46,7 @@
     "category": "Bridal",
     "colors": ["Ivory", "Soft Gold"],
     "sizes": ["Custom"],
-    "images": [
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
-      "https://images.unsplash.com/photo-1525182008055-f88b95ff7980"
-    ],
+    "images": ["hero", "bridalDetail"],
     "description": "Ethereal bridal reception dress with hand-applied crystals.",
     "tags": ["bridal", "reception"],
     "sku": "HW-BRIDE-004"
@@ -71,10 +59,7 @@
     "category": "Ready-to-Wear",
     "colors": ["Gold", "Black"],
     "sizes": ["S", "M", "L"],
-    "images": [
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f",
-      "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
-    ],
+    "images": ["capeStatement", "eventDetail"],
     "description": "Statement cape blazer with structured shoulders and satin lining.",
     "tags": ["blazer", "editorial"],
     "sku": "HW-RTW-005"
@@ -87,10 +72,7 @@
     "category": "Bridal",
     "colors": ["White", "Soft Gold"],
     "sizes": ["S", "M", "L"],
-    "images": [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1"
-    ],
+    "images": ["robeSerenity", "bridalDetail"],
     "description": "Feather-light bridal robe with hand-finished lace trims.",
     "tags": ["bridal", "robe"],
     "sku": "HW-BRIDE-006"
@@ -103,10 +85,7 @@
     "category": "Resort",
     "colors": ["Sand", "Terracotta"],
     "sizes": ["S", "M", "L", "XL"],
-    "images": [
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
-      "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2"
-    ],
+    "images": ["kaftanFlow", "resortEase"],
     "description": "Fluid silk kaftan with hand-painted motifs and braided belt.",
     "tags": ["kaftan", "resort"],
     "sku": "HW-RESORT-007"
@@ -119,10 +98,7 @@
     "category": "Traditional",
     "colors": ["Wine", "Black"],
     "sizes": ["Custom"],
-    "images": [
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f",
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
-    ],
+    "images": ["agbadaRegalia", "menswearRegal"],
     "description": "Velvet agbada set with metallic embroidery and hand-cut tassels.",
     "tags": ["agbada", "menswear"],
     "sku": "HW-TRAD-008"
@@ -135,10 +111,7 @@
     "category": "Accessories",
     "colors": ["Gold", "Wine"],
     "sizes": ["37", "38", "39", "40", "41"],
-    "images": [
-      "https://images.unsplash.com/photo-1514996937319-344454492b37",
-      "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2"
-    ],
+    "images": ["crystalHeels", "accessoryGlam"],
     "description": "Crystal embellished stilettos with plush leather footbed.",
     "tags": ["heels", "accessories"],
     "sku": "HW-ACC-009"
@@ -151,10 +124,7 @@
     "category": "Ready-to-Wear",
     "colors": ["Ivory", "Wine"],
     "sizes": ["6", "8", "10"],
-    "images": [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
-      "https://images.unsplash.com/photo-1525182008055-f88b95ff7980"
-    ],
+    "images": ["cocktailSilhouette", "heroEditorial"],
     "description": "Cocktail dress with sculpted waist and cascading ruffle detail.",
     "tags": ["cocktail", "party"],
     "sku": "HW-RTW-010"

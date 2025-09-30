@@ -1,0 +1,94 @@
+{
+  "hero": {
+    "url": "https://images.unsplash.com/photo-1559599101-bf23f7abd1b2",
+    "alt": "Nigerian bride in elegant gele and beaded gown"
+  },
+  "heroEditorial": {
+    "url": "https://images.unsplash.com/photo-1583394838336-acd977736f90",
+    "alt": "Editorial portrait of Black model in ankara print dress"
+  },
+  "heroCelebration": {
+    "url": "https://images.pexels.com/photos/4173151/pexels-photo-4173151.jpeg",
+    "alt": "Owambe celebration with guests in coordinated aso-ebi lace"
+  },
+  "heroRunway": {
+    "url": "https://images.unsplash.com/photo-1548345680-f5475ea5df84",
+    "alt": "Runway shot featuring African designer couture"
+  },
+  "lookbookPortrait": {
+    "url": "https://images.unsplash.com/photo-1600948836101-f9ffda59d250",
+    "alt": "Gold bridal headpiece resting on dark velvet fabric"
+  },
+  "lookbookStudio": {
+    "url": "https://images.pexels.com/photos/3052700/pexels-photo-3052700.jpeg",
+    "alt": "Studio portrait of Nigerian models in vibrant aso-oke gowns"
+  },
+  "atelier": {
+    "url": "https://images.unsplash.com/photo-1597262975002-c5c3b14bbd62",
+    "alt": "Fashion designer adjusting beaded gown inside Lagos atelier"
+  },
+  "eventDetail": {
+    "url": "https://images.pexels.com/photos/3753550/pexels-photo-3753550.jpeg",
+    "alt": "Red carpet entrance at a high-society Nigerian celebration"
+  },
+  "menswearRegal": {
+    "url": "https://images.pexels.com/photos/937047/pexels-photo-937047.jpeg",
+    "alt": "Nigerian gentleman in embroidered agbada and fila cap"
+  },
+  "menswearClassic": {
+    "url": "https://images.unsplash.com/photo-1520962914836-4c83e66b82ff",
+    "alt": "Elegant Black model wearing midnight tuxedo with satin lapel"
+  },
+  "menswearDetail": {
+    "url": "https://images.pexels.com/photos/6311397/pexels-photo-6311397.jpeg",
+    "alt": "Close-up of tailored tuxedo lapel with Yoruba-inspired brooch"
+  },
+  "bridalRadiance": {
+    "url": "https://images.unsplash.com/photo-1585386959984-a4155224a1ad",
+    "alt": "Yoruba bride smiling in coral beads and hand-beaded aso-oke"
+  },
+  "bridalDetail": {
+    "url": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",
+    "alt": "Close-up of aso-oke fabric with shimmering beadwork"
+  },
+  "kaftanFlow": {
+    "url": "https://images.pexels.com/photos/1394900/pexels-photo-1394900.jpeg",
+    "alt": "Model twirling in flowing ankara kaftan under evening light"
+  },
+  "agbadaRegalia": {
+    "url": "https://images.pexels.com/photos/3812390/pexels-photo-3812390.jpeg",
+    "alt": "Regal agbada look with richly embroidered panels"
+  },
+  "geleEditorial": {
+    "url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+    "alt": "Editorial beauty portrait with sculpted gele and pearls"
+  },
+  "eveningGlow": {
+    "url": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518",
+    "alt": "Evening gown with shimmering gold sequins in studio lighting"
+  },
+  "capeStatement": {
+    "url": "https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg",
+    "alt": "Statement cape blazer styled with ornate waist belt"
+  },
+  "robeSerenity": {
+    "url": "https://images.pexels.com/photos/3613386/pexels-photo-3613386.jpeg",
+    "alt": "Bridal robe with lace appliqué draped over chaise"
+  },
+  "resortEase": {
+    "url": "https://images.pexels.com/photos/4611980/pexels-photo-4611980.jpeg",
+    "alt": "Resort kaftan with hand-painted motifs at seaside terrace"
+  },
+  "accessoryGlam": {
+    "url": "https://images.pexels.com/photos/3641053/pexels-photo-3641053.jpeg",
+    "alt": "Close-up of handcrafted gold accessories on velvet tray"
+  },
+  "crystalHeels": {
+    "url": "https://images.pexels.com/photos/2879857/pexels-photo-2879857.jpeg",
+    "alt": "Crystal embellished stilettos displayed on mirrored tray"
+  },
+  "cocktailSilhouette": {
+    "url": "https://images.pexels.com/photos/3760855/pexels-photo-3760855.jpeg",
+    "alt": "Model in structured cocktail dress with Ankara-inspired sash"
+  }
+}

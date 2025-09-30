@@ -20,6 +20,10 @@
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ring: 2px;
+  --fz-h1: clamp(28px, 2.2vw + 18px, 48px);
+  --fz-h2: clamp(22px, 1.8vw + 14px, 36px);
+  --fz-body: clamp(14px, 0.6vw + 12px, 18px);
+  --fz-lead: clamp(16px, 0.8vw + 12px, 20px);
 }
 
 *,
@@ -28,8 +32,29 @@
   box-sizing: border-box;
 }
 
+h1 {
+  font-size: var(--fz-h1);
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: var(--fz-h2);
+  line-height: 1.2;
+}
+
 body {
   @apply bg-[var(--background)] text-[var(--foreground)] font-sans antialiased;
+  font-size: var(--fz-body);
+  line-height: 1.6;
+}
+
+.lead {
+  font-size: var(--fz-lead);
+}
+
+.cq {
+  container-type: inline-size;
+  container-name: section;
 }
 
 ::selection {

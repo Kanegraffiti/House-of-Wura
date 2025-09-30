@@ -1,52 +1,45 @@
 import Link from 'next/link';
 
-import { FadeImage } from '@/components/site/FadeImage';
+import ImageSmart from '@/components/site/ImageSmart';
+import { getMedia, type MediaKey } from '@/lib/media';
 
-const DEFAULT_IMAGES = [
-  {
-    src: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
-    alt: 'House of Wura couture gown fitting'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
-    alt: 'Wedding celebration styled by House of Wura'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1525182008055-f88b95ff7980',
-    alt: 'Editorial photoshoot in wine red gown'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1462396881884-de2c07cb95ed',
-    alt: 'Luxury table setting with gold details'
-  }
+const DEFAULT_MEDIA_KEYS: MediaKey[] = [
+  'heroEditorial',
+  'heroCelebration',
+  'heroRunway',
+  'lookbookPortrait'
 ];
 
 interface InstaGridProps {
-  images?: typeof DEFAULT_IMAGES;
+  mediaKeys?: MediaKey[];
 }
 
-export function InstaGrid({ images = DEFAULT_IMAGES }: InstaGridProps) {
+export function InstaGrid({ mediaKeys = DEFAULT_MEDIA_KEYS }: InstaGridProps) {
   const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/_houseofwurafashions';
+  const items = mediaKeys.map((key) => ({ key, ...getMedia(key) }));
+
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-      {images.map((image, index) => (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:gap-6">
+      {items.map((image) => (
         <Link
-          key={index}
+          key={image.key}
           href={instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="View on Instagram"
           className="group relative block overflow-hidden rounded-3xl"
         >
-          <FadeImage
-            src={`${image.src}?auto=format&fit=crop&w=800&q=80`}
-            alt={image.alt}
-            width={400}
-            height={400}
-            loading="lazy"
-            className="img-fade h-full w-full object-cover transition duration-200 ease-std group-hover:scale-[1.03]"
-          />
+          <div className="relative aspect-square">
+            <ImageSmart
+              src={`${image.url}?auto=format&fit=crop&w=900&q=80`}
+              alt={image.alt}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 260px"
+              className="object-cover transition duration-200 ease-std group-hover:scale-[1.03]"
+            />
+          </div>
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent opacity-0 transition-opacity duration-200 ease-std group-hover:opacity-100" />
+          <span className="sr-only">{image.alt}</span>
         </Link>
       ))}
     </div>

@@ -17,26 +17,14 @@ import { Testimonial } from '@/components/site/Testimonial';
 import { ProductCard } from '@/app/(shop)/components/ProductCard';
 import { formatWhatsappDisplay } from '@/lib/format';
 import { getConfiguredWhatsAppNumber, waLink } from '@/lib/wa';
+import { getMedia, type MediaKey } from '@/lib/media';
 
 const heroMessage = "Hello House of Wura! I'm ready to craft a luxury celebration.";
-const heroSlides = [
-  {
-    src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
-    alt: 'Newlyweds sharing a first dance at a candlelit celebration.'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
-    alt: 'Couture stylist adjusting an embellished gown on a model.'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1525182008055-f88b95ff7980',
-    alt: 'Evening fashion editorial captured in motion.'
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1462396881884-de2c07cb95ed',
-    alt: 'Luxury event dinner table setting with golden lighting.'
-  }
-];
+const heroSlideKeys: MediaKey[] = ['hero', 'heroEditorial', 'heroCelebration', 'heroRunway'];
+const heroSlides = heroSlideKeys.map((key) => {
+  const media = getMedia(key);
+  return { src: media.url, alt: media.alt };
+});
 
 const services = [
   {
@@ -106,7 +94,7 @@ export default function HomePage() {
       />
       <section className="relative overflow-hidden bg-wura-black text-wura-white">
         <HeroBackgroundSlideshow slides={heroSlides} className="opacity-60" />
-        <Container className="relative flex min-h-[80vh] flex-col justify-center py-32">
+        <Container className="cq relative flex min-h-[80vh] flex-col justify-center py-24 sm:py-32">
           <Parallax>
             <div className="max-w-2xl space-y-6">
               <Reveal>
@@ -115,19 +103,19 @@ export default function HomePage() {
                 </p>
               </Reveal>
               <Reveal delay={0.1}>
-                <h1 className="font-display text-5xl leading-tight sm:text-6xl">
+                <h1 className="font-display leading-tight">
                   Crafted moments that feel like art.
                 </h1>
               </Reveal>
               <Reveal delay={0.18}>
-                <p className="text-lg text-wura-white/80">
+                <p className="lead text-wura-white/80">
                   House of Wura curates couture fashion, weddings, and experiential events that shimmer with cultural heritage and modern luxury.
                 </p>
               </Reveal>
               <Reveal delay={0.22}>
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <Magnetic>
-                    <Button className="w-full sm:w-auto" asChild>
+                    <Button className="min-h-[44px] w-full px-5 py-2.5 sm:w-auto" asChild>
                       <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
                         <span className="link-glint">Chat on WhatsApp</span>
                       </Link>
@@ -136,7 +124,7 @@ export default function HomePage() {
                   <Magnetic>
                     <Button
                       variant="outline"
-                      className="w-full border-wura-gold text-wura-white hover:text-wura-black sm:w-auto"
+                      className="min-h-[44px] w-full border-wura-gold px-5 py-2.5 text-wura-white hover:text-wura-black sm:w-auto"
                       asChild
                     >
                       <Link href="/lookbook">
@@ -152,7 +140,7 @@ export default function HomePage() {
       </section>
 
       <Section>
-        <Container className="space-y-12">
+        <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
               eyebrow="Signature Services"
@@ -160,7 +148,7 @@ export default function HomePage() {
               description="From multi-day weddings to red carpet wardrobes, each service is tailored to your personal mythology."
             />
           </Reveal>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
             {services.map((service, index) => (
               <Reveal key={service.title} delay={index * 0.08}>
                 <ServiceCard {...service} />
@@ -171,7 +159,7 @@ export default function HomePage() {
       </Section>
 
       <Section className="bg-wura-black/5">
-        <Container className="space-y-12">
+        <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
               eyebrow="House of Wura Shop"
@@ -180,7 +168,7 @@ export default function HomePage() {
             />
           </Reveal>
           <Reveal delay={0.05}>
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 sm:gap-8">
               {featuredProducts.map((product, index) => (
                 <Reveal key={product.id} delay={index * 0.05}>
                   <ProductCard product={product} />
@@ -191,7 +179,7 @@ export default function HomePage() {
           <Reveal delay={0.12}>
             <div className="flex justify-center">
               <Magnetic>
-                <Button variant="outline" className="border-wura-gold" asChild>
+                <Button variant="outline" className="min-h-[44px] border-wura-gold px-5 py-2.5" asChild>
                   <Link href="/shop">
                     <span className="link-glint">View all creations</span>
                   </Link>
@@ -203,7 +191,7 @@ export default function HomePage() {
       </Section>
 
       <Section>
-        <Container className="space-y-12">
+        <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
               eyebrow="Client Stories"
@@ -211,7 +199,7 @@ export default function HomePage() {
               description="A glimpse into the celebrations and wardrobes we have the honour to create."
             />
           </Reveal>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
             {testimonials.map((testimonial, index) => (
               <Reveal key={testimonial.name} delay={index * 0.08}>
                 <Testimonial {...testimonial} />
@@ -222,7 +210,7 @@ export default function HomePage() {
       </Section>
 
       <Section className="bg-wura-black text-wura-white">
-        <Container className="space-y-12">
+        <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
               eyebrow="Moments in Motion"
@@ -238,17 +226,17 @@ export default function HomePage() {
       </Section>
 
       <Section>
-        <Container className="flex flex-col gap-10 rounded-3xl bg-gradient-to-br from-wura-gold/20 via-white to-wura-wine/15 p-10 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+        <Container className="cq flex flex-col gap-10 rounded-3xl bg-gradient-to-br from-wura-gold/20 via-white to-wura-wine/15 p-8 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
           <Reveal>
             <div className="space-y-4">
-              <h2 className="font-display text-3xl text-wura-black">Ready to create your next legend?</h2>
-              <p className="text-sm text-wura-black/70 sm:text-base">
+              <h2 className="font-display text-wura-black">Ready to create your next legend?</h2>
+              <p className="lead text-wura-black/70">
                 Tell us your vision and our concierge team will respond on WhatsApp with curated ideas.
               </p>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
-            <Button className="w-full flex-shrink-0 sm:w-auto" asChild>
+            <Button className="min-h-[44px] w-full flex-shrink-0 px-5 py-2.5 sm:w-auto" asChild>
               <Link
                 href={waLink('Hello House of Wura! I am ready to begin planning with you.')}
                 target="_blank"
