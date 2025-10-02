@@ -1,12 +1,13 @@
 export const runtime = 'edge';
 import { NextResponse } from 'next/server';
-import { get, put } from '@vercel/blob';
+import { put } from '@vercel/blob';
+
+import { fetchOrder } from '@/lib/orders/storage';
 
 export async function GET(_: Request, { params }: { params: { orderId: string } }) {
   try {
-    const f = await get(`orders/${params.orderId}.json`);
-    const text = await f.blob().then((b) => b.text());
-    return NextResponse.json({ ok: true, order: JSON.parse(text) });
+    const order = await fetchOrder(params.orderId);
+    return NextResponse.json({ ok: true, order });
   } catch {
     return NextResponse.json({ ok: false, error: 'NOT_FOUND' }, { status: 404 });
   }
@@ -14,9 +15,7 @@ export async function GET(_: Request, { params }: { params: { orderId: string } 
 
 export async function PATCH(req: Request, { params }: { params: { orderId: string } }) {
   try {
-    const f = await get(`orders/${params.orderId}.json`);
-    const text = await f.blob().then((b) => b.text());
-    const existing = JSON.parse(text);
+    const existing = await fetchOrder(params.orderId);
     const patch = await req.json();
 
     if (patch.status === 'CONFIRMED') existing.confirmedAt = Date.now();
