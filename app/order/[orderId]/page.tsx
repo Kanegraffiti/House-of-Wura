@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { get } from '@vercel/blob';
 
 import ProofUploader from '@/components/site/ProofUploader';
 import { formatCurrency, formatDateTime, formatWhatsappDisplay } from '@/lib/format';
 import { waLink } from '@/lib/wa';
 import type { OrderType } from '@/lib/orders/schema';
+import { fetchOrder } from '@/lib/orders/storage';
 
 export const revalidate = 0;
 
@@ -26,9 +26,7 @@ function statusLabel(status: OrderType['status']) {
 export default async function OrderPage({ params }: { params: { orderId: string } }) {
   let order: OrderType | null = null;
   try {
-    const file = await get(`orders/${params.orderId}.json`);
-    const text = await file.blob().then((b) => b.text());
-    order = JSON.parse(text) as OrderType;
+    order = await fetchOrder(params.orderId);
   } catch {
     order = null;
   }

@@ -1,6 +1,8 @@
 export const runtime = 'nodejs';
 import { NextResponse } from 'next/server';
-import { put, get } from '@vercel/blob';
+import { put } from '@vercel/blob';
+
+import { fetchOrder } from '@/lib/orders/storage';
 
 export async function POST(req: Request, { params }: { params: { orderId: string } }) {
   try {
@@ -13,9 +15,7 @@ export async function POST(req: Request, { params }: { params: { orderId: string
     const key = `proofs/${params.orderId}/${Date.now()}_${(file.name || 'proof').replace(/\s+/g, '_')}`;
     const up = await put(key, file, { access: 'private' });
 
-    const f = await get(`orders/${params.orderId}.json`);
-    const text = await f.blob().then((b) => b.text());
-    const o = JSON.parse(text);
+    const o = await fetchOrder(params.orderId);
     o.status = 'PROOF_SUBMITTED';
     o.proof = o.proof || { urls: [] };
     o.proof.urls.push(up.url);
