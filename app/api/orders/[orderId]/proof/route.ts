@@ -13,7 +13,7 @@ export async function POST(req: Request, { params }: { params: { orderId: string
     if (file.size > 5 * 1024 * 1024) return NextResponse.json({ ok: false, error: 'TOO_LARGE' }, { status: 400 });
 
     const key = `proofs/${params.orderId}/${Date.now()}_${(file.name || 'proof').replace(/\s+/g, '_')}`;
-    const up = await put(key, file, { access: 'private' });
+    const up = await put(key, file, { access: 'public' });
 
     const o = await fetchOrder(params.orderId);
     o.status = 'PROOF_SUBMITTED';
@@ -23,7 +23,7 @@ export async function POST(req: Request, { params }: { params: { orderId: string
     o.proof.submittedAt = Date.now();
 
     await put(`orders/${params.orderId}.json`, JSON.stringify(o, null, 2), {
-      access: 'private',
+      access: 'public',
       contentType: 'application/json'
     });
     return NextResponse.json({ ok: true, url: up.url });
