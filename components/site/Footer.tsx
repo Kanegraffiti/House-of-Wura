@@ -71,7 +71,17 @@ export function Footer() {
       <div className="border-t border-white/10 bg-wura-black/80">
         <Container className="flex flex-col items-center justify-between gap-2 py-6 text-xs uppercase tracking-[0.35em] text-wura-white/60 sm:flex-row">
           <p>© {year} House of Wura. All rights reserved.</p>
-          <p>Made with love.</p>
+          <p>
+            MADE WITH LOVE BY{' '}
+            <Link
+              href="https://kelechiannabellenwankwo.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-wura-white transition-colors duration-200 ease-std hover:text-wura-gold"
+            >
+              KC
+            </Link>
+          </p>
         </Container>
       </div>
     </footer>

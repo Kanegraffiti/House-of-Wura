@@ -24,7 +24,8 @@ export function loadCart(): CartState {
     const raw = localStorage.getItem(KEY);
     if (!raw) return EMPTY_CART;
     const parsed = JSON.parse(raw);
-    const items = Array.isArray(parsed?.items) ? parsed.items.filter(isValidCartItem) : [];
+    const parsedItems: unknown[] = Array.isArray(parsed?.items) ? parsed.items : [];
+    const items = parsedItems.filter(isValidCartItem);
     const normalized = items.map((item) => ({
       ...item,
       qty: Math.max(1, Math.floor(Number(item.qty) || 1))
