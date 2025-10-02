@@ -12,6 +12,7 @@ export type CartItem = {
 export type CartState = { items: CartItem[] };
 
 export type CartAction =
+  | { type: 'HYDRATE'; payload: CartState }
   | { type: 'ADD_ITEM'; payload: CartItem }
   | { type: 'REMOVE_ITEM'; payload: { sku: string; color?: string; size?: string } }
   | { type: 'INCREMENT'; payload: { sku: string; color?: string; size?: string } }
