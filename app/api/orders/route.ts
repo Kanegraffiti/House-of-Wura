@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       ...body
     };
     await put(`orders/${orderId}.json`, JSON.stringify(data, null, 2), {
-      access: 'private',
+      access: 'public',
       contentType: 'application/json'
     });
     return NextResponse.json({ ok: true, orderId });

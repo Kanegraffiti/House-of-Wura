@@ -74,7 +74,7 @@ Reply concise, warm, and on-brand.
       ]
     });
 
-    return result.toAIStreamResponse();
+    return result.toDataStreamResponse();
   } catch (e: any) {
     if (process.env.DEBUG_WURA === 'true') console.error('POST /api/chat', e);
     return NextResponse.json({ ok: false, error: 'CHAT_FAILED' }, { status: 500 });
