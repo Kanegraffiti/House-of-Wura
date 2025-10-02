@@ -1,80 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+export const runtime = 'edge';
+import { NextResponse } from 'next/server';
+import { get, put } from '@vercel/blob';
 
-import { getJson, putJson } from '@/lib/blob';
-import type { OrderType } from '@/lib/orders/schema';
-import { getAdminFromCookie } from '@/lib/auth';
-
-const PatchSchema = z.object({
-  status: z.enum(['PENDING', 'PROOF_SUBMITTED', 'CONFIRMED', 'REJECTED']).optional(),
-  notes: z.string().optional(),
-  rejectReason: z.string().optional(),
-  proof: z
-    .object({
-      reference: z.string().optional()
-    })
-    .optional()
-});
-
-export async function GET(_req: NextRequest, { params }: { params: { orderId: string } }) {
-  const order = await getJson<OrderType>(`orders/${params.orderId}.json`);
-  if (!order) {
-    return NextResponse.json({ ok: false, error: 'Not found' }, { status: 404 });
+export async function GET(_: Request, { params }: { params: { orderId: string } }) {
+  try {
+    const f = await get(`orders/${params.orderId}.json`);
+    const text = await f.blob().then((b) => b.text());
+    return NextResponse.json({ ok: true, order: JSON.parse(text) });
+  } catch {
+    return NextResponse.json({ ok: false, error: 'NOT_FOUND' }, { status: 404 });
   }
-  return NextResponse.json({ ok: true, order });
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { orderId: string } }) {
-  const cookies = req.headers.get('cookie');
-  const admin = await getAdminFromCookie(cookies);
-  if (!admin) {
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-  }
-
-  let existing = await getJson<OrderType>(`orders/${params.orderId}.json`);
-  if (!existing) {
-    return NextResponse.json({ ok: false, error: 'Not found' }, { status: 404 });
-  }
-
-  let patch: z.infer<typeof PatchSchema>;
+export async function PATCH(req: Request, { params }: { params: { orderId: string } }) {
   try {
-    const raw = await req.json();
-    patch = PatchSchema.parse(raw);
-  } catch (error) {
-    return NextResponse.json({ ok: false, error: 'Invalid payload' }, { status: 400 });
-  }
+    const f = await get(`orders/${params.orderId}.json`);
+    const text = await f.blob().then((b) => b.text());
+    const existing = JSON.parse(text);
+    const patch = await req.json();
 
-  if (patch.notes !== undefined) {
-    existing.notes = patch.notes.trim() || undefined;
-  }
-
-  if (patch.proof?.reference !== undefined) {
-    existing.proof = existing.proof || { urls: [] };
-    existing.proof.reference = patch.proof.reference.trim() || undefined;
-  }
-
-  if (patch.rejectReason !== undefined) {
-    existing.rejectReason = patch.rejectReason.trim() || undefined;
-  }
-
-  if (patch.status && patch.status !== existing.status) {
-    existing.status = patch.status;
-    if (patch.status === 'CONFIRMED') {
-      existing.confirmedAt = Date.now();
-      existing.rejectedAt = undefined;
-      existing.rejectReason = undefined;
-    } else if (patch.status === 'REJECTED') {
+    if (patch.status === 'CONFIRMED') existing.confirmedAt = Date.now();
+    if (patch.status === 'REJECTED') {
       existing.rejectedAt = Date.now();
-      if (!existing.rejectReason) {
-        existing.rejectReason = 'No reason provided';
-      }
-    } else {
-      existing.confirmedAt = undefined;
-      existing.rejectedAt = undefined;
-      existing.rejectReason = patch.rejectReason?.trim() || undefined;
+      existing.rejectReason = patch.rejectReason || '';
     }
-  }
+    if (patch.status) existing.status = patch.status;
+    if (patch.notes !== undefined) existing.notes = patch.notes;
 
-  await putJson(`orders/${params.orderId}.json`, existing);
-  return NextResponse.json({ ok: true, order: existing });
+    await put(`orders/${params.orderId}.json`, JSON.stringify(existing, null, 2), {
+      access: 'private',
+      contentType: 'application/json'
+    });
+    return NextResponse.json({ ok: true, order: existing });
+  } catch (e: any) {
+    if (process.env.DEBUG_WURA === 'true') console.error('PATCH /api/orders', e);
+    return NextResponse.json({ ok: false, error: 'PATCH_FAILED' }, { status: 500 });
+  }
 }

@@ -2,7 +2,6 @@
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useChat } from 'ai/react';
 import { Loader2, Send, Sparkles, X } from 'lucide-react';
 
 import { trans } from '@/lib/motion';
@@ -16,6 +15,11 @@ interface ChatWidgetPanelProps {
   fallbackWhatsApp: string;
 }
 
+type ChatMessage = {
+  role: 'user' | 'assistant';
+  content: string;
+};
+
 export default function ChatWidgetPanel({
   id = 'wura-chat-widget',
   open,
@@ -25,61 +29,108 @@ export default function ChatWidgetPanel({
 }: ChatWidgetPanelProps) {
   const [improveOptIn, setImproveOptIn] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
+  const [input, setInput] = useState('');
+  const [msgs, setMsgs] = useState<ChatMessage[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const msgsRef = useRef<ChatMessage[]>([]);
+  msgsRef.current = msgs;
 
   const initialMessage = useMemo(
     () => ({
-      id: 'welcome',
       role: 'assistant' as const,
-      content:
-        "Hello! I'm Wura, the digital stylist for House of Wura. Ask about services, sizing, timelines, or couture care."
+      content: "Hello! I'm Wura, the digital stylist for House of Wura. Ask about services, sizing, timelines, or couture care."
     }),
     []
   );
-
-  const {
-    messages,
-    input,
-    handleInputChange,
-    handleSubmit,
-    isLoading,
-    stop,
-    setInput
-  } = useChat({
-    api: '/api/chat',
-    initialMessages: [initialMessage],
-    sendExtraMessageFields: false
-  });
 
   useEffect(() => {
     if (open) {
       inputRef.current?.focus();
       return;
     }
-    stop();
-  }, [open, stop]);
-
-  useEffect(() => {
-    if (!open) {
-      setInput('');
-    }
-  }, [open, setInput]);
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!input.trim()) return;
-    void handleSubmit(event, {
-      body: {
-        improveOptIn
-      }
-    });
-  };
+    controllerRef.current?.abort();
+    controllerRef.current = null;
+    setInput('');
+  }, [open]);
 
   const close = () => {
     onOpenChange?.(false);
     onClose?.();
   };
 
-  const thread = messages.filter((message) => message.id !== 'welcome');
+  const send = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const prompt = input.trim();
+    if (!prompt || isStreaming) return;
+
+    const userMessage: ChatMessage = { role: 'user', content: prompt };
+    const nextMessages = [...msgsRef.current, userMessage];
+    setMsgs(nextMessages);
+    setInput('');
+    setIsStreaming(true);
+
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: nextMessages, improveOptIn }),
+        signal: controller.signal
+      });
+
+      if (!res.ok) {
+        const j = await res.json().catch(() => ({}));
+        setMsgs((s) => [
+          ...s,
+          {
+            role: 'assistant',
+            content:
+              j?.error === 'NO_OPENAI_KEY'
+                ? 'Assistant is temporarily offline. Please use WhatsApp for quick help.'
+                : "Hmm, I couldn't reach the assistant right now. Please try again or use WhatsApp."
+          }
+        ]);
+        return;
+      }
+
+      if (!res.body) {
+        setMsgs((s) => [
+          ...s,
+          { role: 'assistant', content: "Hmm, I couldn't reach the assistant right now. Please try again or use WhatsApp." }
+        ]);
+        return;
+      }
+
+      setMsgs((s) => [...s, { role: 'assistant', content: '' }]);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let acc = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        acc += decoder.decode(value, { stream: true });
+        setMsgs((s) => {
+          const copy = [...s];
+          copy[copy.length - 1] = { role: 'assistant', content: acc };
+          return copy;
+        });
+      }
+    } catch (err) {
+      if ((err as Error).name === 'AbortError') return;
+      setMsgs((s) => [
+        ...s,
+        { role: 'assistant', content: 'Network error. Please try again or use WhatsApp.' }
+      ]);
+    } finally {
+      controllerRef.current = null;
+      setIsStreaming(false);
+    }
+  };
+
+  const thread = msgs;
 
   return (
     <AnimatePresence>
@@ -118,9 +169,9 @@ export default function ChatWidgetPanel({
                 </span>
               </motion.div>
               <AnimatePresence initial={false}>
-                {thread.map((message) => (
+                {thread.map((message, index) => (
                   <motion.div
-                    key={message.id}
+                    key={`${message.role}-${index}-${message.content.slice(0, 6)}`}
                     layout
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0, transition: trans(0.18) }}
@@ -140,7 +191,7 @@ export default function ChatWidgetPanel({
                   </motion.div>
                 ))}
               </AnimatePresence>
-              {isLoading && (
+              {isStreaming && (
                 <div className="flex justify-start">
                   <span className="inline-flex items-center gap-2 rounded-2xl bg-wura-black/5 px-3 py-2 text-xs uppercase tracking-[0.3em] text-wura-black/50">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
@@ -151,22 +202,23 @@ export default function ChatWidgetPanel({
             </div>
 
             <div className="space-y-3 border-t border-wura-black/10 px-4 py-3">
-              <form onSubmit={onSubmit} className="space-y-3">
+              <form onSubmit={send} className="space-y-3">
                 <div className="flex gap-2">
                   <input
                     ref={inputRef}
                     value={input}
-                    onChange={handleInputChange}
+                    onChange={(event) => setInput(event.target.value)}
                     placeholder="Ask about services, sizing, care, or policies…"
                     className="flex-1 rounded-full border border-wura-black/15 bg-white px-4 py-2 text-sm text-wura-black placeholder:text-wura-black/40 focus:border-wura-gold focus:outline-none"
                     autoComplete="off"
+                    disabled={isStreaming}
                   />
                   <button
                     type="submit"
                     className="inline-flex h-10 min-w-[3rem] items-center justify-center rounded-full bg-wura-black px-3 text-sm font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-wura-wine"
-                    disabled={!input.trim() || isLoading}
+                    disabled={!input.trim() || isStreaming}
                   >
-                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Send className="h-4 w-4" aria-hidden />}
+                    {isStreaming ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Send className="h-4 w-4" aria-hidden />}
                     <span className="sr-only">Send</span>
                   </button>
                 </div>

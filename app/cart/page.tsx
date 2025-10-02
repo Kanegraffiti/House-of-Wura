@@ -11,10 +11,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Container } from '@/components/site/Container';
 import { Section } from '@/components/site/Section';
 import { formatCurrency } from '@/lib/format';
-import { countCartItems, sumDisplaySubtotal } from '@/lib/cart/utils';
-import { normalizePhone } from '@/lib/wa';
-import { buildWhatsAppDeeplink } from '@/lib/orders/message';
-import type { OrderType } from '@/lib/orders/schema';
+import { buildCartWhatsAppMessage, countCartItems, sumDisplaySubtotal } from '@/lib/cart/utils';
+import { normalizePhone, waLink } from '@/lib/wa';
 import { useCart } from '@/providers/CartProvider';
 
 const CONTACT_STORAGE_KEY = 'wura_last_contact';
@@ -69,13 +67,13 @@ export default function CartPage() {
     return Boolean(trimmedWhatsApp || trimmedEmail);
   }, [whatsappNumber, email]);
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (submitting) return;
+  const clearCart = () => dispatch({ type: 'CLEAR' });
 
+  async function checkout() {
+    if (submitting) return;
     setError(null);
 
-    if (state.items.length === 0) {
+    if (!state.items.length) {
       setError('Your cart is currently empty. Explore the shop to add looks.');
       return;
     }
@@ -107,9 +105,9 @@ export default function CartPage() {
         whatsappNumber: normalizedWhatsApp,
         email: trimmedEmail || undefined
       },
-      notes: notes.trim() || undefined,
       items: state.items,
-      displayedSubtotal: subtotal
+      displayedSubtotal: subtotal,
+      notes: notes.trim() || undefined
     };
 
     try {
@@ -118,39 +116,39 @@ export default function CartPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const data = await response.json();
-
-      if (!response.ok || !data?.orderId) {
-        throw new Error(data?.error || 'Unable to create order. Please try again.');
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
       }
 
-      const order: OrderType = {
-        orderId: data.orderId as string,
-        createdAt: Date.now(),
-        status: 'PENDING',
-        customer: payload.customer as OrderType['customer'],
-        notes: payload.notes,
-        items: payload.items,
-        displayedSubtotal: payload.displayedSubtotal ?? 0,
-        proof: { urls: [] }
-      };
+      if (!response.ok || !data?.orderId) {
+        const message = data?.error || 'Unable to create order. Please try again or contact us on WhatsApp directly.';
+        setError(message);
+        setFeedback({ status: 'error', message });
+        return;
+      }
 
+      const orderId = data.orderId as string;
+      const message = buildCartWhatsAppMessage(state.items, payload.customer, notes.trim());
       try {
-        const waUrl = buildWhatsAppDeeplink(order);
-        window.open(waUrl, '_blank', 'noopener');
-      } catch (error) {
-        console.error('Failed to open WhatsApp link', error);
+        window.open(waLink(`Order ${orderId}\n\n${message}`), '_blank', 'noopener');
+      } catch (err) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Failed to open WhatsApp link', err);
+        }
       }
 
       if (typeof window !== 'undefined') {
-        const record = JSON.stringify({ orderId: order.orderId, createdAt: Date.now() });
+        const record = JSON.stringify({ orderId, createdAt: Date.now() });
         localStorage.setItem(LAST_ORDER_KEY, record);
-        window.dispatchEvent(new CustomEvent('wura:last-order', { detail: { orderId: order.orderId } }));
+        window.dispatchEvent(new CustomEvent('wura:last-order', { detail: { orderId } }));
       }
 
       dispatch({ type: 'CLEAR' });
-      setFeedback({ status: 'sent', orderId: order.orderId });
-      router.push(`/order/${order.orderId}`);
+      setFeedback({ status: 'sent', orderId });
+      router.push(`/order/${orderId}`);
     } catch (err) {
       console.error(err);
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
@@ -159,9 +157,12 @@ export default function CartPage() {
     } finally {
       setSubmitting(false);
     }
-  };
+  }
 
-  const clearCart = () => dispatch({ type: 'CLEAR' });
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await checkout();
+  };
 
   return (
     <Section className="bg-wura-black/5">
@@ -215,7 +216,9 @@ export default function CartPage() {
                           variant="outline"
                           size="icon"
                           aria-label={`Decrease quantity of ${item.title}`}
-                          onClick={() => dispatch({ type: 'DECREMENT', payload: { sku: item.sku, color: item.color, size: item.size } })}
+                          onClick={() =>
+                            dispatch({ type: 'DECREMENT', payload: { sku: item.sku, color: item.color, size: item.size } })
+                          }
                           className="h-8 w-8 rounded-full border-wura-black/15"
                         >
                           <Minus className="h-3 w-3" aria-hidden />
@@ -226,7 +229,9 @@ export default function CartPage() {
                           variant="outline"
                           size="icon"
                           aria-label={`Increase quantity of ${item.title}`}
-                          onClick={() => dispatch({ type: 'INCREMENT', payload: { sku: item.sku, color: item.color, size: item.size } })}
+                          onClick={() =>
+                            dispatch({ type: 'INCREMENT', payload: { sku: item.sku, color: item.color, size: item.size } })
+                          }
                           className="h-8 w-8 rounded-full border-wura-black/15"
                         >
                           <Plus className="h-3 w-3" aria-hidden />
@@ -236,7 +241,9 @@ export default function CartPage() {
                         type="button"
                         variant="ghost"
                         className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-wura-black/60 hover:text-wura-black"
-                        onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: { sku: item.sku, color: item.color, size: item.size } })}
+                        onClick={() =>
+                          dispatch({ type: 'REMOVE_ITEM', payload: { sku: item.sku, color: item.color, size: item.size } })
+                        }
                       >
                         <Trash2 className="h-3 w-3" aria-hidden /> Remove
                       </Button>
