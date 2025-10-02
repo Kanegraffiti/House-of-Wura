@@ -1,17 +1,12 @@
 import Link from 'next/link';
+import { get } from '@vercel/blob';
 
 import ProofUploader from '@/components/site/ProofUploader';
-import { getJson } from '@/lib/blob';
 import { formatCurrency, formatDateTime, formatWhatsappDisplay } from '@/lib/format';
 import { waLink } from '@/lib/wa';
 import type { OrderType } from '@/lib/orders/schema';
 
 export const revalidate = 0;
-
-async function fetchOrder(orderId: string) {
-  const data = await getJson<OrderType>(`orders/${orderId}.json`);
-  return data;
-}
 
 function statusLabel(status: OrderType['status']) {
   switch (status) {
@@ -28,29 +23,39 @@ function statusLabel(status: OrderType['status']) {
   }
 }
 
-export default async function OrderProofPage({ params }: { params: { orderId: string } }) {
-  const order = await fetchOrder(params.orderId);
+export default async function OrderPage({ params }: { params: { orderId: string } }) {
+  let order: OrderType | null = null;
+  try {
+    const file = await get(`orders/${params.orderId}.json`);
+    const text = await file.blob().then((b) => b.text());
+    order = JSON.parse(text) as OrderType;
+  } catch {
+    order = null;
+  }
+
   if (!order) {
     return (
       <div className="container mx-auto max-w-3xl space-y-4 py-16">
         <h1 className="font-display text-3xl text-wura-black">Order not found</h1>
         <p className="text-sm text-wura-black/70">
-          We could not locate that order. Double-check the link from checkout or contact Flora directly on WhatsApp with your
-          receipt and Order ID.
+          We couldn’t locate that order. Double-check your link or contact us on WhatsApp with the ID below so we can assist.
+        </p>
+        <p className="rounded-2xl border border-wura-black/10 bg-wura-black/5 p-4 text-sm text-wura-black/80">
+          Order ID: <span className="font-semibold">{params.orderId}</span>
         </p>
         <Link
-          href={waLink('Hello Flora, I need help locating my House of Wura order.')}
+          href={waLink(`Hello! I need help locating order ${params.orderId}.`)}
           className="inline-flex w-full items-center justify-center rounded-full bg-wura-black px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white hover:bg-wura-black/90 md:w-auto"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          Chat with Flora on WhatsApp
+          Chat on WhatsApp
         </Link>
       </div>
     );
   }
 
-  const whatsappHint = order.customer.whatsappNumber
-    ? formatWhatsappDisplay(order.customer.whatsappNumber)
-    : null;
+  const whatsappHint = order.customer.whatsappNumber ? formatWhatsappDisplay(order.customer.whatsappNumber) : null;
   const contactSummary = [
     whatsappHint ? `WhatsApp: ${whatsappHint}` : null,
     order.customer.email ? `Email: ${order.customer.email}` : null
@@ -78,8 +83,7 @@ export default async function OrderProofPage({ params }: { params: { orderId: st
       <div className="rounded-3xl border border-wura-black/15 bg-white/90 p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-wura-black">Step 1 — Upload payment proof</h2>
         <p className="mt-2 text-sm text-wura-black/70">
-          Share a clear screenshot, bank transfer receipt, or PDF below. Mention your Order ID if you speak with our concierge so
-          we can match the payment quickly.
+          Share a clear screenshot, bank transfer receipt, or PDF below. Mention your Order ID if you speak with our concierge so we can match the payment quickly.
         </p>
         <div className="mt-6">
           <ProofUploader orderId={order.orderId} reference={order.proof?.reference} />
@@ -89,8 +93,7 @@ export default async function OrderProofPage({ params }: { params: { orderId: st
       <div className="rounded-3xl border border-wura-black/15 bg-white/90 p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-wura-black">Step 2 — Let Flora know</h2>
         <p className="mt-2 text-sm text-wura-black/70">
-          Tap below to open WhatsApp with your Order ID ready to go. Share any extra details about your transfer so we can confirm
-          your look without delay.
+          Tap below to open WhatsApp with your Order ID ready to go. Share any extra details about your transfer so we can confirm your look without delay.
         </p>
         <div className="mt-4 flex flex-col gap-3 sm:flex-row">
           <Link

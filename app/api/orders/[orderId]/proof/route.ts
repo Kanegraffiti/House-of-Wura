@@ -1,58 +1,34 @@
-import { NextRequest, NextResponse } from 'next/server';
+export const runtime = 'nodejs';
+import { NextResponse } from 'next/server';
+import { put, get } from '@vercel/blob';
 
-import { appendProofFile, getJson, putJson } from '@/lib/blob';
-import type { OrderType } from '@/lib/orders/schema';
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ['application/pdf'];
-
-function isAllowedType(type: string) {
-  return type.startsWith('image/') || ALLOWED_TYPES.includes(type);
-}
-
-export async function POST(req: NextRequest, { params }: { params: { orderId: string } }) {
-  const form = await req.formData();
-  const file = form.get('file');
-  const reference = (form.get('reference') as string | null) || '';
-
-  if (!(file instanceof File)) {
-    return NextResponse.json({ ok: false, error: 'No file attached' }, { status: 400 });
-  }
-
-  if (!isAllowedType(file.type)) {
-    return NextResponse.json({ ok: false, error: 'Unsupported file type' }, { status: 400 });
-  }
-
-  if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json({ ok: false, error: 'File must be under 5MB' }, { status: 400 });
-  }
-
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-  const key = `proofs/${params.orderId}/${Date.now()}_${safeName}`;
-
+export async function POST(req: Request, { params }: { params: { orderId: string } }) {
   try {
-    const uploadResult = await appendProofFile(key, file);
-    const order = await getJson<OrderType>(`orders/${params.orderId}.json`);
+    const form = await req.formData();
+    const file = form.get('file') as File | null;
+    const reference = (form.get('reference') as string) || '';
+    if (!file) return NextResponse.json({ ok: false, error: 'NO_FILE' }, { status: 400 });
+    if (file.size > 5 * 1024 * 1024) return NextResponse.json({ ok: false, error: 'TOO_LARGE' }, { status: 400 });
 
-    if (!order) {
-      return NextResponse.json({ ok: false, error: 'Order not found' }, { status: 404 });
-    }
+    const key = `proofs/${params.orderId}/${Date.now()}_${(file.name || 'proof').replace(/\s+/g, '_')}`;
+    const up = await put(key, file, { access: 'private' });
 
-    order.proof = order.proof || { urls: [] };
-    order.proof.urls = [...(order.proof.urls || []), uploadResult.url];
-    if (reference.trim()) {
-      order.proof.reference = reference.trim();
-    }
-    order.proof.submittedAt = Date.now();
-    if (order.status !== 'CONFIRMED') {
-      order.status = 'PROOF_SUBMITTED';
-    }
+    const f = await get(`orders/${params.orderId}.json`);
+    const text = await f.blob().then((b) => b.text());
+    const o = JSON.parse(text);
+    o.status = 'PROOF_SUBMITTED';
+    o.proof = o.proof || { urls: [] };
+    o.proof.urls.push(up.url);
+    if (reference) o.proof.reference = reference;
+    o.proof.submittedAt = Date.now();
 
-    await putJson(`orders/${params.orderId}.json`, order);
-
-    return NextResponse.json({ ok: true, url: uploadResult.url });
-  } catch (error) {
-    console.error('Failed to store proof', error);
-    return NextResponse.json({ ok: false, error: 'Unable to upload proof at this time' }, { status: 500 });
+    await put(`orders/${params.orderId}.json`, JSON.stringify(o, null, 2), {
+      access: 'private',
+      contentType: 'application/json'
+    });
+    return NextResponse.json({ ok: true, url: up.url });
+  } catch (e: any) {
+    if (process.env.DEBUG_WURA === 'true') console.error('POST /proof', e);
+    return NextResponse.json({ ok: false, error: 'PROOF_UPLOAD_FAILED' }, { status: 500 });
   }
 }

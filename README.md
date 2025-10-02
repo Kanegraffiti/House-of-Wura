@@ -58,23 +58,23 @@ Create an `.env.local` file and add the following values:
 
 ```
 OPENAI_API_KEY=your-openai-key
-GROQ_API_KEY=optional-groq-key
 NEXT_PUBLIC_WA_NUMBER=2349060294599
 NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/_houseofwurafashions
 NEXT_PUBLIC_SITE_URL=https://houseofwura.vercel.app
 ADMIN_PASSWORD=your-admin-password
 JWT_SECRET=generate-a-long-random-string
 BLOB_READ_WRITE_TOKEN=vercel-blob-rw-token
+DEBUG_WURA=false
 ```
 
-- `OPENAI_API_KEY` powers the embedding build script and is used by the chat route when a Groq key isn't supplied.
-- `GROQ_API_KEY` (optional) enables the chat route to use Groq's Llama 3.1 models. If omitted the app falls back to OpenAI.
+- `OPENAI_API_KEY` powers the embedding build script and is required by the chat route.
 - `NEXT_PUBLIC_WA_NUMBER` should be digits only (no plus sign). All WhatsApp links are generated from this value.
 - `NEXT_PUBLIC_INSTAGRAM_URL` powers footer links and the floating Instagram button.
 - `NEXT_PUBLIC_SITE_URL` is used for sitemap/robots metadata and sharing links.
 - `ADMIN_PASSWORD` secures the `/admin/login` route. Set this in Vercel → Project Settings → Environment Variables (do not commit secrets).
 - `JWT_SECRET` signs the admin session cookie. Use a 32+ character random value.
 - `BLOB_READ_WRITE_TOKEN` is required for Vercel Blob access (Project → Storage → Blob → “Create Token”).
+- `DEBUG_WURA` (optional) enables verbose server-side logging for troubleshooting during development.
 
 > ℹ️ Never expose server-only values to the browser. Only `NEXT_PUBLIC_*` variables are available client-side.
 
@@ -159,6 +159,12 @@ Product cards automatically pick up changes and include colour/size selectors th
 2. Run `pnpm embed` to generate `data/embeddings.json` with OpenAI's `text-embedding-3-small` model. Commit the output for deterministic retrieval or regenerate whenever content changes.
 3. Deploy with `OPENAI_API_KEY` set. The Edge route at `/api/chat` streams responses using Vercel AI SDK and retrieved knowledge snippets.
 4. Optional: upload the generated embeddings to Vercel Blob if you prefer runtime storage outside the repo.
+
+### AI Helper Troubleshooting
+
+- Confirm `OPENAI_API_KEY` is configured for every Vercel environment (Production + Preview). Without it the assistant returns a `503` with `NO_OPENAI_KEY`.
+- Ensure `data/embeddings.json` exists in the repo or Blob. If missing, the chat route falls back to a no-context mode and logs a warning when `DEBUG_WURA=true`.
+- Check Vercel function logs for `/api/chat` responses — you should see status `200` with streaming chunks. Any 4xx/5xx indicates a misconfigured key or upstream failure.
 
 ### Performance & Motion Notes
 

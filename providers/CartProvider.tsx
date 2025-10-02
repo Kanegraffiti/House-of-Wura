@@ -1,58 +1,33 @@
 'use client';
-
 import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
-
-import type { CartAction, CartItem, CartState } from '@/lib/cart/types';
+import type { CartAction, CartState } from '@/lib/cart/types';
 import { loadCart, saveCart } from '@/lib/cart/storage';
 
-type CartContextValue = { state: CartState; dispatch: React.Dispatch<CartAction> };
-
-const CartContext = createContext<CartContextValue | null>(null);
-
-function keyFor(item: Pick<CartItem, 'sku' | 'color' | 'size'>) {
-  return [item.sku, item.color ?? '', item.size ?? ''].join('::');
-}
+const CartContext = createContext<{ state: CartState; dispatch: React.Dispatch<CartAction> } | null>(null);
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case 'ADD_ITEM': {
-      const existingIndex = state.items.findIndex((item) => keyFor(item) === keyFor(action.payload));
-      if (existingIndex >= 0) {
-        const items = state.items.map((item, idx) =>
-          idx === existingIndex ? { ...item, qty: item.qty + action.payload.qty } : item
-        );
-        return { items };
+      const exists = state.items.find(
+        (i) => i.sku === action.payload.sku && i.color === action.payload.color && i.size === action.payload.size
+      );
+      if (exists) {
+        return {
+          items: state.items.map((i) => (i === exists ? { ...i, qty: i.qty + action.payload.qty } : i))
+        };
       }
       return { items: [...state.items, action.payload] };
     }
-    case 'REMOVE_ITEM': {
-      const targetKey = keyFor(action.payload);
-      return { items: state.items.filter((item) => keyFor(item) !== targetKey) };
-    }
-    case 'INCREMENT': {
-      const targetKey = keyFor(action.payload);
+    case 'REMOVE_ITEM':
+      return { items: state.items.filter((i) => i.sku !== action.payload.sku) };
+    case 'INCREMENT':
+      return { items: state.items.map((i) => (i.sku === action.payload.sku ? { ...i, qty: i.qty + 1 } : i)) };
+    case 'DECREMENT':
       return {
-        items: state.items.map((item) =>
-          keyFor(item) === targetKey ? { ...item, qty: item.qty + 1 } : item
-        )
+        items: state.items.map((i) => (i.sku === action.payload.sku ? { ...i, qty: Math.max(1, i.qty - 1) } : i))
       };
-    }
-    case 'DECREMENT': {
-      const targetKey = keyFor(action.payload);
-      return {
-        items: state.items.map((item) =>
-          keyFor(item) === targetKey ? { ...item, qty: Math.max(1, item.qty - 1) } : item
-        )
-      };
-    }
-    case 'UPDATE_SELECTIONS': {
-      const targetKey = keyFor(action.payload);
-      return {
-        items: state.items.map((item) =>
-          keyFor(item) === targetKey ? { ...item, ...action.payload } : item
-        )
-      };
-    }
+    case 'UPDATE_SELECTIONS':
+      return { items: state.items.map((i) => (i.sku === action.payload.sku ? { ...i, ...action.payload } : i)) };
     case 'CLEAR':
       return { items: [] };
     default:
@@ -61,7 +36,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(cartReducer, undefined, () => loadCart());
+  const [state, dispatch] = useReducer(cartReducer, undefined as unknown as CartState, () => loadCart());
 
   useEffect(() => {
     saveCart(state);
@@ -74,8 +49,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
 export function useCart() {
   const ctx = useContext(CartContext);
-  if (!ctx) {
-    throw new Error('useCart must be used within CartProvider');
-  }
+  if (!ctx) throw new Error('useCart must be used within CartProvider');
   return ctx;
 }
