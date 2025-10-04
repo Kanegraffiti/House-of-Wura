@@ -20,6 +20,7 @@ const LAST_ORDER_KEY = 'wura_last_order';
 export function CartIcon({ className }: CartIconProps) {
   const { state } = useCart();
   const count = countCartItems(state.items);
+  const hasItems = count > 0;
   const [lastOrderId, setLastOrderId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -66,23 +67,25 @@ export function CartIcon({ className }: CartIconProps) {
             type="button"
             aria-label={`Open cart. ${count} item${count === 1 ? '' : 's'} in cart.`}
             className={cn(
-              'relative flex h-11 items-center gap-2 rounded-full border border-wura-black/15 px-4 text-sm font-semibold uppercase tracking-[0.3em] text-wura-black focus-ring transition-transform duration-200 ease-std will-change-transform hover:-translate-y-0.5 hover:border-wura-gold hover:shadow-sm active:translate-y-0',
+              'relative inline-flex h-11 w-11 items-center justify-center rounded-full border border-wura-black/15 bg-white text-wura-wine focus-ring transition-transform duration-200 ease-std will-change-transform hover:-translate-y-0.5 hover:border-wura-gold hover:bg-wura-wine/10 hover:text-wura-wine active:translate-y-0',
               className
             )}
           >
-            <ShoppingBag className="h-4 w-4" aria-hidden />
-            <span className="hidden sm:inline">Cart</span>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={count}
-                initial={{ scale: 0.85, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1, transition: { duration: 0.2, ease: [0.3, 0, 0.2, 1] } }}
-                exit={{ scale: 0.85, opacity: 0, transition: { duration: 0.15, ease: [0.4, 0, 0.6, 1] } }}
-                className="ml-1 flex h-5 min-w-[1.5rem] items-center justify-center rounded-full bg-wura-black text-xs font-semibold text-white"
-                aria-live="polite"
-              >
-                {count}
-              </motion.span>
+            <ShoppingBag className="h-5 w-5" aria-hidden />
+            <span className="sr-only">Cart</span>
+            <AnimatePresence>
+              {hasItems && (
+                <motion.span
+                  key={count}
+                  initial={{ scale: 0.6, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1, transition: { duration: 0.18, ease: [0.3, 0, 0.2, 1] } }}
+                  exit={{ scale: 0.6, opacity: 0, transition: { duration: 0.14, ease: [0.4, 0, 0.6, 1] } }}
+                  className="absolute -right-1 -top-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-wura-wine text-[0.625rem] font-semibold leading-none text-white shadow-sm"
+                  aria-live="polite"
+                >
+                  {count}
+                </motion.span>
+              )}
             </AnimatePresence>
           </button>
         }

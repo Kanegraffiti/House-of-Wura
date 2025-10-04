@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import { Menu, MessageCircle, X } from 'lucide-react';
 import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -77,14 +77,18 @@ export function Header() {
             </NavigationMenuList>
           </NavigationMenu>
           <CartIcon />
-          <Button variant="outline" className="min-h-[44px] border-wura-gold px-5 py-2.5" asChild>
-            <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
-              <span className="link-glint">WhatsApp</span>
-            </Link>
-          </Button>
+          <Link
+            href={waLink(HERO_MESSAGE)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="focus-ring inline-flex h-11 w-11 items-center justify-center rounded-full border border-wura-gold/70 bg-wura-wine/10 text-wura-wine transition-transform duration-200 ease-std hover:-translate-y-0.5 hover:bg-wura-wine/20 hover:text-wura-wine"
+          >
+            <MessageCircle className="h-5 w-5" aria-hidden />
+            <span className="sr-only">Chat on WhatsApp</span>
+          </Link>
         </div>
         <div className="flex items-center gap-3 lg:hidden">
-          <CartIcon className="h-11 border-wura-black/10 px-4 text-xs" />
+          <CartIcon className="h-11 w-11 border-wura-black/15 bg-white" />
           <Dialog.Root open={open} onOpenChange={setOpen}>
             <Dialog.Trigger asChild>
               <motion.button

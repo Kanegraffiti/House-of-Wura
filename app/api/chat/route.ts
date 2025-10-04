@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server';
 import { convertToCoreMessages, streamText, type CoreMessage } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 
+import { waLink } from '@/lib/wa';
+
 const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY || '' });
 
 function cosine(a: number[], b: number[]) {
@@ -28,11 +30,10 @@ async function getEmbeddingsModule() {
   }
 }
 
+type KnowledgeEntry = { id: string; section: string; embedding: number[]; text: string };
+
 export async function POST(req: Request) {
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json({ ok: false, error: 'NO_OPENAI_KEY' }, { status: 503 });
-    }
     const payload = await req.json();
     const history = Array.isArray(payload?.messages)
       ? convertToCoreMessages(payload.messages as any)
@@ -40,9 +41,28 @@ export async function POST(req: Request) {
 
     const userLast = extractLatestUserMessage(history);
 
-    let context = '';
+    if (!userLast) {
+      return NextResponse.json({ ok: false, error: 'EMPTY_PROMPT' }, { status: 400 });
+    }
+
     const store = await getEmbeddingsModule();
-    if (store && userLast) {
+
+    if (!process.env.OPENAI_API_KEY) {
+      const fallback = buildFallbackAnswer(userLast, store);
+      const encoder = new TextEncoder();
+      return new Response(
+        new ReadableStream({
+          start(controller) {
+            controller.enqueue(encoder.encode(fallback));
+            controller.close();
+          }
+        }),
+        { headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
+      );
+    }
+
+    let context = '';
+    if (store) {
       try {
         const embRes = await fetch('https://api.openai.com/v1/embeddings', {
           method: 'POST',
@@ -79,13 +99,7 @@ Reply concise, warm, and on-brand.`;
 
     const chatMessages = history.length
       ? history
-      : userLast
-        ? ([{ role: 'user', content: userLast }] as CoreMessage[])
-        : [];
-
-    if (!chatMessages.length) {
-      return NextResponse.json({ ok: false, error: 'EMPTY_PROMPT' }, { status: 400 });
-    }
+      : ([{ role: 'user', content: userLast }] as CoreMessage[]);
 
     const result = await streamText({
       model: openai('gpt-4o-mini'),
@@ -119,4 +133,58 @@ function extractLatestUserMessage(messages: CoreMessage[]) {
     if (content) return content;
   }
   return '';
+}
+
+function buildFallbackAnswer(query: string, store: KnowledgeEntry[] | null) {
+  const normalized = query.toLowerCase();
+  const tokens = normalized.match(/[\p{L}\p{N}']+/gu)?.map((token) => token.trim()).filter(Boolean) ?? [];
+
+  const matches =
+    store
+      ?.map((entry) => {
+        const haystack = `${entry.section}\n${entry.text}`.toLowerCase();
+        let score = 0;
+        for (const token of tokens) {
+          if (token.length < 3) continue;
+          if (!haystack.includes(token)) continue;
+          const weight = token.length >= 6 ? 3 : 2;
+          score += weight;
+        }
+        return { entry, score };
+      })
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3) ?? [];
+
+  const snippets = matches.map(({ entry }) => {
+    const excerpt = pickRelevantSentences(entry.text, tokens);
+    return `• ${entry.section}: ${excerpt}`;
+  });
+
+  const concierge = waLink("Hello House of Wura! I'd love to talk about your bespoke services.");
+
+  if (!snippets.length) {
+    return [
+      "I'm here to help with couture looks, events, and concierge planning.",
+      'Share a few details about your vision and I will point you in the right direction.',
+      `For a personal stylist right away, tap our WhatsApp concierge: ${concierge}`
+    ].join(' ');
+  }
+
+  return [
+    "Here's what I can share right now:",
+    ...snippets,
+    `If you'd like a stylist to continue the conversation, tap our WhatsApp concierge: ${concierge}`
+  ].join('\n');
+}
+
+function pickRelevantSentences(text: string, tokens: string[]) {
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  const loweredTokens = tokens.filter((token) => token.length >= 3).map((token) => token.toLowerCase());
+  const relevant = sentences.filter((sentence) => {
+    const lower = sentence.toLowerCase();
+    return loweredTokens.some((token) => lower.includes(token));
+  });
+  const snippet = (relevant.length ? relevant : sentences.slice(0, 2)).join(' ');
+  return snippet.length > 280 ? `${snippet.slice(0, 277).trimEnd()}…` : snippet;
 }
