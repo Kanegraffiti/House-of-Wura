@@ -148,6 +148,15 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handleOpen = () => setOpen(true);
+    window.addEventListener('wura:cart-open', handleOpen);
+    return () => {
+      window.removeEventListener('wura:cart-open', handleOpen);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     if (typeof window === 'undefined') return;
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Check, Minus, Plus } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Check, Loader2, Minus, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import { Badge } from '@/components/ui/badge';
@@ -48,7 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
   );
   const [quantity, setQuantity] = useState(1);
   const [errors, setErrors] = useState<{ color?: string; size?: string }>({});
-  const [status, setStatus] = useState<'idle' | 'added'>('idle');
+  const [status, setStatus] = useState<'idle' | 'adding' | 'added'>('idle');
 
   const { dispatch, state } = useCart();
   const toast = useToast();
@@ -61,9 +61,21 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const requiresColor = colorOptions.length > 0;
   const requiresSize = sizeOptions.length > 0;
-  const canAdd = (!requiresColor || Boolean(selectedColor)) && (!requiresSize || Boolean(selectedSize));
+  const selectionFormatter = useMemo(
+    () => new Intl.ListFormat('en', { style: 'long', type: 'conjunction' }),
+    []
+  );
+  const missingSelections = [
+    requiresColor && !selectedColor ? 'colour' : undefined,
+    requiresSize && !selectedSize ? 'size' : undefined
+  ].filter(Boolean) as string[];
+  const needsSelection = missingSelections.length > 0;
+  const selectionHint = needsSelection
+    ? `Select ${selectionFormatter.format(missingSelections)} to continue.`
+    : 'We finalise pricing and fittings with you on WhatsApp after checkout.';
 
   const handleAddToCart = () => {
+    setStatus('adding');
     const nextErrors: { color?: string; size?: string } = {};
 
     if (requiresColor && !selectedColor) {
@@ -74,7 +86,11 @@ export function ProductCard({ product }: ProductCardProps) {
     }
 
     setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) return;
+    if (Object.keys(nextErrors).length > 0) {
+      setStatus('idle');
+      toast.push('Choose your preferred options to continue.');
+      return;
+    }
 
     dispatch({
       type: 'ADD_ITEM',
@@ -90,7 +106,15 @@ export function ProductCard({ product }: ProductCardProps) {
       }
     });
     setStatus('added');
-    toast.push('Added to cart. View cart for a tailored follow-up.');
+    toast.push('Added to cart. We opened your cart to continue on WhatsApp.');
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('wura:cart-open', {
+          detail: { productId: product.id, sku: product.sku }
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -150,6 +174,13 @@ export function ProductCard({ product }: ProductCardProps) {
                 </p>
               </div>
               <p className="text-sm leading-relaxed text-wura-black/70 line-clamp-3">{product.description}</p>
+              <div className="flex flex-wrap gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.3em] text-wura-black/60">
+                {selectedColor && <span>Colour: {selectedColor}</span>}
+                {selectedSize && <span>Size: {selectedSize}</span>}
+                {!selectedColor && !selectedSize && (
+                  <span className="text-wura-black/45">Personalise below</span>
+                )}
+              </div>
               <div className="flex flex-col gap-4 text-sm text-wura-black/80">
                 {requiresColor && (
                   <div>
@@ -240,17 +271,40 @@ export function ProductCard({ product }: ProductCardProps) {
               </div>
               <div className="mt-auto">
                 <Magnetic className="w-full">
-                  <Button type="button" className="min-h-[44px] w-full px-5 py-2.5" onClick={handleAddToCart} disabled={!canAdd}>
-                    <span className="link-glint">Add to Cart</span>
+                  <Button
+                    type="button"
+                    onClick={handleAddToCart}
+                    variant={needsSelection && status === 'idle' ? 'outline' : 'default'}
+                    className="min-h-[44px] w-full px-5 py-2.5"
+                    disabled={status === 'adding'}
+                    data-state={status}
+                  >
+                    {status === 'adding' ? (
+                      <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em]">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> Adding…
+                      </span>
+                    ) : status === 'added' ? (
+                      <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em]">
+                        <Check className="h-3.5 w-3.5" aria-hidden /> Added to Cart
+                      </span>
+                    ) : (
+                      <span className="link-glint">Add to Cart</span>
+                    )}
                   </Button>
                 </Magnetic>
-                <div className="mt-3 text-xs uppercase tracking-[0.25em] text-wura-black/60" aria-live="polite">
+                <div
+                  className={cn(
+                    'mt-3 text-xs uppercase tracking-[0.25em]',
+                    needsSelection && status !== 'added' ? 'text-wura-wine' : 'text-wura-black/60'
+                  )}
+                  aria-live="polite"
+                >
                   {status === 'added' ? (
                     <span className="inline-flex items-center gap-1 text-wura-gold">
-                      <Check className="h-3 w-3" aria-hidden /> Added. View cart ({cartCount})
+                      <Check className="h-3 w-3" aria-hidden /> Added. Cart open ({cartCount}).
                     </span>
                   ) : (
-                    <span>We finalise pricing and fittings with you on WhatsApp.</span>
+                    <span>{selectionHint}</span>
                   )}
                 </div>
               </div>
