@@ -26,6 +26,10 @@
   --fz-lead: clamp(16px, 0.8vw + 12px, 20px);
 }
 
+html {
+  overflow-x: hidden;
+}
+
 *,
 *::before,
 *::after {
@@ -46,6 +50,7 @@ body {
   @apply bg-[var(--background)] text-[var(--foreground)] font-sans antialiased;
   font-size: var(--fz-body);
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 .lead {
