@@ -101,7 +101,10 @@ export default function ChatWidget() {
   };
 
   return (
-    <div className="pointer-events-none fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
+    <div
+      className="pointer-events-none fixed right-4 sm:right-6 md:right-8 z-40 flex flex-col items-end gap-3 [--chat-widget-offset:5.5rem] sm:[--chat-widget-offset:5rem] md:[--chat-widget-offset:4.5rem] lg:[--chat-widget-offset:4rem]"
+      style={{ bottom: 'calc(env(safe-area-inset-bottom, 0px) + var(--chat-widget-offset))' }}
+    >
       <motion.button
         ref={buttonRef}
         type="button"
