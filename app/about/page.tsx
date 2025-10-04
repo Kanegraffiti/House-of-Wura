@@ -50,7 +50,7 @@ export default function AboutPage() {
             </Reveal>
             <Reveal delay={0.12}>
               <p className="lead text-wura-black/70">
-                Founded by Wuraola Ade, House of Wura is an event planning and fashion collective delivering immersive weddings, couture wardrobes, and cultural experiences.
+                Founded by Wuraola Flora Adebisi, House of Wura is an event planning and fashion collective delivering immersive weddings, couture wardrobes, and cultural experiences.
               </p>
             </Reveal>
             <Reveal delay={0.18}>
