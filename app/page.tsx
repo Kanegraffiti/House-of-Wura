@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Script from 'next/script';
+import { Sparkles } from 'lucide-react';
 
 import productsData from '@/data/products.json';
 
@@ -14,6 +15,8 @@ import { Section } from '@/components/site/Section';
 import { SectionHeader } from '@/components/site/SectionHeader';
 import { ServiceCard } from '@/components/site/ServiceCard';
 import { Testimonial } from '@/components/site/Testimonial';
+import { LuxuryTicker } from '@/components/site/LuxuryTicker';
+import { OpulentPanel } from '@/components/site/OpulentPanel';
 import { ProductCard, type Product } from '@/app/(shop)/components/ProductCard';
 import { formatWhatsappDisplay } from '@/lib/format';
 import { normalizePhone, waLink } from '@/lib/wa';
@@ -32,6 +35,36 @@ const heroSlides = heroSlideKeys.map((key) => {
   const media = getMedia(key);
   return { src: media.url, alt: media.alt };
 });
+
+const ribbonItems = [
+  'Destination weddings with couture storytelling',
+  'Wardrobe curation for red carpet muses',
+  'Experiential brand worlds that linger',
+  'Private fittings with global designers'
+];
+
+const experienceHighlights = [
+  {
+    value: '120+',
+    label: 'couture muses styled',
+    detail: 'From Lagos to London, every look is meticulously tailored and archived for future inspiration.'
+  },
+  {
+    value: '60',
+    label: 'multi-day celebrations',
+    detail: 'Immersive itineraries, guest concierge, and scenography woven into unforgettable journeys.'
+  },
+  {
+    value: '24h',
+    label: 'concierge response',
+    detail: 'Dedicated WhatsApp support with moodboards, material sourcing, and production updates.'
+  },
+  {
+    value: '9',
+    label: 'countries served',
+    detail: 'Destination expertise spanning Europe, the Middle East, and West Africa’s most coveted locales.'
+  }
+];
 
 const services = [
   {
@@ -100,52 +133,108 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <section className="relative overflow-hidden bg-wura-black text-wura-white">
-        <HeroBackgroundSlideshow slides={heroSlides} className="opacity-60" />
+      <section className="luxury-grain relative overflow-hidden bg-wura-black text-wura-white">
+        <HeroBackgroundSlideshow slides={heroSlides} className="opacity-70" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,162,39,0.16),transparent_55%)]" aria-hidden />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/80 via-black/40 to-transparent" aria-hidden />
         <Container className="cq relative flex min-h-[80vh] flex-col justify-center py-24 sm:py-32">
           <Parallax>
-            <div className="max-w-2xl space-y-6">
-              <Reveal>
-                <p className="text-sm uppercase tracking-[0.45em] text-wura-gold">
-                  Luxury Event Planning & Fashion House
-                </p>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <h1 className="font-display leading-tight">
-                  Crafted moments that feel like art.
-                </h1>
-              </Reveal>
-              <Reveal delay={0.18}>
-                <p className="lead text-wura-white/80">
-                  House of Wura curates couture fashion, weddings, and experiential events that shimmer with cultural heritage and modern luxury.
-                </p>
-              </Reveal>
-              <Reveal delay={0.22}>
-                <div className="flex flex-col gap-4 sm:flex-row">
-                  <Magnetic>
-                    <Button className="min-h-[44px] w-full px-5 py-2.5 sm:w-auto" asChild>
-                      <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
-                        <span className="link-glint">Chat on WhatsApp</span>
-                      </Link>
-                    </Button>
-                  </Magnetic>
-                  <Magnetic>
-                    <Button
-                      variant="outline"
-                      className="min-h-[44px] w-full border-wura-gold px-5 py-2.5 text-wura-white hover:text-wura-black sm:w-auto"
-                      asChild
-                    >
-                      <Link href="/lookbook">
-                        <span className="link-glint">View Lookbook</span>
-                      </Link>
-                    </Button>
-                  </Magnetic>
-                </div>
-              </Reveal>
-            </div>
+            <OpulentPanel tone="dark" className="max-w-2xl">
+              <div className="space-y-6">
+                <Reveal>
+                  <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.45em] text-wura-gold/80">
+                    <span className="h-1 w-12 rounded-full bg-gradient-to-r from-wura-gold to-wura-wine" aria-hidden />
+                    Luxury Event Planning &amp; Fashion House
+                  </div>
+                </Reveal>
+                <Reveal delay={0.1}>
+                  <h1 className="font-display leading-tight text-white">
+                    Crafted moments that feel like art.
+                  </h1>
+                </Reveal>
+                <Reveal delay={0.18}>
+                  <p className="lead text-wura-white/80">
+                    House of Wura curates couture fashion, weddings, and experiential events that shimmer with cultural heritage and modern luxury.
+                  </p>
+                </Reveal>
+                <Reveal delay={0.22}>
+                  <div className="flex flex-col gap-4 sm:flex-row">
+                    <Magnetic>
+                      <Button className="min-h-[44px] w-full px-5 py-2.5 sm:w-auto" asChild>
+                        <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
+                          <span className="link-glint">Chat on WhatsApp</span>
+                        </Link>
+                      </Button>
+                    </Magnetic>
+                    <Magnetic>
+                      <Button
+                        variant="outline"
+                        className="min-h-[44px] w-full border-wura-gold px-5 py-2.5 text-wura-white hover:text-wura-black sm:w-auto"
+                        asChild
+                      >
+                        <Link href="/lookbook">
+                          <span className="link-glint">View Lookbook</span>
+                        </Link>
+                      </Button>
+                    </Magnetic>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.28}>
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-wura-white/70">
+                    <span className="inline-flex h-8 items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4">
+                      <Sparkles className="h-4 w-4 text-wura-gold" aria-hidden />
+                      Bespoke concierge, worldwide
+                    </span>
+                    <span className="text-xs uppercase tracking-[0.38em] text-wura-white/60">
+                      WhatsApp {whatsappTelephone}
+                    </span>
+                  </div>
+                </Reveal>
+              </div>
+            </OpulentPanel>
           </Parallax>
         </Container>
       </section>
+
+      <LuxuryTicker items={ribbonItems} className="border-wura-black/25" />
+
+      <Section className="relative overflow-hidden bg-[#120d0b] text-wura-white">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,162,39,0.12),transparent_65%)]" aria-hidden />
+        <Container className="cq relative grid gap-12 lg:grid-cols-[1.1fr_minmax(0,1fr)]">
+          <Reveal>
+            <div className="space-y-6">
+              <SectionHeader
+                eyebrow="The House Signature"
+                title="Every detail choreographed with reverence"
+                description="We partner with clients from the first sketch to the final toast, curating heirloom fashion, immersive production, and considerate guest journeys."
+                align="left"
+                tone="dark"
+              />
+              <div className="luxury-divider" aria-hidden />
+              <p className="max-w-xl text-sm text-wura-white/70">
+                Our atelier blends African artistry with contemporary couture. Dedicated producers, stylists, floral artists, and lighting designers craft layered experiences while concierge teams ensure your loved ones feel indulged at every turn.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <OpulentPanel tone="dark" className="space-y-8">
+              <div className="grid gap-6 sm:grid-cols-2">
+                {experienceHighlights.map((item) => (
+                  <div key={item.label} className="space-y-2">
+                    <p className="font-display text-4xl tracking-tight text-wura-gold">{item.value}</p>
+                    <p className="text-sm uppercase tracking-[0.3em] text-wura-white/60">{item.label}</p>
+                    <p className="text-sm text-wura-white/70">{item.detail}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-3 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-wura-white/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-wura-gold to-wura-wine" aria-hidden />
+                Private production notebooks, couture fittings, and bespoke WhatsApp moodboards included with every commission.
+              </div>
+            </OpulentPanel>
+          </Reveal>
+        </Container>
+      </Section>
 
       <Section>
         <Container className="cq space-y-12">
