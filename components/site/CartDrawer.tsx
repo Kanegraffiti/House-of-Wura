@@ -29,7 +29,6 @@ const listVariants = {
 
 function CartLine({ item }: { item: CartItem }) {
   const { dispatch } = useCart();
-  const target = { sku: item.sku, color: item.color, size: item.size };
 
   return (
     <motion.li
@@ -61,7 +60,7 @@ function CartLine({ item }: { item: CartItem }) {
             variant="ghost"
             size="icon"
             aria-label={`Remove ${item.title} from cart`}
-            onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: target })}
+            onClick={() => dispatch({ type: 'DEL', id: item.id })}
             className="h-11 w-11 rounded-full border border-transparent text-wura-black/60 hover:border-wura-gold hover:text-wura-gold"
           >
             <Trash2 className="h-4 w-4" aria-hidden />
@@ -80,7 +79,7 @@ function CartLine({ item }: { item: CartItem }) {
               type="button"
               whileTap={{ scale: 0.92 }}
               aria-label={`Decrease quantity of ${item.title}`}
-              onClick={() => dispatch({ type: 'DECREMENT', payload: target })}
+              onClick={() => dispatch({ type: 'DEC', id: item.id })}
               className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
             >
               <Minus className="h-3 w-3" aria-hidden />
@@ -90,7 +89,7 @@ function CartLine({ item }: { item: CartItem }) {
               type="button"
               whileTap={{ scale: 0.92 }}
               aria-label={`Increase quantity of ${item.title}`}
-              onClick={() => dispatch({ type: 'INCREMENT', payload: target })}
+              onClick={() => dispatch({ type: 'INC', id: item.id })}
               className="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-transparent text-wura-black/70 transition-colors duration-200 ease-std hover:border-wura-gold"
             >
               <Plus className="h-3 w-3" aria-hidden />
@@ -263,7 +262,7 @@ export function CartDrawer({ trigger }: CartDrawerProps) {
                     <Button
                       variant="ghost"
                       className="w-full text-xs font-semibold uppercase tracking-[0.3em] text-wura-black/60 hover:text-wura-black"
-                      onClick={() => dispatch({ type: 'CLEAR' })}
+                      onClick={() => dispatch({ type: 'CLR' })}
                     >
                       Clear cart
                     </Button>

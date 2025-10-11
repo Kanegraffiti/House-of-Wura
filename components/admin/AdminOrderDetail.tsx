@@ -103,9 +103,9 @@ export function AdminOrderDetail({ orderId }: AdminOrderDetailProps) {
   const confirmMessage = `Hello! Your House of Wura order (${order.orderId}) is confirmed. We will share pricing and delivery details shortly.`;
   const rejectMessage = `Hello! We could not verify payment for House of Wura order ${order.orderId}. ${order.rejectReason ? `Reason: ${order.rejectReason}.` : ''} Please resend proof or contact us.`;
   const reminderMessage = `Hello! Could you resend the payment proof for House of Wura order ${order.orderId}?`;
-  const confirmLink = buildWhatsAppUrl(order.customer.whatsappNumber, confirmMessage);
-  const rejectLink = buildWhatsAppUrl(order.customer.whatsappNumber, rejectMessage);
-  const reminderLink = buildWhatsAppUrl(order.customer.whatsappNumber, reminderMessage);
+  const confirmLink = buildWhatsAppUrl(order.whatsapp, confirmMessage);
+  const rejectLink = buildWhatsAppUrl(order.whatsapp, rejectMessage);
+  const reminderLink = buildWhatsAppUrl(order.whatsapp, reminderMessage);
 
   const handleConfirm = () => updateOrder({ status: 'CONFIRMED' });
   const handleProofReceived = () => updateOrder({ status: 'PROOF_SUBMITTED' });
@@ -130,18 +130,19 @@ export function AdminOrderDetail({ orderId }: AdminOrderDetailProps) {
       <section className="grid gap-3 rounded-3xl border border-wura-black/10 bg-white/90 p-6 shadow-sm md:grid-cols-2">
         <div className="space-y-2">
           <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-wura-black">Customer</h2>
-          <p className="text-sm text-wura-black/70">Preferred: {order.customer.prefer}</p>
-          <p className="text-sm text-wura-black/70">WhatsApp: {order.customer.whatsappNumber || 'Not provided'}</p>
-          <p className="text-sm text-wura-black/70">Email: {order.customer.email || 'Not provided'}</p>
+          <p className="text-sm text-wura-black/70">WhatsApp: {order.whatsapp ? `+${order.whatsapp}` : 'Not provided'}</p>
+          <p className="text-sm text-wura-black/70">Email: {order.email || 'Not provided'}</p>
         </div>
         <div className="space-y-2">
           <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-wura-black">Timeline</h2>
-          {order.proof?.submittedAt && (
-            <p className="text-sm text-wura-black/70">Proof submitted: {formatDateTime(order.proof.submittedAt)}</p>
+          {Array.isArray(order.proofs) && order.proofs.length > 0 && (
+            <p className="text-sm text-wura-black/70">
+              Proof submitted: {formatDateTime(order.proofs[order.proofs.length - 1].uploadedAt)}
+            </p>
           )}
           {order.confirmedAt && <p className="text-sm text-green-700">Confirmed: {formatDateTime(order.confirmedAt)}</p>}
           {order.rejectedAt && <p className="text-sm text-wura-wine">Rejected: {formatDateTime(order.rejectedAt)}</p>}
-          {!order.proof?.submittedAt && <p className="text-sm text-wura-black/50">Awaiting proof upload</p>}
+          {!order.proofs?.length && <p className="text-sm text-wura-black/50">Awaiting proof upload</p>}
         </div>
       </section>
 
@@ -157,26 +158,25 @@ export function AdminOrderDetail({ orderId }: AdminOrderDetailProps) {
             </li>
           ))}
         </ul>
-        <p className="text-sm text-wura-black/60">
-          Displayed subtotal: {formatCurrency(order.displayedSubtotal || 0)} (final pricing confirmed privately).
-        </p>
-        {order.notes && (
-          <p className="rounded-2xl bg-wura-black/5 p-3 text-sm text-wura-black/80">Customer notes: {order.notes}</p>
+        <p className="text-sm text-wura-black/60">Displayed subtotal: {formatCurrency(order.subtotal || 0)}</p>
+        {order.note && (
+          <p className="rounded-2xl bg-wura-black/5 p-3 text-sm text-wura-black/80">Customer notes: {order.note}</p>
         )}
       </section>
 
       <section className="space-y-3 rounded-3xl border border-wura-black/10 bg-white/90 p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-wura-black">Payment proof</h2>
-        {order.proof?.urls?.length ? (
+        {order.proofs?.length ? (
           <ul className="grid gap-3 sm:grid-cols-2">
-            {order.proof.urls.map((url) => (
-              <li key={url} className="flex items-center justify-between rounded-2xl border border-wura-black/10 bg-white/80 p-4">
+            {order.proofs.map((proof) => (
+              <li key={proof.url} className="flex items-center justify-between rounded-2xl border border-wura-black/10 bg-white/80 p-4">
                 <div className="text-sm text-wura-black/70">
                   <p className="font-medium text-wura-black">Proof file</p>
-                  <p className="text-xs text-wura-black/50">{new URL(url).pathname.split('/').pop()}</p>
+                  <p className="text-xs text-wura-black/50">{new URL(proof.url).pathname.split('/').pop()}</p>
+                  <p className="text-xs text-wura-black/50">Uploaded {formatDateTime(proof.uploadedAt)}</p>
                 </div>
                 <Link
-                  href={url}
+                  href={proof.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs font-semibold uppercase tracking-[0.3em] text-wura-gold hover:text-wura-gold/80"
@@ -190,9 +190,6 @@ export function AdminOrderDetail({ orderId }: AdminOrderDetailProps) {
           <p className="flex items-center gap-2 text-sm text-wura-black/60">
             <AlertTriangle className="h-4 w-4 text-wura-wine" aria-hidden /> No proof uploaded yet.
           </p>
-        )}
-        {order.proof?.reference && (
-          <p className="text-xs text-wura-black/60">Reference: {order.proof.reference}</p>
         )}
       </section>
 

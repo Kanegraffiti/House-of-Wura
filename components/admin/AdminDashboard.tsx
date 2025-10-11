@@ -12,13 +12,10 @@ type OrderSummary = {
   orderId: string;
   status: 'PENDING' | 'PROOF_SUBMITTED' | 'CONFIRMED' | 'REJECTED';
   createdAt: number;
-  customer: {
-    prefer: 'whatsapp' | 'email';
-    whatsappNumber?: string;
-    email?: string;
-  };
-  displayedSubtotal: number;
-  notes?: string;
+  subtotal?: number;
+  whatsapp?: string | null;
+  email?: string | null;
+  note?: string | null;
 };
 
 type FetchState = 'idle' | 'loading' | 'error' | 'success';
@@ -72,12 +69,7 @@ export function AdminDashboard() {
     if (!query.trim()) return orders;
     const needle = query.trim().toLowerCase();
     return orders.filter((order) => {
-      const haystack = [
-        order.orderId,
-        order.customer.whatsappNumber ?? '',
-        order.customer.email ?? '',
-        order.notes ?? ''
-      ]
+      const haystack = [order.orderId, order.whatsapp ?? '', order.email ?? '', order.note ?? '']
         .join(' ')
         .toLowerCase();
       return haystack.includes(needle);
@@ -165,15 +157,15 @@ export function AdminDashboard() {
                     </p>
                   </div>
                   <div className="text-sm text-wura-black/60">
-                    <p>{order.customer.whatsappNumber || 'No WhatsApp provided'}</p>
-                    <p>{order.customer.email || 'No email provided'}</p>
+                    <p>{order.whatsapp ? `+${order.whatsapp}` : 'No WhatsApp provided'}</p>
+                    <p>{order.email || 'No email provided'}</p>
                   </div>
                   <div className="text-sm font-medium text-wura-black">
-                    {formatCurrency(order.displayedSubtotal ?? 0)}
+                    {formatCurrency(order.subtotal ?? 0)}
                   </div>
                 </div>
-                {order.notes && (
-                  <p className="mt-3 rounded-2xl bg-wura-black/5 p-3 text-xs text-wura-black/70">Notes: {order.notes}</p>
+                {order.note && (
+                  <p className="mt-3 rounded-2xl bg-wura-black/5 p-3 text-xs text-wura-black/70">Notes: {order.note}</p>
                 )}
               </li>
             ))}

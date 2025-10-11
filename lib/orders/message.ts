@@ -7,18 +7,16 @@ const MAX_WA_CHARS = 3500;
 const TRUNCATE_AT = 3400;
 
 function cleanContact(order: OrderType) {
-  const number = order.customer.whatsappNumber
-    ? formatWhatsappDisplay(order.customer.whatsappNumber)
-    : null;
+  const number = order.whatsapp ? formatWhatsappDisplay(order.whatsapp) : null;
   return {
     whatsapp: number ?? '(not provided)',
-    email: order.customer.email ?? '(not provided)'
+    email: order.email ?? '(not provided)'
   };
 }
 
 export function buildWhatsAppMessageText(order: OrderType) {
   const { whatsapp, email } = cleanContact(order);
-  const subtotal = formatCurrency(order.displayedSubtotal ?? 0);
+  const subtotal = formatCurrency(order.subtotal ?? 0);
 
   const lines: string[] = [
     `New House of Wura order (${order.orderId})`,
@@ -38,8 +36,8 @@ export function buildWhatsAppMessageText(order: OrderType) {
     lines.push(details.join(' | '));
   });
 
-  if (order.notes) {
-    lines.push('', `Notes: ${order.notes}`);
+  if (order.note) {
+    lines.push('', `Notes: ${order.note}`);
   }
 
   lines.push('', `Displayed Subtotal: ${subtotal}`);

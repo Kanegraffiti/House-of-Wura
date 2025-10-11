@@ -24,10 +24,10 @@ export async function PATCH(req: Request, { params }: { params: { orderId: strin
       existing.rejectReason = patch.rejectReason || '';
     }
     if (patch.status) existing.status = patch.status;
-    if (patch.notes !== undefined) existing.notes = patch.notes;
+    if (patch.note !== undefined) existing.note = patch.note;
 
-    await put(`orders/${params.orderId}.json`, JSON.stringify(existing, null, 2), {
-      access: 'public',
+    await put(`orders/${params.orderId}.json`, JSON.stringify(existing), {
+      access: 'private',
       contentType: 'application/json'
     });
     return NextResponse.json({ ok: true, order: existing });

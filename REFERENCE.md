@@ -18,7 +18,7 @@
 - Knowledge base markdown files under `data/knowledge/` drive the AI assistant embeddings produced by `data/embeddings.json` via the `scripts/build-embeddings.ts` script. 【F:scripts/build-embeddings.ts†L1-L88】
 
 ## State & Utilities (`lib/`)
-- Cart logic lives in `lib/cart/` with storage helpers, reducers, and selectors used by the `CartProvider`. 【F:lib/cart/storage.ts†L1-L56】【F:providers/CartProvider.tsx†L1-L92】
+- Cart logic lives in `providers/CartProvider.tsx` with selectors in `lib/cart/utils.ts` for counts and totals. 【F:lib/cart/utils.ts†L1-L40】【F:providers/CartProvider.tsx†L1-L92】
 - Order schema, storage, and WhatsApp message formatting are in `lib/orders/`. Authentication helpers (`lib/auth.ts`), ID generators (`lib/ids.ts`), motion tokens (`lib/motion.ts`), responsive utilities, and WhatsApp link builders (`lib/wa.ts`) support the rest of the app. 【F:lib/orders/storage.ts†L1-L82】【F:lib/wa.ts†L1-L52】
 
 ## Providers & Context

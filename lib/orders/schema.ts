@@ -15,21 +15,19 @@ export const Order = z.object({
   orderId: z.string(),
   createdAt: z.number(),
   status: z.enum(['PENDING', 'PROOF_SUBMITTED', 'CONFIRMED', 'REJECTED']),
-  customer: z.object({
-    prefer: z.enum(['whatsapp', 'email']),
-    whatsappNumber: z.string().optional(),
-    email: z.string().email().optional()
-  }),
-  notes: z.string().optional(),
   items: z.array(OrderItem),
-  displayedSubtotal: z.number().nonnegative().default(0),
-  proof: z
-    .object({
-      urls: z.array(z.string()).default([]),
-      reference: z.string().optional(),
-      submittedAt: z.number().optional()
-    })
-    .default({ urls: [] }),
+  email: z.string().email().nullable().optional(),
+  whatsapp: z.string().nullable().optional(),
+  note: z.string().nullable().optional(),
+  subtotal: z.number().nonnegative().default(0),
+  proofs: z
+    .array(
+      z.object({
+        url: z.string(),
+        uploadedAt: z.number()
+      })
+    )
+    .optional(),
   confirmedAt: z.number().optional(),
   rejectedAt: z.number().optional(),
   rejectReason: z.string().optional()

@@ -59,6 +59,7 @@ Create an `.env.local` file and add the following values:
 ```
 OPENAI_API_KEY=your-openai-key
 NEXT_PUBLIC_WA_NUMBER=2349060294599
+NEXT_PUBLIC_CONTACT_EMAIL=floraadebisi1999@gmail.com
 NEXT_PUBLIC_INSTAGRAM_URL=https://instagram.com/_houseofwurafashions
 NEXT_PUBLIC_SITE_URL=https://houseofwura.vercel.app
 ADMIN_PASSWORD=your-admin-password
@@ -69,6 +70,7 @@ DEBUG_WURA=false
 
 - `OPENAI_API_KEY` powers the embedding build script and is required by the chat route.
 - `NEXT_PUBLIC_WA_NUMBER` should be digits only (no plus sign). All WhatsApp links are generated from this value.
+- `NEXT_PUBLIC_CONTACT_EMAIL` sets the concierge inbox surfaced throughout the cart and order experience.
 - `NEXT_PUBLIC_INSTAGRAM_URL` powers footer links and the floating Instagram button.
 - `NEXT_PUBLIC_SITE_URL` is used for sitemap/robots metadata and sharing links.
 - `ADMIN_PASSWORD` secures the `/admin/login` route. Set this in Vercel → Project Settings → Environment Variables (do not commit secrets).
@@ -82,12 +84,12 @@ DEBUG_WURA=false
 
 1. Guests curate looks in the cart. Quantities, colour, and size selections are stored in `localStorage` until checkout.
 2. On checkout the client generates an order payload, requests `/api/orders`, and receives a ULID-backed order ID (`ow_01…`).
-3. The order JSON (items, customer contact, notes, displayed subtotal) is stored at `orders/{orderId}.json` in Vercel Blob with `status=PENDING`.
-4. The shopper is redirected to `/order/{orderId}`, a public page that shows their status, instructions, and a proof uploader. A WhatsApp deep link opens automatically with a concise summary that includes the order ID.
-5. Proof uploads (images or PDF ≤5MB) hit `/api/orders/{orderId}/proof`. Each file streams directly to `proofs/{orderId}/…` in Blob and the order JSON is patched with URLs, reference notes, timestamps, and `status=PROOF_SUBMITTED`.
+3. The order JSON (items, email, WhatsApp digits, optional notes, and computed subtotal) is stored at `orders/{orderId}.json` in Vercel Blob with `status=PENDING`.
+4. The shopper is redirected to `/order/{orderId}`, a public page that shows their status, contact summary, and a streamlined proof uploader. A WhatsApp deep link opens automatically with a concise summary that includes the order ID.
+5. Proof uploads (images or PDF ≤5MB) hit `/api/orders/{orderId}/proof`. Each file streams directly to `proofs/{orderId}/…` in Blob and the order JSON is patched with secure URLs, timestamps, and `status=PROOF_SUBMITTED`.
 6. Once an admin confirms payment the status is updated to `CONFIRMED`. Rejections capture a reason and log `rejectedAt` timestamps.
 
-Cart data, contact preferences, and the latest order ID remain client-only for convenience.
+Cart data, contact details, and the latest order ID remain client-only for convenience.
 
 ### Order States
 
@@ -115,17 +117,17 @@ Vercel Blob is the only persistence layer. To configure:
 1. In Vercel, open **Storage → Blob** and create a Read/Write token. Paste it into `BLOB_READ_WRITE_TOKEN`.
 2. Deploy or run locally with the same token so `@vercel/blob` can list, read, and write private files.
 3. Orders live under `orders/`. Proof uploads live under `proofs/{orderId}/`. All assets are private by default.
-4. JSON helpers in `lib/blob.ts` handle parsing and minimal logging. Avoid storing sensitive financial data; only the submitted proof URLs and customer contact preference are recorded.
+4. JSON helpers in `lib/blob.ts` handle parsing and minimal logging. Avoid storing sensitive financial data; only the submitted proof URLs and basic contact details are recorded.
 
 ## Cart & WhatsApp Experience
 
 - Cart drawer and `/cart` page offer full editing controls, subtotal preview, and a prominent “Checkout via WhatsApp” button.
-- Checkout validates contact preference (WhatsApp or email) before creating the order. When successful it:
+- Checkout accepts WhatsApp digits and/or email (both optional) before creating the order. When successful it:
   - Clears the cart
   - Stores `{orderId, createdAt}` in `localStorage` (`wura_last_order`) for quick access
   - Dispatches a custom `wura:last-order` event so the header updates the “Latest order” link instantly
-  - Opens WhatsApp with a compact summary listing order ID, line items, and customer contact details
-- `/order/{orderId}` reminds guests to mention the order ID if they message manually, shows previously uploaded proofs, and offers another WhatsApp shortcut.
+  - Opens WhatsApp with a compact summary listing order ID, line items, and the provided contact details
+- `/order/{orderId}` reminds guests to mention the order ID if they message manually, shows previously uploaded proofs, and offers another WhatsApp shortcut alongside direct proof uploads.
 
 ## Deployment Checklist
 

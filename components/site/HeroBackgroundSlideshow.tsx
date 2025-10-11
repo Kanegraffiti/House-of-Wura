@@ -64,7 +64,6 @@ export function HeroBackgroundSlideshow({
               index === activeIndex ? 'opacity-100' : 'opacity-0'
             )}
             sizes="100vw"
-            fade={false}
           />
         );
       })}
