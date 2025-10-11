@@ -1,7 +1,7 @@
 export const runtime = 'nodejs';
 
 import { NextResponse } from 'next/server';
-import { get, put } from '@vercel/blob';
+import { head, put } from '@vercel/blob';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -14,12 +14,15 @@ export async function POST(req: Request, { params }: { params: { orderId: string
 
     const sanitizedName = (file.name || 'proof').replace(/\s+/g, '_');
     const key = `proofs/${params.orderId}/${Date.now()}_${sanitizedName}`;
-    const upload = await put(key, file, { access: 'private' });
+    const upload = await put(key, file, { access: 'public' });
 
     let order: Record<string, any> | null = null;
     try {
-      const current = await get(`orders/${params.orderId}.json`);
-      const text = await current.blob().then((blob) => blob.text());
+      const token = process.env.BLOB_READ_WRITE_TOKEN;
+      const { downloadUrl } = await head(`orders/${params.orderId}.json`, token ? { token } : undefined);
+      const response = await fetch(downloadUrl);
+      if (!response.ok) throw new Error('Failed to download order payload');
+      const text = await response.text();
       order = JSON.parse(text);
     } catch {
       order = null;
@@ -38,10 +41,14 @@ export async function POST(req: Request, { params }: { params: { orderId: string
       proofs
     };
 
-    await put(`orders/${params.orderId}.json`, JSON.stringify(updated), {
-      access: 'private',
-      contentType: 'application/json'
-    });
+    await put(
+      `orders/${params.orderId}.json`,
+      JSON.stringify(updated),
+      {
+        access: 'public',
+        contentType: 'application/json'
+      }
+    );
 
     return NextResponse.json({ ok: true, url: upload.url });
   } catch (error) {

@@ -8,23 +8,24 @@ import type { CartItem } from '@/lib/cart/types';
 
 function normalizeItems(raw: unknown): CartItem[] {
   if (!Array.isArray(raw)) return [];
-  return raw
-    .map((item) => {
-      if (!item || typeof item !== 'object') return null;
-      const value = item as Partial<CartItem>;
-      if (!value.sku || !value.title) return null;
-      return {
-        id: String(value.id || `${value.sku}`),
-        sku: String(value.sku),
-        title: String(value.title),
-        priceFrom: value.priceFrom ? Number(value.priceFrom) : undefined,
-        image: value.image ? String(value.image) : undefined,
-        color: value.color ? String(value.color) : undefined,
-        size: value.size ? String(value.size) : undefined,
-        qty: Math.max(1, Number.parseInt(String(value.qty ?? 1), 10) || 1)
-      } satisfies CartItem;
-    })
-    .filter((item): item is CartItem => Boolean(item));
+  const items: CartItem[] = [];
+  for (const entry of raw) {
+    if (!entry || typeof entry !== 'object') continue;
+    const value = entry as Partial<CartItem>;
+    if (!value.sku || !value.title) continue;
+
+    items.push({
+      id: String(value.id || `${value.sku}`),
+      sku: String(value.sku),
+      title: String(value.title),
+      priceFrom: value.priceFrom ? Number(value.priceFrom) : undefined,
+      image: value.image ? String(value.image) : undefined,
+      color: value.color ? String(value.color) : undefined,
+      size: value.size ? String(value.size) : undefined,
+      qty: Math.max(1, Number.parseInt(String(value.qty ?? 1), 10) || 1)
+    });
+  }
+  return items;
 }
 
 function sumSubtotal(items: CartItem[]) {
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
     };
 
     await put(`orders/${orderId}.json`, JSON.stringify(order), {
-      access: 'private',
+      access: 'public',
       contentType: 'application/json'
     });
 

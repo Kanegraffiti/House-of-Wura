@@ -20,12 +20,24 @@ function loadInitialState(): CartState {
     if (!raw) return { items: [] };
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed?.items)) return { items: [] };
-    const items = parsed.items
-      .map((item: CartItem) => ({
+    const items: CartItem[] = [];
+    for (const entry of parsed.items as unknown[]) {
+      if (!entry || typeof entry !== 'object') continue;
+      const item = entry as Partial<CartItem>;
+      if (!item.id || !item.sku || !item.title) continue;
+
+      items.push({
         ...item,
+        id: String(item.id),
+        sku: String(item.sku),
+        title: String(item.title),
+        priceFrom: item.priceFrom ? Number(item.priceFrom) : undefined,
+        image: item.image ? String(item.image) : undefined,
+        color: item.color ? String(item.color) : undefined,
+        size: item.size ? String(item.size) : undefined,
         qty: Math.max(1, Number.parseInt(String(item.qty ?? 1), 10) || 1)
-      }))
-      .filter((item) => item && typeof item.id === 'string');
+      });
+    }
     return { items };
   } catch {
     return { items: [] };
