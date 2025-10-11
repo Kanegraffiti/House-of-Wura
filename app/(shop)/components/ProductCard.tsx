@@ -92,10 +92,12 @@ export function ProductCard({ product }: ProductCardProps) {
       return;
     }
 
+    const cartItemId = [product.sku, selectedColor ?? '-', selectedSize ?? '-'].join('::');
+
     dispatch({
-      type: 'ADD_ITEM',
-      payload: {
-        id: product.id,
+      type: 'ADD',
+      item: {
+        id: cartItemId,
         sku: product.sku,
         title: product.title,
         priceFrom: product.priceFrom,
@@ -157,7 +159,6 @@ export function ProductCard({ product }: ProductCardProps) {
                   fill
                   sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 360px"
                   className="object-cover opacity-0 transition duration-300 ease-std group-hover:scale-[1.03] group-hover:opacity-100"
-                  fade={false}
                 />
               )}
               <div className="absolute left-5 top-5 flex gap-2">
