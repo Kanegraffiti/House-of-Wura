@@ -27,7 +27,7 @@ export async function PATCH(req: Request, { params }: { params: { orderId: strin
     if (patch.note !== undefined) existing.note = patch.note;
 
     await put(`orders/${params.orderId}.json`, JSON.stringify(existing), {
-      access: 'private',
+      access: 'public',
       contentType: 'application/json'
     });
     return NextResponse.json({ ok: true, order: existing });

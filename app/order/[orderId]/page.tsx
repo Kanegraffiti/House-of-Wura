@@ -1,4 +1,4 @@
-import { get } from '@vercel/blob';
+import { head } from '@vercel/blob';
 
 import ProofForm from '@/components/site/ProofForm';
 import { formatCurrency, formatDateTime } from '@/lib/format';
@@ -8,8 +8,11 @@ export const revalidate = 0;
 
 async function fetchOrder(orderId: string) {
   try {
-    const blob = await get(`orders/${orderId}.json`);
-    const text = await blob.blob().then((value) => value.text());
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    const { downloadUrl } = await head(`orders/${orderId}.json`, token ? { token } : undefined);
+    const response = await fetch(downloadUrl);
+    if (!response.ok) throw new Error('Failed to download order payload');
+    const text = await response.text();
     return JSON.parse(text) as Record<string, any>;
   } catch {
     return null;
