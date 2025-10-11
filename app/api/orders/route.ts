@@ -1,10 +1,10 @@
 export const runtime = 'edge';
 
 import { NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
 import { ulid } from 'ulidx';
 
 import type { CartItem } from '@/lib/cart/types';
+import { putJson } from '@/lib/blob';
 
 function normalizeItems(raw: unknown): CartItem[] {
   if (!Array.isArray(raw)) return [];
@@ -53,10 +53,7 @@ export async function POST(req: Request) {
       subtotal: sumSubtotal(items)
     };
 
-    await put(`orders/${orderId}.json`, JSON.stringify(order), {
-      access: 'public',
-      contentType: 'application/json'
-    });
+    await putJson(`orders/${orderId}.json`, order);
 
     return NextResponse.json({ orderId });
   } catch (error) {
