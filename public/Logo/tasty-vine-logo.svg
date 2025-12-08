@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" role="img" aria-labelledby="title desc">
+  <title id="title">Tasty Vine Cakes</title>
+  <desc id="desc">Logo for Tasty Vine Cakes featuring a stylized cake and vine ornament</desc>
+  <defs>
+    <linearGradient id="icing" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f8c0d8" />
+      <stop offset="50%" stop-color="#f39dbf" />
+      <stop offset="100%" stop-color="#f27a9b" />
+    </linearGradient>
+    <linearGradient id="berry" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7a1b4f" />
+      <stop offset="100%" stop-color="#c0326b" />
+    </linearGradient>
+  </defs>
+  <rect x="14" y="46" width="96" height="32" rx="10" fill="url(#icing)" />
+  <rect x="26" y="34" width="72" height="18" rx="8" fill="#fff3f8" stroke="#f7aacb" stroke-width="2" />
+  <path d="M30 34c4 8 10 8 14 0 4 8 10 8 14 0 4 8 10 8 14 0 4 8 10 8 14 0" fill="none" stroke="#f27a9b" stroke-width="3" stroke-linecap="round" />
+  <circle cx="62" cy="28" r="6" fill="url(#berry)" />
+  <path d="M62 22c6 0 11 5 11 11" fill="none" stroke="#7a1b4f" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M62 22c-6 0-11 5-11 11" fill="none" stroke="#7a1b4f" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M44 75c-10 7-18 7-24 0" fill="none" stroke="#7a1b4f" stroke-width="3.5" stroke-linecap="round" />
+  <path d="M96 75c10 7 18 7 24 0" fill="none" stroke="#7a1b4f" stroke-width="3.5" stroke-linecap="round" />
+  <text x="130" y="68" font-family="'DM Sans', 'Inter', system-ui" font-size="36" font-weight="700" fill="#4f1a2f">Tasty Vine</text>
+  <text x="130" y="98" font-family="'DM Sans', 'Inter', system-ui" font-size="24" font-weight="600" fill="#c0326b">Cakes</text>
+</svg>

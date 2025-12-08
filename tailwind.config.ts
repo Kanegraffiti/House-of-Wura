@@ -12,10 +12,10 @@ const config: Config = {
     extend: {
       colors: {
         wura: {
-          black: '#0B0B0B',
-          white: '#FFFFFF',
-          gold: '#C9A227',
-          wine: '#7B002C'
+          black: '#1C0B0B',
+          white: '#FFF8F3',
+          gold: '#FF990B',
+          wine: '#672025'
         }
       },
       fontFamily: {
@@ -23,7 +23,7 @@ const config: Config = {
         sans: ['var(--font-sans)', 'sans-serif']
       },
       backgroundImage: {
-        'rich-gradient': 'linear-gradient(135deg, #C9A227 0%, #7B002C 100%)'
+        'rich-gradient': 'linear-gradient(135deg, #FF990B 0%, #672025 100%)'
       },
       transitionTimingFunction: {
         luxurious: 'cubic-bezier(0.19, 1, 0.22, 1)',
@@ -39,7 +39,7 @@ const config: Config = {
         300: '300ms'
       },
       boxShadow: {
-        glow: '0 10px 30px rgba(201, 162, 39, 0.25)'
+        glow: '0 10px 30px rgba(255, 153, 11, 0.22)'
       },
       keyframes: {
         shimmer: {
@@ -47,8 +47,8 @@ const config: Config = {
           '100%': { backgroundPosition: '200% 0' }
         },
         glow: {
-          '0%,100%': { boxShadow: '0 0 0 rgba(201,162,39,0)' },
-          '50%': { boxShadow: '0 0 24px rgba(201,162,39,0.25)' }
+          '0%,100%': { boxShadow: '0 0 0 rgba(255,153,11,0)' },
+          '50%': { boxShadow: '0 0 24px rgba(255,153,11,0.22)' }
         }
       },
       animation: {

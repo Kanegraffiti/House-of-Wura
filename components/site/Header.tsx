@@ -6,6 +6,7 @@ import { Menu, MessageCircle, X } from 'lucide-react';
 import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,14 +24,14 @@ import { motionDur, slideDown, trans } from '@/lib/motion';
 
 const navItems = [
   { href: '/', label: 'Home' },
-  { href: '/services', label: 'Services' },
-  { href: '/shop', label: 'Shop' },
-  { href: '/lookbook', label: 'Lookbook' },
+  { href: '/services', label: 'Custom Cakes' },
+  { href: '/shop', label: 'Cakeshop' },
+  { href: '/lookbook', label: 'Gallery' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' }
 ];
 
-const HERO_MESSAGE = "Hello House of Wura! I'd love to talk about your bespoke services.";
+const HERO_MESSAGE = "Hello Tasty Vine! I'd love to order a custom cake.";
 
 export function Header() {
   const pathname = usePathname();
@@ -44,10 +45,21 @@ export function Header() {
       className="sticky top-0 z-50 border-b border-wura-black/10 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/65"
     >
       <Container className="flex items-center justify-between py-4">
-        <Link href="/" className="focus-ring font-display text-2xl tracking-widest text-wura-black">
-          <span className="inline-block transition-shadow duration-200 [text-shadow:_0_0_0_rgba(201,162,39,0)] hover:[text-shadow:_0_0_24px_rgba(201,162,39,0.3)]">
-            House of Wura
+        <Link
+          href="/"
+          className="focus-ring inline-flex items-center gap-3 rounded-xl px-2 py-1 transition-shadow duration-200 hover:shadow-glow"
+        >
+          <span className="relative block overflow-hidden rounded-lg bg-white/80 p-2 shadow-sm ring-1 ring-wura-gold/30">
+            <Image
+              src="/Logo/tasty-vine-logo.svg"
+              alt="Tasty Vine Cakes"
+              width={72}
+              height={64}
+              className="h-12 w-auto"
+              priority
+            />
           </span>
+          <span className="font-display text-xl uppercase tracking-[0.25em] text-wura-black">Tasty Vine Cakes</span>
         </Link>
         <div className="hidden items-center gap-6 lg:flex">
           <NavigationMenu>
@@ -123,7 +135,7 @@ export function Header() {
                       className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white/95 p-6 shadow-[0_28px_60px_rgba(11,11,11,0.28)]"
                     >
                       <div className="flex items-center justify-between">
-                        <p className="font-display text-xl text-wura-black">House of Wura</p>
+                        <p className="font-display text-xl text-wura-black">Tasty Vine Cakes</p>
                         <Dialog.Close asChild>
                           <button
                             type="button"
