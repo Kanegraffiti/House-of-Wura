@@ -4,25 +4,25 @@ import { Instagram } from 'lucide-react';
 import { Container } from '@/components/site/Container';
 import { waLink } from '@/lib/wa';
 
-const services = ['Luxury Weddings', 'Fashion Direction', 'Corporate Galas', 'Private Styling'];
-const shopCategories = ['Couture', 'Bridal', 'Menswear', 'Accessories'];
+const services = ['Wedding Cakes', 'Celebration Cakes', 'Dessert Tables', 'Corporate Gifting'];
+const shopCategories = ['Signature Flavours', 'Cupcakes', 'Macarons', 'Gift Boxes'];
 
-const whatsappMessage = 'Hello House of Wura! I would love to discuss a collaboration.';
+const whatsappMessage = 'Hello Tasty Vine! I would love to order a cake.';
 
 export function Footer() {
-  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/_houseofwurafashions';
+  const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/tastyvinecakes';
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-wura-black/10 bg-wura-black text-wura-white">
       <Container className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-4">
           <Link href="/" className="font-display text-2xl tracking-widest text-wura-gold">
-            <span className="inline-block transition-shadow duration-200 [text-shadow:_0_0_0_rgba(201,162,39,0)] hover:[text-shadow:_0_0_18px_rgba(201,162,39,0.35)]">
-              House of Wura
+            <span className="inline-block transition-shadow duration-200 [text-shadow:_0_0_0_rgba(255,153,11,0)] hover:[text-shadow:_0_0_18px_rgba(255,153,11,0.35)]">
+              Tasty Vine Cakes
             </span>
           </Link>
           <p className="text-sm text-wura-white/70">
-            Curating immersive celebrations and couture fashion with a signature African perspective.
+            Crafting buttercream art, dessert tables, and heartfelt flavours for every celebration.
           </p>
         </div>
         <div className="space-y-4">
@@ -46,12 +46,12 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-wura-white/70">
             <li>
               <Link href={waLink(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 ease-std hover:text-wura-gold">
-                <span className="link-glint">WhatsApp Concierge</span>
+                <span className="link-glint">Order via WhatsApp</span>
               </Link>
             </li>
             <li>
-              <Link href="mailto:hello@houseofwura.com" className="transition-colors duration-200 ease-std hover:text-wura-gold">
-                <span className="link-glint">hello@houseofwura.com</span>
+              <Link href="mailto:hello@tastyvine.com" className="transition-colors duration-200 ease-std hover:text-wura-gold">
+                <span className="link-glint">hello@tastyvine.com</span>
               </Link>
             </li>
           </ul>
@@ -70,7 +70,7 @@ export function Footer() {
       </Container>
       <div className="border-t border-white/10 bg-wura-black/80">
         <Container className="flex flex-col items-center justify-between gap-2 py-6 text-xs uppercase tracking-[0.35em] text-wura-white/60 sm:flex-row">
-          <p>© {year} House of Wura. All rights reserved.</p>
+          <p>© {year} Tasty Vine Cakes. All rights reserved.</p>
           <p>
             MADE WITH LOVE BY{' '}
             <Link
