@@ -24,18 +24,18 @@ type EventFeature = {
 
 const events: EventFeature[] = [
   {
-    title: 'Royal Yoruba Wedding Weekend',
-    location: 'Ikeja GRA, Lagos',
-    mood: 'Gilded tradition, drum-led entrances, champagne-lit ballroom, and precise guest logistics.',
+    title: 'The Alos',
+    location: 'Victoria Island, Lagos',
+    mood: 'Jewel-toned lighting, gilded dessert art, and a dance floor that stayed full until sunrise.',
     testimonial: {
-      quote: 'You balanced culture with couture — our parents, friends, and every vendor felt guided and pampered.',
-      name: 'Adanna & Damilola',
-      role: 'Bride & Groom'
+      quote: 'House of Wura staged every reveal beautifully — from the cake unveil to the final dance, our guests felt indulged.',
+      name: 'Oluwatosin & Adesola',
+      role: 'Hosts'
     },
-    gallery: ['bridalRadiance', 'eventDetail', 'bridalDetail', 'heroCelebration', 'menswearRegal'],
+    gallery: ['alosGallery1', 'alosGallery2', 'alosGallery3', 'alosGallery4', 'alosGallery5'],
     video: {
-      src: 'https://videos.pexels.com/video-files/3195231/3195231-uhd_2560_1440_25fps.mp4',
-      poster: 'eventDetail'
+      src: 'https://videos.pexels.com/video-files/6890320/6890320-uhd_2560_1440_25fps.mp4',
+      poster: 'alosGallery1'
     }
   },
   {

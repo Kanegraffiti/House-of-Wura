@@ -48,8 +48,8 @@ export function Header() {
         >
           <span className="relative block overflow-hidden rounded-lg bg-white/80 p-2 shadow-sm ring-1 ring-wura-gold/30">
             <Image
-              src="/Logo/tasty-vine-logo.svg"
-              alt="House of Wura monogram"
+              src="/Logo/ornate-crown.svg"
+              alt="House of Wura crown"
               width={72}
               height={64}
               className="h-12 w-auto"

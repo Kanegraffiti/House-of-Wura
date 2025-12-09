@@ -90,5 +90,25 @@
   "cocktailSilhouette": {
     "url": "https://images.pexels.com/photos/3760855/pexels-photo-3760855.jpeg",
     "alt": "Model in structured cocktail dress with Ankara-inspired sash"
+  },
+  "alosGallery1": {
+    "url": "https://images.pexels.com/photos/6130374/pexels-photo-6130374.jpeg",
+    "alt": "Lavish reception hall with dramatic purple lighting and stage decor"
+  },
+  "alosGallery2": {
+    "url": "https://images.pexels.com/photos/179909/pexels-photo-179909.jpeg",
+    "alt": "Golden crown-inspired cake display on a mirrored table"
+  },
+  "alosGallery3": {
+    "url": "https://images.pexels.com/photos/169190/pexels-photo-169190.jpeg",
+    "alt": "Bride and groom sharing a toast at their candlelit celebration"
+  },
+  "alosGallery4": {
+    "url": "https://images.pexels.com/photos/265947/pexels-photo-265947.jpeg",
+    "alt": "Couple posing in front of a floral monogram backdrop"
+  },
+  "alosGallery5": {
+    "url": "https://images.pexels.com/photos/2147029/pexels-photo-2147029.jpeg",
+    "alt": "Guests enjoying a high-energy dance floor under violet lights"
   }
 }

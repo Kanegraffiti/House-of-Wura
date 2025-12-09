@@ -150,8 +150,8 @@ const jsonLd = {
   '@type': 'Organization',
   name: 'House of Wura',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/Logo/tasty-vine-logo.svg`,
-  sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/tastyvinecakes'],
+  logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/Logo/ornate-crown.svg`,
+  sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/houseofwura'],
   contactPoint: {
     '@type': 'ContactPoint',
     telephone: whatsappTelephone,

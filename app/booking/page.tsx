@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { Sparkles } from 'lucide-react';
-
 import { Container } from '@/components/site/Container';
 import { OpulentPanel } from '@/components/site/OpulentPanel';
 import { Section } from '@/components/site/Section';
@@ -62,7 +60,6 @@ export default function BookingPage() {
         <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
           <OpulentPanel tone="light" className="space-y-8 bg-gradient-to-br from-white to-wura-cream">
             <div className="inline-flex items-center gap-2 rounded-full bg-wura-wine/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-wura-wine">
-              <Sparkles className="h-4 w-4" aria-hidden />
               Lagos-led process
             </div>
             <div className="space-y-5">
