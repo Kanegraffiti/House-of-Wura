@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import Script from 'next/script';
+import Image from 'next/image';
 import { Sparkles } from 'lucide-react';
-
-import productsData from '@/data/products.json';
 
 import Parallax from '@/components/site/Parallax';
 import Reveal from '@/components/site/Reveal';
@@ -17,19 +16,12 @@ import { ServiceCard } from '@/components/site/ServiceCard';
 import { Testimonial } from '@/components/site/Testimonial';
 import { LuxuryTicker } from '@/components/site/LuxuryTicker';
 import { OpulentPanel } from '@/components/site/OpulentPanel';
-import { ProductCard, type Product } from '@/app/(shop)/components/ProductCard';
 import { formatWhatsappDisplay } from '@/lib/format';
 import { normalizePhone, waLink } from '@/lib/wa';
 import { getMedia, type MediaKey } from '@/lib/media';
 
-const heroMessage = "Hello Tasty Vine! I'm ready to dream up a beautiful cake.";
+const heroMessage = "Hello House of Wura! I'm planning a black-tie celebration and would love your expertise.";
 
-const products: Product[] = productsData.map((product) => ({
-  ...product,
-  images: Array.isArray(product.images)
-    ? product.images.map((key) => key as MediaKey)
-    : []
-}));
 const heroSlideKeys: MediaKey[] = ['hero', 'heroEditorial', 'heroCelebration', 'heroRunway'];
 const heroSlides = heroSlideKeys.map((key) => {
   const media = getMedia(key);
@@ -37,71 +29,107 @@ const heroSlides = heroSlideKeys.map((key) => {
 });
 
 const ribbonItems = [
-  'Hand-painted buttercream florals for intimate celebrations',
-  'Dessert tables styled to match your colour story',
-  'Tiered showpiece cakes with seasonal fruits and blooms',
-  'White-glove delivery and onsite setup for every order'
+  'Signature weddings and couture celebrations',
+  'Fashion-forward styling for hosts and bridal parties',
+  'Experiential production for brand launches and galas',
+  'Concierge travel, hospitality, and guest management'
 ];
 
 const experienceHighlights = [
   {
-    value: '850+',
-    label: 'cakes baked',
-    detail: 'Hand-finished tiers, cupcakes, and dessert spreads delivered with care.'
+    value: '150+',
+    label: 'events orchestrated',
+    detail: 'Private weddings, society soirées, and brand moments across Africa and Europe.'
   },
   {
-    value: '120',
-    label: 'weddings served',
-    detail: 'Romantic centrepieces designed to echo your florals, palette, and love story.'
+    value: '65',
+    label: 'fashion editorials',
+    detail: 'Directional looks styled for brides, celebrants, and campaigns with couture ateliers.'
   },
   {
     value: '24h',
-    label: 'design sketches',
-    detail: 'Initial sketches, flavours, and fillings shared within a day for custom requests.'
+    label: 'concierge replies',
+    detail: 'Dedicated WhatsApp support with swift timelines, budgets, and vendor liaison.'
   },
   {
-    value: '15',
-    label: 'flavour pairings',
-    detail: 'From zesty citrus curd to dark chocolate ganache, tailored to every guest list.'
+    value: 'A–Z',
+    label: 'production care',
+    detail: 'Creative, logistics, styling, and show-calling covered with discreet detail.'
   }
 ];
 
 const services = [
   {
-    title: 'Custom Celebration Cakes',
-    description: 'Signature buttercream cakes with hand-crafted textures, sugar florals, and metallic accents.',
-    items: ['Design consult & sketch', 'Flavour pairing guidance', 'Personalised toppers & keepsakes'],
-    message: 'Hello Tasty Vine! I would love a custom celebration cake.'
+    title: 'Signature Wedding Planning',
+    description: 'Full-service planning, design direction, and hospitality for destination and city weddings.',
+    items: ['Story-led concepting', 'Guest logistics and travel', 'Couture fashion direction'],
+    message: 'Hello House of Wura! Please guide us on a signature wedding experience.'
   },
   {
-    title: 'Wedding Cakes & Dessert Tables',
-    description: 'Romantic tiers, macaron towers, mini tarts, and favours styled to your florals and venue.',
-    items: ['Palette & floral matching', 'Dessert table styling', 'Onsite setup & staging'],
-    message: 'Hello Tasty Vine! Please help me design our wedding cake and dessert table.'
+    title: 'Social & Private Celebrations',
+    description: 'Milestone birthdays, anniversaries, and intimate dinners staged with artful precision.',
+    items: ['Venue and culinary curation', 'Entertainment and ambience', 'White-glove hosting team'],
+    message: 'Hello House of Wura! I would like an elevated celebration for my next milestone.'
   },
   {
-    title: 'Corporate Gifting & Launches',
-    description: 'Branded treats, edible logos, and gifting boxes that make your activations feel deliciously premium.',
-    items: ['Logo cookies & cupcakes', 'Curated gift boxes', 'Nationwide delivery coordination'],
-    message: 'Hello Tasty Vine! I need branded sweets for an upcoming launch.'
+    title: 'Brand & Cultural Experiences',
+    description: 'Launches, trunk shows, and immersive showcases that blend culture, fashion, and storytelling.',
+    items: ['Audience journey design', 'Set builds and installations', 'Show calling and run-of-show'],
+    message: 'Hello House of Wura! Let’s design an unforgettable brand experience.'
+  }
+];
+
+const caseStudies = [
+  {
+    title: 'Celestial Vows in Lagos',
+    location: 'Eko Hotel • 450 guests',
+    summary: 'A candlelit ceremony and reception layered with champagne drapery, mirrored aisles, and custom crystal florals.',
+    testimonial: {
+      quote: 'You translated our love story into a setting that felt like a dream. Every guest was dazzled and cared for.',
+      name: 'Zainab & Ade',
+      role: 'Bride & Groom'
+    },
+    gallery: ['bridalRadiance', 'eventDetail', 'bridalDetail']
+  },
+  {
+    title: 'Midnight Fashion Salon',
+    location: 'Private Residence • 120 guests',
+    summary: 'An immersive trunk show with runway moments, bespoke cocktails, and live string performances under noir lighting.',
+    testimonial: {
+      quote: 'The production was seamless—the models, music, and pacing made our collection the star.',
+      name: 'Kemi Adeyemi',
+      role: 'Creative Director'
+    },
+    gallery: ['heroEditorial', 'capeStatement', 'cocktailSilhouette']
+  },
+  {
+    title: 'Chateau Anniversary Weekend',
+    location: 'Provence • 80 guests',
+    summary: 'Three days of garden dinners, vineyard tours, and couture fittings, choreographed with European vendor partners.',
+    testimonial: {
+      quote: 'Your team anticipated every detail and made our guests feel utterly indulged.',
+      name: 'The Martins Family',
+      role: 'Hosts'
+    },
+    gallery: ['resortEase', 'robeSerenity', 'accessoryGlam']
   }
 ];
 
 const testimonials = [
   {
-    quote: 'Our wedding cake tasted even better than it looked—guests kept coming back for another slice.',
-    name: 'Amarachi & Dapo',
-    detail: '5-tier vanilla bean & berries'
+    quote: 'House of Wura delivers poetry in motion—the timing, styling, and hospitality were faultless.',
+    name: 'Anita Okonkwo',
+    detail: 'Luxury wedding client'
   },
   {
-    quote: 'The dessert table was a work of art. Every tart, cupcake, and cookie matched our palette perfectly.',
-    name: 'Lola Adeyemi',
-    detail: 'Dessert table & favours'
+    quote: 'They navigated complex travel, VIP security, and cultural protocols with elegance and calm.',
+    name: 'Femi & Darasimi',
+    detail: 'Destination celebration'
   },
   {
-    quote: 'The branded cupcakes for our launch were flawless and arrived fresh with zero stress on our side.',
-    name: 'Olu Jacobs',
-    detail: 'Corporate gifting'
+    quote: 'Our launch experience felt like art direction come alive. The press and guests were enthralled.',
+    name: 'Adaeze Nwankwo',
+    detail: 'Fashion house founder'
   }
 ];
 
@@ -112,7 +140,7 @@ const whatsappTelephone = formatWhatsappDisplay(whatsappDigits) || '+23490602945
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Tasty Vine Cakes',
+  name: 'House of Wura',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/Logo/tasty-vine-logo.svg`,
   sameAs: [process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/tastyvinecakes'],
@@ -125,7 +153,6 @@ const jsonLd = {
 };
 
 export default function HomePage() {
-  const featuredProducts = products.slice(0, 3);
   return (
     <>
       <Script
@@ -135,8 +162,14 @@ export default function HomePage() {
       />
       <section className="luxury-grain relative overflow-hidden bg-wura-black text-wura-white">
         <HeroBackgroundSlideshow slides={heroSlides} className="opacity-70" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,153,11,0.14),transparent_55%)]" aria-hidden />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/80 via-black/40 to-transparent" aria-hidden />
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,153,11,0.14),transparent_55%)]"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+          aria-hidden
+        />
         <Container className="cq relative flex min-h-[80vh] flex-col justify-center py-24 sm:py-32">
           <Parallax>
             <OpulentPanel tone="dark" className="max-w-2xl">
@@ -144,17 +177,18 @@ export default function HomePage() {
                 <Reveal>
                   <div className="flex items-center gap-3 text-[0.65rem] uppercase tracking-[0.45em] text-wura-gold/80">
                     <span className="h-1 w-12 rounded-full bg-gradient-to-r from-wura-gold to-wura-wine" aria-hidden />
-                    Artisanal Cake Studio &amp; Dessert Styling
+                    Event Planning • Fashion Direction • Production
                   </div>
                 </Reveal>
                 <Reveal delay={0.1}>
                   <h1 className="font-display leading-tight text-white">
-                    Cakes that taste like home and look like art.
+                    High-touch celebrations for couples, creators, and brands.
                   </h1>
                 </Reveal>
                 <Reveal delay={0.18}>
                   <p className="lead text-wura-white/80">
-                    Tasty Vine handcrafts modern buttercream cakes, dessert tables, and edible art inspired by the colours of your celebration.
+                    House of Wura crafts couture weddings, intimate gatherings, and culture-rich experiences with a signature mix
+                    of elegance, storytelling, and meticulous logistics.
                   </p>
                 </Reveal>
                 <Reveal delay={0.22}>
@@ -162,7 +196,7 @@ export default function HomePage() {
                     <Magnetic>
                       <Button className="min-h-[44px] w-full px-5 py-2.5 sm:w-auto" asChild>
                         <Link href={waLink(heroMessage)} target="_blank" rel="noopener noreferrer">
-                          <span className="link-glint">Design my cake</span>
+                          <span className="link-glint">Plan my event</span>
                         </Link>
                       </Button>
                     </Magnetic>
@@ -173,7 +207,7 @@ export default function HomePage() {
                         asChild
                       >
                         <Link href="/services">
-                          <span className="link-glint">Explore flavours</span>
+                          <span className="link-glint">View services</span>
                         </Link>
                       </Button>
                     </Magnetic>
@@ -183,11 +217,9 @@ export default function HomePage() {
                   <div className="flex flex-wrap items-center gap-3 text-sm text-wura-white/70">
                     <span className="inline-flex h-8 items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4">
                       <Sparkles className="h-4 w-4 text-wura-gold" aria-hidden />
-                      Fresh bakes, concierge delivery
+                      Couture planning, discreet production
                     </span>
-                    <span className="text-xs uppercase tracking-[0.38em] text-wura-white/60">
-                      WhatsApp {whatsappTelephone}
-                    </span>
+                    <span className="text-xs uppercase tracking-[0.38em] text-wura-white/60">WhatsApp {whatsappTelephone}</span>
                   </div>
                 </Reveal>
               </div>
@@ -199,20 +231,24 @@ export default function HomePage() {
       <LuxuryTicker items={ribbonItems} className="border-wura-black/25" />
 
       <Section className="relative overflow-hidden bg-[#120d0b] text-wura-white">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,153,11,0.12),transparent_65%)]" aria-hidden />
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,153,11,0.12),transparent_65%)]"
+          aria-hidden
+        />
         <Container className="cq relative grid gap-12 lg:grid-cols-[1.1fr_minmax(0,1fr)]">
           <Reveal>
             <div className="space-y-6">
               <SectionHeader
-                eyebrow="The Tasty Vine Signature"
-                title="Every crumb crafted with warmth"
-                description="We guide you from flavour pairing to final flourish, baking showpiece cakes and desserts that feel personal, generous, and joyful."
+                eyebrow="The House of Wura Signature"
+                title="Story-led, fashion-forward, flawlessly produced"
+                description="We steward every celebration with concept design, couture styling, and concierge logistics so you can savour the moment."
                 align="left"
                 tone="dark"
               />
               <div className="luxury-divider" aria-hidden />
               <p className="max-w-xl text-sm text-wura-white/70">
-                Our Lagos bake studio paints buttercream florals, pipes delicate textures, and pairs flavours that linger. From sketch to slice, every tier is wrapped with food-safe care and delivered with a smile.
+                Our Lagos and London teams design experiences that feel tailored and timeless. From wardrobe fittings to vendor
+                orchestration, every touchpoint is handled with art direction and precision.
               </p>
             </div>
           </Reveal>
@@ -229,7 +265,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-3 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm text-wura-white/70">
                 <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-br from-wura-gold to-wura-wine" aria-hidden />
-                Tasting notes, design sketches, and delivery timelines are shared over WhatsApp so you always feel cared for.
+                Dedicated planners, fashion directors, and production managers keep every timeline on track.
               </div>
             </OpulentPanel>
           </Reveal>
@@ -240,9 +276,9 @@ export default function HomePage() {
         <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
-              eyebrow="Sweet Services"
-              title="Cakes, desserts, and gifting made deliciously personal"
-              description="From intimate birthdays to grand weddings, every bake is tailored to your flavours, colours, and story."
+              eyebrow="Service Suite"
+              title="Concierge planning tailored to your story"
+              description="Choose the pathway that fits your celebration and we will customise every detail."
             />
           </Reveal>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
@@ -259,31 +295,40 @@ export default function HomePage() {
         <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
-              eyebrow="Tasty Vine Cakeshop"
-              title="Ready-to-love cakes and treats for your next celebration"
-              description="Explore seasonal flavours, cupcakes, and keepsake toppers. Every order begins with a quick WhatsApp chat."
+              eyebrow="Portfolio"
+              title="Case studies that blend beauty and precision"
+              description="Each celebration is treated as a bespoke production with couture styling, heartfelt hospitality, and layered storytelling."
             />
           </Reveal>
-          <Reveal delay={0.05}>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 sm:gap-8">
-              {featuredProducts.map((product, index) => (
-                <Reveal key={product.id} delay={index * 0.05}>
-                  <ProductCard product={product} />
-                </Reveal>
-              ))}
-            </div>
-          </Reveal>
-          <Reveal delay={0.12}>
-            <div className="flex justify-center">
-              <Magnetic>
-                <Button variant="outline" className="min-h-[44px] border-wura-gold px-5 py-2.5" asChild>
-                  <Link href="/shop">
-                    <span className="link-glint">View all bakes</span>
-                  </Link>
-                </Button>
-              </Magnetic>
-            </div>
-          </Reveal>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            {caseStudies.map((project, index) => (
+              <Reveal key={project.title} delay={index * 0.08}>
+                <OpulentPanel className="flex h-full flex-col gap-6">
+                  <div className="space-y-2">
+                    <p className="text-xs uppercase tracking-[0.35em] text-wura-wine">{project.location}</p>
+                    <h3 className="font-display text-2xl text-wura-black">{project.title}</h3>
+                    <p className="text-sm text-wura-black/70">{project.summary}</p>
+                  </div>
+                  <div className="space-y-3 rounded-2xl bg-wura-black/5 p-4">
+                    <p className="text-sm italic text-wura-black/80">“{project.testimonial.quote}”</p>
+                    <p className="text-xs uppercase tracking-[0.28em] text-wura-black/60">
+                      {project.testimonial.name} • {project.testimonial.role}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    {project.gallery.map((key) => {
+                      const media = getMedia(key);
+                      return (
+                        <div key={key} className="relative aspect-square overflow-hidden rounded-2xl bg-wura-black/5">
+                          <Image src={media.url} alt={media.alt} fill sizes="(min-width: 1024px) 120px, 33vw" className="object-cover" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </OpulentPanel>
+              </Reveal>
+            ))}
+          </div>
         </Container>
       </Section>
 
@@ -291,9 +336,9 @@ export default function HomePage() {
         <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
-              eyebrow="Client Stories"
-              title="Sweet words from our celebrants"
-              description="A peek at the weddings, birthdays, and brand moments we were honoured to bake for."
+              eyebrow="Client Notes"
+              title="Trusted by discerning hosts and brands"
+              description="A few heartfelt words from couples, founders, and creative directors we have guided."
             />
           </Reveal>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
@@ -310,9 +355,9 @@ export default function HomePage() {
         <Container className="cq space-y-12">
           <Reveal>
             <SectionHeader
-              eyebrow="Fresh Out of the Oven"
-              title="Follow our bake studio on Instagram"
-              description="See piping videos, flavour drops, and sweet reveals as they happen."
+              eyebrow="Behind the Scenes"
+              title="Moments from our atelier and productions"
+              description="Follow the fittings, floral mock-ups, and lighting tests as we build each experience."
               tone="dark"
             />
           </Reveal>
@@ -326,16 +371,16 @@ export default function HomePage() {
         <Container className="cq flex flex-col gap-10 rounded-3xl bg-gradient-to-br from-wura-gold/18 via-white to-wura-wine/15 p-8 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
           <Reveal>
             <div className="space-y-4">
-              <h2 className="font-display text-wura-black">Ready to slice into something special?</h2>
+              <h2 className="font-display text-wura-black">Ready to curate your next celebration?</h2>
               <p className="lead text-wura-black/70">
-                Share your date, flavours, and colours—our cake concierge will sketch ideas and confirm delivery details.
+                Share your vision and we will craft a tailored roadmap—concept design, fashion direction, and production in one concierge team.
               </p>
             </div>
           </Reveal>
           <Reveal delay={0.1}>
             <Button className="min-h-[44px] w-full flex-shrink-0 px-5 py-2.5 sm:w-auto" asChild>
               <Link
-                href={waLink('Hello Tasty Vine! I am ready to order a cake and desserts.')}
+                href={waLink('Hello House of Wura! I am ready to plan my celebration. Here are the details:')}
                 target="_blank"
                 rel="noopener noreferrer"
               >
