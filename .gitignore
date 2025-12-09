@@ -22,6 +22,8 @@ pnpm-debug.log*
 
 # local data
 *.local
+public/Event1/*.jpeg
+public/Event1/*.mp4
 
 # generated
 coverage

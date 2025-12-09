@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 140" role="img" aria-labelledby="title desc">
+  <title id="title">House of Wura Crown</title>
+  <desc id="desc">An ornate crown monogram with layered arches and gemstone details</desc>
+  <defs>
+    <linearGradient id="golden" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7e7b7" />
+      <stop offset="50%" stop-color="#d7b565" />
+      <stop offset="100%" stop-color="#b1842f" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="184" height="124" rx="18" fill="#fff8ec" stroke="#e2cfa3" stroke-width="4" />
+  <path
+    d="M36 94c18-20 28-40 36-58l28 30 28-30c8 18 18 38 36 58l-23-8-19 18-22-30-22 30-19-18z"
+    fill="url(#golden)"
+    stroke="#7a5020"
+    stroke-width="3"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M60 98c22-10 58-10 80 0"
+    fill="none"
+    stroke="#7a5020"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <circle cx="100" cy="52" r="9" fill="#7a1f3d" stroke="#f7e7b7" stroke-width="3" />
+  <circle cx="72" cy="66" r="7" fill="#7a1f3d" stroke="#f7e7b7" stroke-width="3" />
+  <circle cx="128" cy="66" r="7" fill="#7a1f3d" stroke="#f7e7b7" stroke-width="3" />
+  <path d="M46 110h108" stroke="#7a5020" stroke-width="6" stroke-linecap="round" />
+  <path d="M58 120h84" stroke="#d7b565" stroke-width="4" stroke-linecap="round" />
+</svg>
