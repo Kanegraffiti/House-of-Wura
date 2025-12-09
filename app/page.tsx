@@ -28,6 +28,14 @@ const heroSlides = heroSlideKeys.map((key) => {
   return { src: media.url, alt: media.alt };
 });
 
+type CaseStudy = {
+  title: string;
+  location: string;
+  summary: string;
+  testimonial: { quote: string; name: string; role: string };
+  gallery: MediaKey[];
+};
+
 const ribbonItems = [
   'Signature weddings and couture celebrations',
   'Fashion-forward styling for hosts and bridal parties',
@@ -79,7 +87,7 @@ const services = [
   }
 ];
 
-const caseStudies = [
+const caseStudies: CaseStudy[] = [
   {
     title: 'Celestial Vows in Lagos',
     location: 'Eko Hotel • 450 guests',
