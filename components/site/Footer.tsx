@@ -4,10 +4,10 @@ import { Instagram } from 'lucide-react';
 import { Container } from '@/components/site/Container';
 import { waLink } from '@/lib/wa';
 
-const services = ['Wedding Cakes', 'Celebration Cakes', 'Dessert Tables', 'Corporate Gifting'];
-const shopCategories = ['Signature Flavours', 'Cupcakes', 'Macarons', 'Gift Boxes'];
+const services = ['Wedding Planning & Production', 'Luxury Social Events', 'Destination Logistics', 'Brand Launches'];
+const highlights = ['VIP guest hospitality', 'Fashion & styling direction', 'Concierge vendor management', 'Cultural protocol guidance'];
 
-const whatsappMessage = 'Hello Tasty Vine! I would love to order a cake.';
+const whatsappMessage = 'Hello House of Wura! I would like to plan an event with you.';
 
 export function Footer() {
   const instagramUrl = process.env.NEXT_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/tastyvinecakes';
@@ -18,11 +18,11 @@ export function Footer() {
         <div className="space-y-4">
           <Link href="/" className="font-display text-2xl tracking-widest text-wura-gold">
             <span className="inline-block transition-shadow duration-200 [text-shadow:_0_0_0_rgba(255,153,11,0)] hover:[text-shadow:_0_0_18px_rgba(255,153,11,0.35)]">
-              Tasty Vine Cakes
+              House of Wura
             </span>
           </Link>
           <p className="text-sm text-wura-white/70">
-            Crafting buttercream art, dessert tables, and heartfelt flavours for every celebration.
+            Designing couture celebrations with Lagos precision, Nigerian warmth, and global standards.
           </p>
         </div>
         <div className="space-y-4">
@@ -34,10 +34,10 @@ export function Footer() {
           </ul>
         </div>
         <div className="space-y-4">
-          <h3 className="font-display text-lg text-wura-gold">Shop</h3>
+          <h3 className="font-display text-lg text-wura-gold">Highlights</h3>
           <ul className="space-y-2 text-sm text-wura-white/70">
-            {shopCategories.map((category) => (
-              <li key={category}>{category}</li>
+            {highlights.map((item) => (
+              <li key={item}>{item}</li>
             ))}
           </ul>
         </div>
@@ -46,12 +46,12 @@ export function Footer() {
           <ul className="space-y-2 text-sm text-wura-white/70">
             <li>
               <Link href={waLink(whatsappMessage)} target="_blank" rel="noopener noreferrer" className="transition-colors duration-200 ease-std hover:text-wura-gold">
-                <span className="link-glint">Order via WhatsApp</span>
+                <span className="link-glint">Plan via WhatsApp</span>
               </Link>
             </li>
             <li>
-              <Link href="mailto:hello@tastyvine.com" className="transition-colors duration-200 ease-std hover:text-wura-gold">
-                <span className="link-glint">hello@tastyvine.com</span>
+              <Link href="mailto:hello@houseofwura.com" className="transition-colors duration-200 ease-std hover:text-wura-gold">
+                <span className="link-glint">hello@houseofwura.com</span>
               </Link>
             </li>
           </ul>
@@ -70,7 +70,7 @@ export function Footer() {
       </Container>
       <div className="border-t border-white/10 bg-wura-black/80">
         <Container className="flex flex-col items-center justify-between gap-2 py-6 text-xs uppercase tracking-[0.35em] text-wura-white/60 sm:flex-row">
-          <p>© {year} Tasty Vine Cakes. All rights reserved.</p>
+          <p>© {year} House of Wura. All rights reserved.</p>
           <p>
             MADE WITH LOVE BY{' '}
             <Link
