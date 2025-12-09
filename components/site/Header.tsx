@@ -17,21 +17,18 @@ import {
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu';
 import { Container } from '@/components/site/Container';
-import { CartIcon } from '@/components/site/CartIcon';
 import { waLink } from '@/lib/wa';
 import { cn } from '@/lib/utils';
 import { motionDur, slideDown, trans } from '@/lib/motion';
 
 const navItems = [
   { href: '/', label: 'Home' },
-  { href: '/services', label: 'Custom Cakes' },
-  { href: '/shop', label: 'Cakeshop' },
-  { href: '/lookbook', label: 'Gallery' },
-  { href: '/about', label: 'About' },
+  { href: '/events', label: 'Events' },
+  { href: '/booking', label: 'Booking & Payment' },
   { href: '/contact', label: 'Contact' }
 ];
 
-const HERO_MESSAGE = "Hello Tasty Vine! I'd love to order a custom cake.";
+const HERO_MESSAGE = 'Hello House of Wura! I would love to plan an event with you.';
 
 export function Header() {
   const pathname = usePathname();
@@ -52,14 +49,14 @@ export function Header() {
           <span className="relative block overflow-hidden rounded-lg bg-white/80 p-2 shadow-sm ring-1 ring-wura-gold/30">
             <Image
               src="/Logo/tasty-vine-logo.svg"
-              alt="Tasty Vine Cakes"
+              alt="House of Wura monogram"
               width={72}
               height={64}
               className="h-12 w-auto"
               priority
             />
           </span>
-          <span className="font-display text-xl uppercase tracking-[0.25em] text-wura-black">Tasty Vine Cakes</span>
+          <span className="font-display text-xl uppercase tracking-[0.25em] text-wura-black">House of Wura</span>
         </Link>
         <div className="hidden items-center gap-6 lg:flex">
           <NavigationMenu>
@@ -88,7 +85,6 @@ export function Header() {
               ))}
             </NavigationMenuList>
           </NavigationMenu>
-          <CartIcon />
           <Link
             href={waLink(HERO_MESSAGE)}
             target="_blank"
@@ -100,7 +96,6 @@ export function Header() {
           </Link>
         </div>
         <div className="flex items-center gap-3 lg:hidden">
-          <CartIcon className="h-11 w-11 border-wura-black/15 bg-white" />
           <Dialog.Root open={open} onOpenChange={setOpen}>
             <Dialog.Trigger asChild>
               <motion.button
@@ -135,7 +130,7 @@ export function Header() {
                       className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white/95 p-6 shadow-[0_28px_60px_rgba(11,11,11,0.28)]"
                     >
                       <div className="flex items-center justify-between">
-                        <p className="font-display text-xl text-wura-black">Tasty Vine Cakes</p>
+                        <p className="font-display text-xl text-wura-black">House of Wura</p>
                         <Dialog.Close asChild>
                           <button
                             type="button"
@@ -165,15 +160,6 @@ export function Header() {
                         <Button className="min-h-[44px] w-full px-5 py-2.5" asChild>
                           <Link href={waLink(HERO_MESSAGE)} target="_blank" rel="noopener noreferrer">
                             <span className="link-glint">Chat on WhatsApp</span>
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="min-h-[44px] w-full border-wura-gold px-5 py-2.5"
-                          asChild
-                        >
-                          <Link href="/cart" onClick={() => setOpen(false)}>
-                            Review cart
                           </Link>
                         </Button>
                       </div>

@@ -29,16 +29,16 @@ const sans = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Tasty Vine Cakes',
-    template: '%s · Tasty Vine Cakes'
+    default: 'House of Wura',
+    template: '%s · House of Wura'
   },
-  description: 'Tasty Vine Cakes handcrafts luxe cakes, dessert tables, and edible art for heartfelt celebrations.',
+  description: 'House of Wura designs couture weddings, society soirées, and brand experiences with Lagos-led precision.',
   openGraph: {
     type: 'website',
-    siteName: 'Tasty Vine Cakes',
+    siteName: 'House of Wura',
     url: siteUrl,
-    title: 'Tasty Vine Cakes',
-    description: 'Luxe cakes, dessert tables, and edible art.',
+    title: 'House of Wura',
+    description: 'Couture weddings and culture-rich celebrations.',
     images: [
       {
         url: `${heroMedia.url}?auto=format&fit=crop&w=1200&q=80`,
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Tasty Vine Cakes',
-    description: 'Luxe cakes, dessert tables, and edible art.',
+    title: 'House of Wura',
+    description: 'Couture weddings and culture-rich celebrations.',
     images: [`${heroMedia.url}?auto=format&fit=crop&w=1200&q=80`]
   },
   alternates: {
